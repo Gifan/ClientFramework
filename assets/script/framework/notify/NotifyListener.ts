@@ -151,16 +151,16 @@ export class NotifyListener {
      * @param prior 优先级
      */
     public Register(notifyid: number, callback: Function, context: any, prior: number): void {
-        if(callback == null){
+        if (callback == null) {
             GameLog.error(`[NotifyListener].Register:${notifyid} callback null`);
             return;
         }
         let manager = this._managers[notifyid];
-        if(manager == null){
+        if (manager == null) {
             manager = new ListenerManager(notifyid);
             this._managers[notifyid] = manager;
-        }else{
-            if(manager.IsExistHandler(callback, context)){
+        } else {
+            if (manager.IsExistHandler(callback, context)) {
                 GameLog.error(`[NotifyListener].Register:${notifyid} callback repeat, skip ${context}`);
                 return;
             }
@@ -175,11 +175,27 @@ export class NotifyListener {
      * @param context target上下文
      */
     public Unregister(notifyid: number, callback: Function, context: any): void {
-
+        let manager = this._managers[notifyid];
+        if (manager == null) {
+            GameLog.warn(`[NotifyListener].Unregister can't find ListenerManager:${notifyid} callback:${callback}`);
+            return;
+        }
+        if (!manager.RemoveHandler(callback, context)) {
+            GameLog.warn(`[NotifyListener].Unregister:${notifyid} can't find callback:${callback}`);
+        }
     }
 
-    public Send(notifyid: number) {
-
+    public Send(notifyid: number, ...argArray: any[]) {
+        let manager = this._managers[notifyid];
+        if (manager == null) {
+            GameLog.warn(`[NotifyListener].Send can't find ListenerManager:${notifyid}`);
+            return;
+        }
+        if (!this.CheckAndPushCallStack(notifyid)) {
+            return;
+        }
+        manager.Send(...argArray);
+        this.PopCallStack();
     }
 
     /**
