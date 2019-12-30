@@ -115,7 +115,7 @@ export namespace MVC {
     }
 
     export interface ITransition {
-        init(node: Node): void;
+        init(view:BaseView): void;
         show(): void;
         hide(): void;
     }
@@ -303,7 +303,7 @@ export namespace MVC {
             this._node = node;
             this._node.group = "UI";
             this.setParent(this._parent);
-            this._transition.init(node);
+            this._transition.init(this);
             this._uiMask = this._node.getChildByName("UIMask");
             if (!this._uiMask) {
                 let maskNode: Node = new cc.Node();
@@ -382,7 +382,7 @@ export namespace MVC {
         protected onShow(): void {
         }
 
-        protected onShowFinish(): void {
+        public onShowFinish(): void {
             this.setUIMaskActive(false);
         }
 
