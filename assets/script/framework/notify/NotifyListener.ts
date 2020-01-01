@@ -1,4 +1,4 @@
-import { GameLog } from "../Log";
+import { Log } from "../Log";
 
 interface IListenerMap {
     [key: number]: ListenerManager;
@@ -152,7 +152,7 @@ export class NotifyListener {
      */
     public Register(notifyid: number, callback: Function, context: any, prior: number): void {
         if (callback == null) {
-            GameLog.error(`[NotifyListener].Register:${notifyid} callback null`);
+            Log.error(`[NotifyListener].Register:${notifyid} callback null`);
             return;
         }
         let manager = this._managers[notifyid];
@@ -161,7 +161,7 @@ export class NotifyListener {
             this._managers[notifyid] = manager;
         } else {
             if (manager.IsExistHandler(callback, context)) {
-                GameLog.error(`[NotifyListener].Register:${notifyid} callback repeat, skip ${context}`);
+                Log.error(`[NotifyListener].Register:${notifyid} callback repeat, skip ${context}`);
                 return;
             }
         }
@@ -177,18 +177,18 @@ export class NotifyListener {
     public Unregister(notifyid: number, callback: Function, context: any): void {
         let manager = this._managers[notifyid];
         if (manager == null) {
-            GameLog.warn(`[NotifyListener].Unregister can't find ListenerManager:${notifyid} callback:${callback}`);
+            Log.warn(`[NotifyListener].Unregister can't find ListenerManager:${notifyid} callback:${callback}`);
             return;
         }
         if (!manager.RemoveHandler(callback, context)) {
-            GameLog.warn(`[NotifyListener].Unregister:${notifyid} can't find callback:${callback}`);
+            Log.warn(`[NotifyListener].Unregister:${notifyid} can't find callback:${callback}`);
         }
     }
 
     public Send(notifyid: number, ...argArray: any[]) {
         let manager = this._managers[notifyid];
         if (manager == null) {
-            GameLog.warn(`[NotifyListener].Send can't find ListenerManager:${notifyid}`);
+            Log.warn(`[NotifyListener].Send can't find ListenerManager:${notifyid}`);
             return;
         }
         if (!this.CheckAndPushCallStack(notifyid)) {

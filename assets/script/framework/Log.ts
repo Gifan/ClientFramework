@@ -1,4 +1,4 @@
-class _GameLog {
+class _Log {
     private _log: any;
     private _enableLog: boolean;
     public constructor() {
@@ -31,4 +31,4 @@ class _GameLog {
     }
 }
 
-export const GameLog = new _GameLog();
+export const Log = new _Log();

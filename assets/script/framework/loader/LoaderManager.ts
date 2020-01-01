@@ -1,11 +1,12 @@
-import { Session } from "./Session";
-import { GameLog } from "../Log";
+import { Session, LoaderCallback } from "./Session";
+import { Log } from "../Log";
 import { AssetLoader } from "./AssetLoader";
 
-type LoaderCallback = (name: string, asset: object) => void;
+export type LoaderCall = LoaderCallback;
 declare interface SessionMap {
     [key: string]: Session;
 }
+
 export class LoaderManager {
     private _sessions: SessionMap = {};
     private _loadQueue: Session[] = [];
@@ -37,11 +38,11 @@ export class LoaderManager {
     public unLoadAsset(key: string): void {
         let session = this._sessions[key];
         if (session == null) {
-            GameLog.warn("LoaderManager.UnLoad can't find:" + key);
+            Log.warn("LoaderManager.UnLoad can't find:" + key);
             return;
         }
         if (session.callbacks != null) {
-            GameLog.warn("LoaderManager.UnLoad callbacks != null:" + key);
+            Log.warn("LoaderManager.UnLoad callbacks != null:" + key);
         }
         session.loader.unLoad();
         delete this._sessions[key];
@@ -61,17 +62,17 @@ export class LoaderManager {
                 for (let i = 0; i < callbacks.length; i++) {
                     const callback = callbacks[i];
                     const target = targets[i];
-                    callback.call(target, session.name, session.loader.asset)
+                    callback.call(target, session.name, session.loader.asset, session.path);
                 }
             }
             this._loadQueue.splice(index, 1);
         }
     }
 
-    public SetProgressCallback(key: string, callback: (path: string, progress: number) => void, target: any) {
+    public setProgressCallback(key: string, callback: (path: string, progress: number) => void, target: any) {
         let session = this._sessions[key];
         if (session == null) {
-            GameLog.error("AddProgressCallback can't find:", key);
+            Log.error("AddProgressCallback can't find:", key);
             return;
         }
 

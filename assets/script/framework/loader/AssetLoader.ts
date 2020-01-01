@@ -1,5 +1,5 @@
 import { ILoader } from "./ILoader";
-import { GameLog } from "../Log";
+import { Log } from "../Log";
 
 declare interface RefMap {
     [key: string]: number;
@@ -9,6 +9,44 @@ interface CacheInfo {
 }
 
 export class AssetLoader implements ILoader {
+
+    private static _refMap: RefMap = {};
+    private static addRef(path: string, uuids: string[]) {
+        //cc.error("addRef", path, uuids);
+        for (let index = 0; index < uuids.length; index++) {
+            const uuid = uuids[index];
+            let times = AssetLoader._refMap[uuid];
+            if (times == null) {
+                AssetLoader._refMap[uuid] = 1;
+            } else {
+                AssetLoader._refMap[uuid] = times + 1;
+            }
+        }
+    }
+
+    private static delRef(path: string, uuids: string[]) {
+        //cc.error("delRef", path, uuids);
+        let delUuids = [];
+        for (let index = 0; index < uuids.length; index++) {
+            const uuid = uuids[index];
+            let times = AssetLoader._refMap[uuid];
+            if (times == null) {
+                cc.error("delRef times null, uuid:" + uuid);
+                continue;
+            }
+
+            if (times > 1) {
+                AssetLoader._refMap[uuid] = times - 1;
+            } else {
+                //TODO 释放后，切换场景再加载会加载失败，暂时不释放了，反正资源也不多
+                delete AssetLoader._refMap[uuid];
+                delUuids.push(uuid);
+            }
+        }
+        if (delUuids.length > 0) {
+            cc.loader.release(delUuids);
+        }
+    }
 
     private static _resMap: Map<string, CacheInfo> = new Map<string, CacheInfo>();
     /**
@@ -60,7 +98,7 @@ export class AssetLoader implements ILoader {
         if (item && item.id) {
             this._buildDepend(item, item.id);
         } else {
-            GameLog.warn(`addDependKey item error! for ${url}`);
+            Log.warn(`addDependKey item error! for ${url}`);
         }
 
         // 添加自身引用
@@ -75,7 +113,7 @@ export class AssetLoader implements ILoader {
     protected _assetType: typeof cc.Asset;
     public init(assetName: string, assetPath: string, assetType: typeof cc.Asset): void {
         if (this._assetPath != null) {
-            GameLog.error("AssetLoader.Init mult times! path old:" + this._assetPath + "\nnew:" + assetPath);
+            Log.error("AssetLoader.Init mult times! path old:" + this._assetPath + "\nnew:" + assetPath);
             return;
         }
         this._assetPath = assetPath;
@@ -83,38 +121,48 @@ export class AssetLoader implements ILoader {
         this._assetType = assetType;
     }
 
+    private finishCallback(error: Error, resource: any) {
+        this._error = error;
+        this._isLoaded = true;
+        this._asset = resource;
+        if (error) {
+            Log.error(`AssetLoader.LoadAsync error:${this._assetPath} ${error}`);
+        } else {
+            // AssetLoader._finishItem(this._assetPath, this._assetType);
+            if (this._progressCallback != null) {
+                this._progressCallback.call(this._progressTarget, this._assetPath, 1);
+                this._progressCallback = null;
+                this._progressTarget = null;
+            }
+            let depends = cc.loader.getDependsRecursively(this._assetPath);
+            AssetLoader.addRef(this._assetPath, depends);
+        }
+
+    }
+
     public loadAsync(): void {
         if (this._isLoaded) return;
         if (this._progress > 0) return;
         this._progress = 0.01;
-
-        cc.loader.loadRes(this._assetPath, this._assetType,
-            (completedCount: number, totalCount: number, item: any): void => {
-                if (this._progress < 0) return;
-                this._progress = completedCount / totalCount;
-                if (this._progressCallback) {
-                    this._progressCallback.call(this._progressTarget, this._assetPath, this._progress);
-                    if (completedCount >= totalCount) {
-                        this._progressCallback = null;
-                        this._progressTarget = null;
+        let res = cc.loader.getRes(this._assetPath, this._assetType)
+        if (res) {
+            this.finishCallback(null, res);
+        } else {
+            cc.loader.loadRes(this._assetPath, this._assetType,
+                (completedCount: number, totalCount: number, item: any): void => {
+                    if (this._progress < 0) return;
+                    this._progress = completedCount / totalCount;
+                    if (this._progressCallback) {
+                        this._progressCallback.call(this._progressTarget, this._assetPath, this._progress);
+                        if (completedCount >= totalCount) {
+                            this._progressCallback = null;
+                            this._progressTarget = null;
+                        }
                     }
-                }
-            }, (error: Error, resource: any): void => {
-                this._error = error;
-                this._isLoaded = true;
-                this._asset = resource;
-                if (error) {
-                    GameLog.error(`AssetLoader.LoadAsync error:${this._assetPath} ${error}`);
-                } else {
-                    AssetLoader._finishItem(this._assetPath, this._assetType);
-                    if (this._progressCallback != null) {
-                        this._progressCallback.call(this._progressTarget, this._assetPath, 1);
-                        this._progressCallback = null;
-                        this._progressTarget = null;
-                    }
-                }
-
-            })
+                }, (error: Error, resource: any): void => {
+                    this.finishCallback(error, resource);
+                })
+        }
     }
 
     protected _isLoaded: boolean = false;
@@ -123,12 +171,22 @@ export class AssetLoader implements ILoader {
     }
 
     public unLoad(): void {
-        let item = AssetLoader._getResItem(this._assetPath, this._assetType);
-        if (!item) {
-            GameLog.warn(`releaseRes item is null ${this._assetPath} ${this._assetType}`);
+        // let item = AssetLoader._getResItem(this._assetPath, this._assetType);
+        // if (!item) {
+        //     Log.warn(`releaseRes item is null ${this._assetPath} ${this._assetType}`);
+        //     return;
+        // }
+        // AssetLoader._release(item, item.id);
+        this._progress = -1;
+        if (!this._isLoaded) {
+            Log.error("AssetLoader.UnLoad not load! path:" + this._assetPath + " name:" + this._assetName);
             return;
         }
-        AssetLoader._release(item, item.id);
+        this._isLoaded = false;
+        this._asset = null;
+        let depends = cc.loader.getDependsRecursively(this._assetPath);
+        cc.loader.releaseRes(this._assetPath, this._assetType);
+        AssetLoader.delRef(this._assetPath, depends);
     }
 
     private static _release(item, itemUrl) {
@@ -153,10 +211,10 @@ export class AssetLoader implements ILoader {
         if (cacheInfo.refs.size == 0) {
             if (item.uuid) {
                 cc.loader.release(item.uuid);
-                GameLog.log("resloader release item by uuid :" + item.id);
+                Log.log("resloader release item by uuid :" + item.id);
             } else {
                 cc.loader.release(item.id);
-                GameLog.log("resloader release item by url:" + item.id);
+                Log.log("resloader release item by url:" + item.id);
             }
             this._resMap.delete(item.id);
         }

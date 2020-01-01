@@ -1,4 +1,4 @@
-import { GameLog } from "./Log";
+import { Log } from "./Log";
 
 export namespace MVC {
     export abstract class BaseModel {
@@ -24,7 +24,7 @@ export namespace MVC {
         public static add<T extends BaseController>(instance: BaseController): void {
             const name = instance.classname;
             if (ControllerContainer.getInstance(name) != null) {
-                GameLog.error(`ControllerContainer.Add repeat:${name}`);
+                Log.error(`ControllerContainer.Add repeat:${name}`);
                 return;
             }
             ControllerContainer._container.push(instance);
@@ -271,11 +271,11 @@ export namespace MVC {
 
         private load(): void {
             if (ViewHandler.loadAssetHandler == null) {
-                GameLog.log(`${this._assetName}.load need init loadAssetEvent first`);
+                Log.log(`${this._assetName}.load need init loadAssetEvent first`);
                 return;
             }
             if (this._loadState != eLoadState.Unload) {
-                GameLog.error(`${this._assetName}.load multi times`);
+                Log.error(`${this._assetName}.load multi times`);
                 return;
             }
             ViewHandler.loadAssetHandler(this._assetName, this._assetPath, cc.Prefab, this.onLoadCallBack, this);
@@ -285,7 +285,7 @@ export namespace MVC {
         private onLoadCallBack(name: string, asset: Object): void {
             let prefab: Prefab = asset as Prefab;
             if (prefab == null) {
-                GameLog.error(`${this._assetName}.loadCallback GameObject null:${name}`);
+                Log.error(`${this._assetName}.loadCallback GameObject null:${name}`);
                 return;
             }
             if (this._loadState != eLoadState.Loading) {
@@ -345,7 +345,7 @@ export namespace MVC {
                     this.onOpen();
                     break;
                 default:
-                    GameLog.error(`${this._assetName}.Open unsupport loadState:${this._loadState}`);
+                    Log.error(`${this._assetName}.Open unsupport loadState:${this._loadState}`);
                     break;
             }
         }
@@ -418,7 +418,7 @@ export namespace MVC {
 
         public unload(): void {
             if (this._loadState == eLoadState.Unload) {
-                GameLog.error(`${this._assetName}.Unload multi times`);
+                Log.error(`${this._assetName}.Unload multi times`);
                 return;
             }
             if (this._loadState == eLoadState.Loading) {
@@ -436,7 +436,7 @@ export namespace MVC {
                 this._node = null;
             }
             if (ViewHandler.unloadAssetHandler == null) {
-                GameLog.error(`${this._assetName}.unload init unloadAssetHandler frist`);
+                Log.error(`${this._assetName}.unload init unloadAssetHandler frist`);
                 return;
             }
             //通知资源管理

@@ -1,5 +1,5 @@
 import { ILoader } from "./ILoader";
-type LoaderCallback = (name: string, asset: object) => void;
+export type LoaderCallback = (name: string, asset: object, assetPath: string) => void;
 
 export class Session {
     public name: string;

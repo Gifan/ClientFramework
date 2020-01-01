@@ -1,4 +1,4 @@
-import { GameLog } from "../Log";
+import { Log } from "../Log";
 
 interface ICallerMap {
     [key: number]: { "func": Function, "context": any };
@@ -10,12 +10,12 @@ export class NotifyCaller {
 
     public Register(notifyid: number, callback: Function, context: any): boolean {
         if (callback == null) {
-            GameLog.error(`[NotifyCaller].Register:${notifyid} callback null`);
+            Log.error(`[NotifyCaller].Register:${notifyid} callback null`);
             return false;
         }
         const handler = this._calls[notifyid];
         if (handler != null) {
-            GameLog.error(`[NotifyCaller].Register:${notifyid} register repeat ${handler} ${callback}`);
+            Log.error(`[NotifyCaller].Register:${notifyid} register repeat ${handler} ${callback}`);
             return false;
         }
         this._calls[notifyid] = { "func": callback, "context": context };
@@ -24,7 +24,7 @@ export class NotifyCaller {
     public Unregister(notifyid: number, callback: Function, context: any): boolean {
         const handler = this._calls[notifyid];
         if (handler == null || handler.func !== callback || handler.context != context) {
-            GameLog.warn(`[NotifyCaller].Unregister can't find: ${notifyid} callback ${handler}`);
+            Log.warn(`[NotifyCaller].Unregister can't find: ${notifyid} callback ${handler}`);
             return false;
         }
         delete this._calls[notifyid];
@@ -34,7 +34,7 @@ export class NotifyCaller {
     public Call(notifyid: number, ...argsArray: any[]): any {
         const handler = this._calls[notifyid];
         if (handler == null) {
-            GameLog.error(`[NotifyCaller].Call can't find: ${notifyid}`);
+            Log.error(`[NotifyCaller].Call can't find: ${notifyid}`);
             return undefined;
         }
         return handler.func.call(handler.context, ...argsArray);

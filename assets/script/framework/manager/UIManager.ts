@@ -1,6 +1,5 @@
 import { MVC } from "../MVC";
-import { GameLog } from "../Log";
-declare let require: (str: string) => any;
+import { Log } from "../Log";
 type UINode = cc.Node
 type Canvas = cc.Canvas
 type Vector2 = cc.Vec2
@@ -73,7 +72,7 @@ export class UIManager {
             this._views[type] = view;
         }
         if (view.isOpened) {
-            GameLog.error(`UIManager.open:${type} is repeatedly`);
+            Log.error(`UIManager.open:${type} is repeatedly`);
             return;
         }
         view.setOpenArgs(args);
@@ -95,11 +94,11 @@ export class UIManager {
     private close(type: string): void {
         let view: MVC.BaseView = this._views[type];
         if (view == null) {
-            GameLog.error(`UIManager.close:${type} null`);
+            Log.error(`UIManager.close:${type} null`);
             return;
         }
         if (!view.isOpened) {
-            GameLog.error(`UIManager.close:${type}is repeatedly`);
+            Log.error(`UIManager.close:${type}is repeatedly`);
             return;
         }
         view.close();
@@ -112,7 +111,7 @@ export class UIManager {
 
         let viewQueue = this._viewQueues[view.uiQueue];
         if (viewQueue.length <= 0) {
-            GameLog.log(`UIManager.onClose:${view.assetPath} viewQueue:${view.uiQueue} Count < 0`);
+            Log.log(`UIManager.onClose:${view.assetPath} viewQueue:${view.uiQueue} Count < 0`);
             //closeQueues 会清空队列
             return;
         }
@@ -123,7 +122,7 @@ export class UIManager {
             if (index < 0) suss = false;
             viewQueue.splice(index, 1);
             if (!suss) {
-                GameLog.warn("UIManager.onClose:" + view.assetPath + " can't find, last:" + lastView.assetPath);
+                Log.warn("UIManager.onClose:" + view.assetPath + " can't find, last:" + lastView.assetPath);
             }
             return;
         }
