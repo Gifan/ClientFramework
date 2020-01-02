@@ -195,8 +195,9 @@ export class AudioManager {
     private _enableAudio: boolean = true;
     public playAudio(id: number, type = AudioType.UI) {
         let soundCfg = Cfg.Sound.get(id);
-        if (soundCfg == null) {
+        if (!soundCfg) {
             Log.error("playAudio error config id:", id);
+            return;
         }
         if (!this._enableAudio) return;
         if (soundCfg.volume <= 0) {
@@ -206,14 +207,17 @@ export class AudioManager {
         this._audioSources[type].loop = false;
 
         let clip = this._clips[id];
-        if (clip == null) {
-            this._clips[id] = new ClipAsset(id);
+        if (!clip) {
             let path = soundCfg.path;
-            // this.setAudioConfigVolume(soundCfg.volume, type);
-            Manager.loader.loadAssetAsync(id + "", path, cc.AudioClip, (name: string, resource: cc.AudioClip, asset: string) => {
+            this._clips[id] = new ClipAsset(id);
+            Manager.loader.loadAssetAsync(`${id}`, path, cc.AudioClip, (name: string, resource: cc.AudioClip, assetpath: string) => {
                 let realid = Number(name);
-                this._clips[realid].clip = resource;
-                this.doPlayAudio(this._clips[realid], type);
+                if (resource) {
+                    this._clips[realid].clip = resource;
+                    this.doPlayAudio(this._clips[realid], type);
+                } else {
+                    delete this._clips[realid];
+                }
             }, this);
         } else {
             this.doPlayAudio(clip, type);

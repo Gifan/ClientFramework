@@ -321,7 +321,7 @@ export namespace MVC {
 
         private onSetNode(node: Node): void {
             this._node = node;
-            this._node.group = "default";
+            this._node.group = "UI";
             this.setParent(this._parent);
             this._transition.init(this);
             this._uiMask = this._node.getChildByName("UIMask");
@@ -331,6 +331,7 @@ export namespace MVC {
                 maskNode.height = this._node.height;
                 maskNode.scale = this._node.scale;
                 maskNode.addComponent(cc.BlockInputEvents);
+                this._uiMask = maskNode;
                 this._node.addChild(maskNode, cc.macro.MAX_ZINDEX, "UIMask");
             }
             this.onLoad();

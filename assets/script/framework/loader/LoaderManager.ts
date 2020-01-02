@@ -23,7 +23,6 @@ export class LoaderManager {
             this._loadQueue.push(session);
             this._sessions[key] = session;
         }
-        Log.log("session", key, this._sessions);
         if (callback != null) {
             if (session.callbacks == null) {
                 session.callbacks = [];

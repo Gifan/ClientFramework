@@ -93,7 +93,7 @@ export class UIManager {
 
     private addSubCanvas(name: string): UINode {
         let node = new cc.Node(name + "_Root");
-        node.group = "default";
+        node.group = "UI";
         node.parent = this._root;
         node.width = kWidth;
         node.height = kHeight;

@@ -36,7 +36,6 @@ export class Watcher {
         if (times < 0) {
             times = -1;
         }
-        Log.log(nextTime, delay);
         this._nextTime = nextTime;
         this._delay = delay;
         this._times = times;

@@ -1,7 +1,7 @@
 import { TConfig } from "./TConfig";
 
 
-export interface SoundCfg extends IConfig {id:number;define?:string;name:string;paths:string[];volume:number;loop:number;}
+export interface SoundCfg extends IConfig {id:number;define?:string;name:string;path:string;volume:number;loop:number;}
 
 export const SoundDefine = {
     "BtnAffirm": 1
@@ -17,9 +17,7 @@ export class SoundCfgReader extends TConfig<SoundCfg> {
         "id": 1,
         "define": "BtnAffirm",
         "name": "按钮确定音效",
-        "paths": [
-            "audio/button"
-        ],
+        "path": "audio/button",
         "volume": 1,
         "loop": 0
     }

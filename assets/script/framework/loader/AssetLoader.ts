@@ -126,7 +126,8 @@ export class AssetLoader implements ILoader {
         this._isLoaded = true;
         this._asset = resource;
         if (error) {
-            Log.error(`AssetLoader.LoadAsync error:${this._assetPath} ${error}`);
+            this._asset = null;
+            Log.error(`AssetLoader.LoadAsync ${this._assetPath} error: ${error}`);
         } else {
             // AssetLoader._finishItem(this._assetPath, this._assetType);
             if (this._progressCallback != null) {

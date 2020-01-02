@@ -18,7 +18,7 @@ export class FuncCfgReader extends TConfig<FuncCfg> {
         "id": 1,
         "define": "Login",
         "name": "登录界面",
-        "view": "LoginView"
+        "view": "ExampleView"
     },
     "2": {
         "id": 2,
