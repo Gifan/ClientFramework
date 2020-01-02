@@ -1,0 +1,7 @@
+
+		let @FieldNameXform = @ParentName.getChildByName("@XformName");
+		if ( @FieldNameXform != null) {
+			this.@FieldName = new @TypeName(@FieldNameXform);				
+		} else {
+			cc.error("@XformName Can't Find Under @ParentName");
+		}

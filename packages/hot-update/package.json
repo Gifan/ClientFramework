@@ -1,0 +1,35 @@
+{
+  "name": "hot-update",
+  "version": "0.0.1",
+  "description": "The package template for getting started.",
+  "author": "Cocos Creator",
+  "main": "main.js",
+  "main-menu": {
+    "i18n:MAIN_MENU.package.title/hot-update": {
+      "accelerator": "CmdOrCtrl+Shift+k",
+      "message": "hot-update:open"
+    }
+  },
+  "panel": {
+    "main": "panel/index.js",
+    "type": "dockable",
+    "title": "热更新",
+    "width": 500,
+    "height": 580,
+    "min-height": 200,
+    "min-width": 500
+  },
+  "engines": {
+    "node": "~8.4.0",
+    "npm": "~5.5.1"
+  },
+  "dependencies": {
+    "chokidar": "~2.0.2",
+    "crypto-js": "^3.1.9-1",
+    "fs-extra": "^5.0.0",
+    "json-beautifully": "^1.0.3",
+    "uglify-js": "~3.3.14",
+    "upath": "~1.0.4",
+    "zip-local": "^0.3.4"
+  }
+}

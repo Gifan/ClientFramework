@@ -1,0 +1,12 @@
+import { TConfig } from "./TConfig";
+@Import
+
+export interface @TypeNameCfg extends IConfig @ClassDefine
+
+@ConstDefine
+
+export class @TypeNameCfgReader extends TConfig<@TypeNameCfg> {
+    protected _name : string = "@TypeName";
+
+@Constructor
+}

@@ -1,0 +1,18 @@
+
+/**
+* 程序生成的UI代码类，请勿修改
+*/
+export class @ClassName{
+    public _node:cc.Node = null;
+    public constructor(node ?: cc.Node) {
+        if (node != null) {
+            this.Init(node);
+        }
+    }
+    @Property
+
+    public Init(node : cc.Node) {
+        this._node = node;
+        @InitFuncBody
+    }
+}

@@ -12,11 +12,31 @@ export namespace MVC {
         }
         public abstract get classname(): string;
         public abstract reset(): void;
+        public abstract setup(model): boolean;
         protected abstract registerAllProtocol(): void;
         protected changeListener(enable: boolean): void { }
         protected registerProtocol(msgId: number, func: Function, context: any): void {
 
         }
+    }
+
+    export class MController<TModel extends BaseModel> extends BaseController {
+        protected _model: TModel;
+        public setup(model: TModel): boolean {
+            this._model = model;
+            return true;
+        }
+        public get classname(): string {
+            return "MController";
+        }
+        public reset(): void {
+
+        }
+        protected registerAllProtocol(): void {
+
+        }
+
+
     }
 
     export class ControllerContainer {
@@ -115,7 +135,7 @@ export namespace MVC {
     }
 
     export interface ITransition {
-        init(view:BaseView): void;
+        init(view: BaseView): void;
         show(): void;
         hide(): void;
     }
@@ -397,9 +417,9 @@ export namespace MVC {
             this.onHide();
         }
 
-        protected onHide(): void { }
+        protected onHide(): void { };
 
-        protected onHideFinish(): void { }
+        protected onHideFinish(): void { };
 
         public close(): void {
             if (!this._isOpened) return;
@@ -447,11 +467,11 @@ export namespace MVC {
 
         protected abstract onUnLoad(): void;
 
-        protected _openArgs : OpenArgs;
-        public setOpenArgs(openArgs : OpenArgs) : void {
+        protected _openArgs: OpenArgs;
+        public setOpenArgs(openArgs: OpenArgs): void {
             this._openArgs = openArgs;
         }
-        
+
         protected abstract changeListener(enable: boolean): void;
 
         protected onClickFrame(event) {

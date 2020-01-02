@@ -1,0 +1,10 @@
+
+		this.@FieldNames = [];
+		for (let index = 0; index < @ParentName.children.length; index++) {
+			const child = @ParentName.children[index];
+			if (child.name != "@XformName"){
+				continue;
+			}
+			let item = new @TypeName(child);
+			this.@FieldNames.push(item);
+		}

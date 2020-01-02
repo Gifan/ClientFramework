@@ -1,0 +1,8 @@
+
+        if (this.@FieldName != null) {
+            for (let index = 0; index < this.@FieldName.length; index++) {
+                const cell = this.@FieldName[index];
+                cell.Free();                
+            }
+        }
+        this.@FieldName = null;

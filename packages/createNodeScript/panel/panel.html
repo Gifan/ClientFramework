@@ -1,0 +1,21 @@
+<div id="warp" class="warp">
+    <br/>
+    1.导出预制体对应结构的ts文件<br/>
+    2.预制体需要在resources目录下面<br/>
+
+    <section class="path">
+        <hr />
+        <div>预制体目录: &nbsp;<ui-asset @change = "onChange" style="width:200" v-value = "prefab",class="flex-1" type="cc.Prefab" droppable="prefab">{{prefab}}</ui-asset>
+
+        </div>
+        <hr />
+    </section>
+
+    <br/>
+    <br/>
+    <div>
+        <ui-button class="big blue" v-on:confirm="onClickCreate">生成预制件Ts代码</ui-button>
+    </div>
+    <br>
+    <div><ui-button class="green" v-on:confirm="onBtnClickOpenSavePath">打开生成目录</ui-button></div>
+</div>

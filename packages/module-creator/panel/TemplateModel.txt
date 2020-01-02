@@ -1,0 +1,23 @@
+import { MVC } from "../../framework/MVC";
+
+export default class @ModuleNameModel extends MVC.BaseModel {
+
+    private static _instance: @ModuleNameModel = null;
+
+    public constructor() {
+        super();
+        if (@ModuleNameModel._instance == null) {
+            @ModuleNameModel._instance = this;
+        }
+    }
+    public reset(): void {
+
+    }
+
+    public static get getInstance(): @ModuleNameModel {
+        if (@ModuleNameModel._instance == null) {
+            @ModuleNameModel._instance = new @ModuleNameModel();
+        }
+        return @ModuleNameModel._instance;
+    }
+}

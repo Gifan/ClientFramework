@@ -1,0 +1,29 @@
+import { MVC } from "../../framework/MVC";
+import { Notifier } from "../../framework/notify/Notifier";
+import { ListenID } from "../../ListenID";
+import @ModuleNameModel from "./@ModuleNameModel";
+
+/*
+ * desc
+ */
+export class @ModuleNameController extends MVC.MController<@ModuleNameModel> {
+    public constructor() {
+        super();
+        this.setup(@ModuleNameModel.getInstance);
+        this.changeListener(true);
+    }
+    public reset(): void {}
+
+    public get classname(): string {
+        return "@ModuleNameController";
+    }
+    protected registerAllProtocol(): void {
+
+    }
+    
+    protected changeListener(enable: boolean): void {
+        //    Notifier.changeListener(enable, ListenID.Scene_AskSwitch, this.onAskSwitch, this);
+        //    Notifier.changeCall(enable, CallID.Scene_IsEnter, this.isEnter, this);
+    }
+}
+

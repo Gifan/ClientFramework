@@ -1,0 +1,70 @@
+<div class="layout vertical fit">
+    <div class="layout vertical flex-1">
+
+        <div id="view-root" class="scroll">
+            <div class="section">
+                <ui-section>
+                    <div class="header greenColor layout horizontal center">
+                        <div>配置更新包路径</div>
+                        <div class=" flex-1 ">
+                        </div>
+                    </div>
+                    <ui-prop name="更新包源路径">
+                        <ui-input class="flex-1" v-value="packageSrcPath"></ui-input>
+                        <ui-button class="green" v-on:confirm="onBtnClickOpenPackageSrcPath">选择</ui-button>
+                    </ui-prop>
+                    <ui-prop name="更新包目标路径" tooltip="将更新包资源拷贝到指定路径">
+                        <ui-input class="flex-1" v-value="packageDestPath" disabled></ui-input>
+                        <ui-button class = "green" v-on:confirm="onBtnClickOpenPackageDestPath">打开</ui-button>
+                    </ui-prop>
+                </ui-section>
+                <ui-section>
+                    <div class="header greenColor">版本配置</div>
+                    <ui-prop name="远程资源路径">
+                        <ui-input class="flex-1" v-value="remoteSavePath" v-on:blur="onRemotePathChanged"></ui-input>
+                        <!--<ui-button class="green" v-on:confirm="onBtnClickOpenRemoteSavePath">打开</ui-button>-->
+                    </ui-prop>
+                    <ui-prop name="当前版本号">
+                        <ui-input class="flex-1" v-on:blur="onVersionChanged" v-value="oldVersion" placeholder="请输入版本号:x.x.x"></ui-input>
+                    </ui-prop>
+                    <ui-prop name="远程版本号">
+                        <ui-input class="flex-1" v-on:blur="onVersionChanged" v-value="newVersion" placeholder="请输入版本号:x.x.x"></ui-input>
+                    </ui-prop>
+                </ui-section>
+                <ui-section>
+                    <div class="header greenColor">配置-导出</div>
+                    <ui-prop name="导出类型" tooltip="本地配置、远程配置">
+                        <ui-checkbox class="flex-1" v-bind:checked="isExportLocal" v-on:change="onBtnClickIsExportLocal">
+                            本地配置
+                        </ui-checkbox>
+                        <ui-checkbox class="flex-1" v-bind:checked="isExportRemote" v-on:change="onBtnClickIsExportRemote">
+                            远程配置
+                        </ui-checkbox>
+                    </ui-prop>
+                    <ui-prop name="导出目标" tooltip=" 客户端[c字段] * 服务器[s字段]">
+                        <ui-checkbox class="flex-1" v-bind:checked="isExportCompressImport"
+                            v-on:change="onBtnClickExportCompressImport">
+                            压缩import文件夹
+                        </ui-checkbox>
+                        <ui-checkbox class="flex-1" v-bind:checked="isExportCompressRaw"
+                            v-on:change="onBtnClickExportCompressRaw">
+                            压缩raw-asstes文件夹
+                        </ui-checkbox>
+                    </ui-prop>
+                </ui-section>
+            </div>
+        </div>
+
+
+        <hr style="margin: 1px 0 1px 0">
+        <div class="layout horizontal center justified ">
+            <h2 class="start-justified" style="margin: 1px 0 1px 0;color: #2feb21;"> 输出日志 </h2>
+            <ui-button v-on:confirm="onBtnClickImport" class="end-justified red">获取当前版本信息</ui-button>
+            <ui-button v-on:confirm="onBtnClickGen" class="end-justified red">生成</ui-button>
+        </div>
+    </div>
+    <div>
+        <textarea class="flex-1 log" id="logTextArea" v-model="logView">
+        </textarea>
+    </div>
+</div>

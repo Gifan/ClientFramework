@@ -1,0 +1,4 @@
+    public constructor() {
+        super();
+        this.initByMap(@Data);
+    }

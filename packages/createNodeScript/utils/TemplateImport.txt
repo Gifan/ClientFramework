@@ -1,0 +1,1 @@
+import { @TypeName } from "../../../../frame/extension/@TypeName";

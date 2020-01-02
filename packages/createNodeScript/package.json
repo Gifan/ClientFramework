@@ -1,0 +1,22 @@
+{
+  "name": "createnodescript",
+  "version": "0.0.1",
+  "description": "Prefa生成对应结构TS代码",
+  "author": "jianfen",
+  "mail":"g_char@qq.com",
+  "main": "main.js",
+  "main-menu": {
+    "i18n:MAIN_MENU.package.title/createNodeScript": {
+      "message": "createnodescript:open",
+      "accelerator": "CmdOrCtrl+Shift+m"
+    }
+  },
+  "scene-script": "utils/uiCreatorScene.js",
+  "panel": {
+    "main": "panel/uiCreatorPanel.js",
+    "type": "dockable",
+    "title": "createnodescript",
+    "width": 400,
+    "height": 420
+  }
+}

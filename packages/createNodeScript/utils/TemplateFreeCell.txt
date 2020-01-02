@@ -1,0 +1,5 @@
+
+        if (this.@FieldName != null) {
+            this.@FieldName.Free();
+        }
+        this.@FieldName = null;

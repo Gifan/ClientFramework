@@ -1,0 +1,5 @@
+
+    private _@TypeName = new @TypeNameCfgReader();
+    public get @TypeName() : @TypeNameCfgReader {
+        return this._@TypeName;
+    }
