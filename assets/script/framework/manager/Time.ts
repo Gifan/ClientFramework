@@ -1,5 +1,9 @@
 import { Notifier } from "../notify/Notifier";
 import { NotifyID } from "../notify/NotifyID";
+import { Log } from "../Log";
+import { ObjectPool } from "../collections/ObjectPool";
+import { Watcher } from "../Watcher";
+import { MinSortList } from "../collections/MinSortList";
 
 class _Time {
     private _time: number = 0;
@@ -58,6 +62,25 @@ class _Time {
         if (Notifier.isExist(NotifyID.Game_Update)) {
             Notifier.send(NotifyID.Game_Update, dt);
         }
+        let times = 0;
+        while (true) {
+            let first = this._watchers.peek();
+            if (first == null || first.nextTime > this._time) {
+                break;
+            }
+            let watcher = this._watchers.pop();
+            watcher._callBack();
+            if (watcher.enable) {
+                this._watchers.add(watcher);
+            } else {
+                this._pool.push(watcher);
+            }
+            ++times;
+            if (times > 2000) {
+                Log.error("watchers too many! frist:" + first.toString());
+                break;
+            }
+        }
     }
 
     private _scaling = false;
@@ -100,6 +123,46 @@ class _Time {
             cc.director.getScheduler().setTimeScale(scale);
             Notifier.send(NotifyID.Time_Scale, scale);
         }
+    }
+
+    private compareTime(left: Watcher, right: Watcher) {
+        if (left.nextTime < right.nextTime) {
+            return -1;
+        }
+        if (left.nextTime > right.nextTime) {
+            return 1;
+        }
+        return 0;
+    }
+
+    private _index = 0;
+    private _pool = new ObjectPool<Watcher>(function () {
+        return new Watcher();
+    });
+    private _watchers = new MinSortList<Watcher>(this.compareTime);
+    /**
+     * 
+     * @param delay 延迟多少秒执行
+     * @param callback 回调
+     * @param args 参数
+     * @param target 调用的this
+     * @param times 重复次数 -1表示无限次
+     */
+    public delay(delay: number, callback: (args: any) => void, args: any = null, target = null, times = 1): Watcher {
+        if (callback == null) {
+            Log.error("delay callback null");
+            return null;
+        }
+        if (delay == null || delay < 0) {
+            Log.error("Time.delay delay:" + delay);
+            return null;
+        }
+        let watcher = this._pool.pop();
+        let id = ++this._index;
+        watcher._setIndex(id);
+        watcher.initWithCallback(this._time + delay, delay, callback, args, target, times);
+        this._watchers.add(watcher);
+        return watcher;
     }
 }
 

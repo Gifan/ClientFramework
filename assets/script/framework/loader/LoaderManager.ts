@@ -38,7 +38,6 @@ export class LoaderManager {
     }
 
     public unLoadAsset(key: string): void {
-        Log.warn(this._sessions);
         let session = this._sessions[key];
         if (session == null) {
             Log.warn("LoaderManager.UnLoad can't find:" + key);

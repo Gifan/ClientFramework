@@ -1,6 +1,7 @@
 import { MVC } from "../../framework/MVC";
 import { DefaultTransition } from "../../framework/transition/DefaultTransition";
 import { Log } from "../../framework/Log";
+import { Time } from "../../framework/manager/Time";
 
 
 export class ExampleView extends MVC.BaseView {
@@ -22,13 +23,12 @@ export class ExampleView extends MVC.BaseView {
 
     protected onOpen(): void {
         super.onOpen();
-        cc.director.getScheduler().schedule(this.close,this,2);
+        Time.delay(2, this.close, null, this);
     }
-    public close(){
+    public close() {
         super.close();
     }
     public onClose(): void {
-        cc.director.getScheduler().unschedule(this.close, this);
         super.onClose();
     }
 
