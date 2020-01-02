@@ -164,6 +164,23 @@ class _Time {
         this._watchers.add(watcher);
         return watcher;
     }
+
+    public doCancel(watcher: Watcher) {
+        if (watcher == null) {
+            return;
+        }
+        let oldwatcher = this._watchers.del(watcher);
+        if (oldwatcher) {
+            oldwatcher.cancel();
+            this._pool.push(oldwatcher);
+        }
+    }
+
+    public reset() {
+        this._index = 0;
+        this._watchers.clear(this.doCancel, this);
+
+    }
 }
 
 export const Time = new _Time();

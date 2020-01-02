@@ -65,15 +65,15 @@ export class MinSortList<T> {
         ++this._count;
     }
 
-    public del(t: T): boolean {
+    public del(t: T): T {
         let index = this._element.indexOf(t);
         if (index < 0) {
-            return false;
+            return null;
         }
 
         --this._count;
-        this._element.splice(index, 1);
-        return true;
+        let element = this._element.splice(index, 1);
+        return element[0];
     }
 
     public peek(): T {

@@ -45,7 +45,7 @@ export class Watcher {
         this._target = target;
     }
 
-    public cancal(complete = false) {
+    public cancel(complete = false) {
         if (complete) {
             this._callBack();
         }
