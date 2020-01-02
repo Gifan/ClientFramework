@@ -30,7 +30,7 @@ export class @ModuleNameView extends MVC.BaseView {
         super.onShowFinish();
     }
 
-    protected onHideFinish(): void {
+    public onHideFinish(): void {
         super.onHideFinish();
     }
 

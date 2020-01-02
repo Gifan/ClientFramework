@@ -13,8 +13,8 @@ declare interface TypeViewMap {
     [key: string]: MVC.BaseView;
 }
 
-const kWidth = 1280;
-const kHeight = 720;
+const kWidth = 720;
+const kHeight = 1280;
 
 let _instance: UIManager;
 
@@ -27,7 +27,38 @@ export class UIManager {
         _instance = new UIManager();
         _instance.initRoot();
     }
+    private static m_func2viewTypes : FuncTypeMap = {};
+    public static RegisterViewType(funcId : number, viewType : string) : void {
+        let existType = UIManager.m_func2viewTypes[funcId];
+        if (existType != null) {
+            cc.warn("UIManager.RegisterViewType repeated funcId:" + funcId + " " + existType + "->" + viewType);
+        }
+        UIManager.m_func2viewTypes[funcId] = viewType;
+    }
 
+    public static Open(type : number, args? : MVC.OpenArgs ) : void {
+        //cc.error("UIManager.Open:" + type);
+        let viewType = UIManager.m_func2viewTypes[type];
+        if (viewType == null) {
+            Log.error("UIManager.Open unregistered funcId:" + type);
+            return;
+        }            
+        _instance.open(viewType, args);
+    }
+
+    public static Close(type : number) : void {
+        //cc.error("UIManager.Close:" + type);
+        let viewType = UIManager.m_func2viewTypes[type];
+        if (viewType == null) {
+            Log.error("UIManager.Close unregistered funcId:" + type);
+            return;
+        }
+        _instance.close(viewType);
+    }
+
+    public static CloseQueues() : void {
+        // _instance.closeQueues();
+    }
 
 
     //----------------- 内部实现 --------------------------
@@ -36,6 +67,15 @@ export class UIManager {
     private _layerRoots: UINode[];
     private _views: TypeViewMap;
     private _viewQueues: MVC.BaseView[][];
+
+    private constructor(){
+        this._views = {};
+        this._viewQueues = [];
+        for (let i = 0; i < MVC.eUIQueue.None; i++) {
+            this._viewQueues[i] = new Array<MVC.BaseView>();
+        }
+        MVC.ViewHandler.initUIEvent(this.onOpen.bind(this), this.onClose.bind(this));        
+    }
 
     private initRoot(): void {
         this._root = new cc.Node("_UIRoot");
@@ -53,7 +93,7 @@ export class UIManager {
 
     private addSubCanvas(name: string): UINode {
         let node = new cc.Node(name + "_Root");
-        node.group = "UI";
+        node.group = "default";
         node.parent = this._root;
         node.width = kWidth;
         node.height = kHeight;

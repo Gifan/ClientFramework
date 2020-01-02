@@ -30,5 +30,6 @@ export class EaseScaleTransition implements MVC.ITransition {
     // 弹出动画完成回调
     private onFadeOutFinish() {
         this._view.node.active = false;
+        this._view.onHideFinish();
     };
 }

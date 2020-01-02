@@ -33,5 +33,6 @@ export class MoveHorTransition implements MVC.ITransition {
     // 弹出动画完成回调
     private onMoveOutFinish() {
         this._view.node.active = false;
+        this._view.onHideFinish();
     };
 }

@@ -177,6 +177,7 @@ export class AssetLoader implements ILoader {
         //     return;
         // }
         // AssetLoader._release(item, item.id);
+        return;//暂时不释放 待完善
         this._progress = -1;
         if (!this._isLoaded) {
             Log.error("AssetLoader.UnLoad not load! path:" + this._assetPath + " name:" + this._assetName);

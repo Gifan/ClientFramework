@@ -66,7 +66,7 @@ export namespace MVC {
         }
     }
 
-    type LoadAssetHandler = (name: string, path: string, type: typeof cc.Asset, callback: (name: string, asset: object) => void, target: any) => void;
+    type LoadAssetHandler = (name: string, path: string, type: typeof cc.Asset, callback: (name: string, asset: object, assetPath: string) => void, target: any) => void;
     type Node = cc.Node;
     type Prefab = cc.Prefab;
 
@@ -298,11 +298,12 @@ export namespace MVC {
                 Log.error(`${this._assetName}.load multi times`);
                 return;
             }
+            this._loadState = eLoadState.Loading;
             ViewHandler.loadAssetHandler(this._assetName, this._assetPath, cc.Prefab, this.onLoadCallBack, this);
         }
 
 
-        private onLoadCallBack(name: string, asset: Object): void {
+        private onLoadCallBack(name: string, asset: Object, assetPath: string): void {
             let prefab: Prefab = asset as Prefab;
             if (prefab == null) {
                 Log.error(`${this._assetName}.loadCallback GameObject null:${name}`);
@@ -313,7 +314,6 @@ export namespace MVC {
             }
             this._loadState = eLoadState.Loaded;
             let node: Node = cc.instantiate(prefab);
-
             this.onSetNode(node);
         }
 
@@ -321,7 +321,7 @@ export namespace MVC {
 
         private onSetNode(node: Node): void {
             this._node = node;
-            this._node.group = "UI";
+            this._node.group = "default";
             this.setParent(this._parent);
             this._transition.init(this);
             this._uiMask = this._node.getChildByName("UIMask");
@@ -331,7 +331,7 @@ export namespace MVC {
                 maskNode.height = this._node.height;
                 maskNode.scale = this._node.scale;
                 maskNode.addComponent(cc.BlockInputEvents);
-                this._node.addChild(maskNode, 1 << 50, "UIMask");
+                this._node.addChild(maskNode, cc.macro.MAX_ZINDEX, "UIMask");
             }
             this.onLoad();
 
@@ -354,7 +354,6 @@ export namespace MVC {
             if (this._isOpened) return;
             this._isOpened = true;
             this._isWaitingShow = true;
-
             switch (this._loadState) {
                 case eLoadState.Unload:
                     this.load();
@@ -376,6 +375,7 @@ export namespace MVC {
             }
             this.changeListener(true);
             ViewHandler.onOpenEvent(this);
+            this.callClose = false;
             if (this._isWaitingShow) {
                 this._isWaitingShow = false;
                 this.show();
@@ -419,13 +419,16 @@ export namespace MVC {
 
         protected onHide(): void { };
 
-        protected onHideFinish(): void { };
+        public onHideFinish(): void {
+            if (this.callClose) this.onClose();
+        };
 
+        private callClose: boolean = false;
         public close(): void {
             if (!this._isOpened) return;
             this._isOpened = false;
+            this.callClose = true;
             this.hide();
-            this.onClose();
         }
 
         protected onClose(): void {
@@ -434,6 +437,7 @@ export namespace MVC {
             }
             this.changeListener(false);
             ViewHandler.onCloseEvent(this);
+            this.unload();
         }
 
         public unload(): void {
@@ -446,9 +450,6 @@ export namespace MVC {
                 return;
             }
             this._loadState = eLoadState.Unload;
-            if (this._isOpened) {
-                this.close();
-            }
             this.onUnLoad();
 
             if (this._node != null) {

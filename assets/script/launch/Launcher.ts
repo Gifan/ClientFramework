@@ -1,31 +1,37 @@
-// Learn TypeScript:
-//  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
+import { Time } from "../framework/manager/Time";
+import { Manager } from "../framework/manager/Manager";
+import { UILauncher } from "./UILauncher";
+import { NetLauncher } from "./NetLauncher";
+import { ModuleLauncher } from "./ModuleLauncher";
+import { SdkLauncher } from "./SdkLauncher";
+import { Notifier } from "../framework/notify/Notifier";
+import { FuncDefine } from "../config/FuncCfg";
+import { MVC } from "../framework/MVC";
+import { NotifyID } from "../framework/notify/NotifyID";
 
-const {ccclass, property} = cc._decorator;
+const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class Launcher extends cc.Component {
 
-    @property(cc.Label)
-    label: cc.Label = null;
-
-    @property
-    text: string = 'hello';
-
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {}
-
-    start () {
-        
+    onLoad() {
+        cc.game.addPersistRootNode(this.node);
+    }
+    start() {
+        new UILauncher();
+        new NetLauncher();
+        new ModuleLauncher();
+        new SdkLauncher();
     }
 
-    // update (dt) {}
+    update(dt) {
+        Time.update(dt);
+        Manager.loader.update(dt);
+    }
+
+    onTest() {
+        let args = new MVC.OpenArgs();
+        args.setId(FuncDefine.Login)
+        Notifier.send(NotifyID.Func_Open, args);
+    }
 }

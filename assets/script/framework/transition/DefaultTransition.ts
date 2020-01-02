@@ -12,6 +12,7 @@ export class DefaultTransition implements MVC.ITransition {
     }
     hide(): void {
         this._view.node.active = false;
+        this._view.onHideFinish();
     }
 
 

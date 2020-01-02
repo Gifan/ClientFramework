@@ -12,7 +12,7 @@ export class LoaderManager {
     private _loadQueue: Session[] = [];
     public loadAssetAsync(name: string, path: string, type: typeof cc.Asset, key: string, callback: LoaderCallback, target: any): void {
         let session = this._sessions[key];
-        if (session = null) {
+        if (session == null) {
             session = new Session();
             session.name = name;
             session.path = path;
@@ -21,7 +21,9 @@ export class LoaderManager {
             session.loader.init(name, path, type);
             session.loader.loadAsync();
             this._loadQueue.push(session);
+            this._sessions[key] = session;
         }
+        Log.log("session", key, this._sessions);
         if (callback != null) {
             if (session.callbacks == null) {
                 session.callbacks = [];
@@ -36,6 +38,7 @@ export class LoaderManager {
     }
 
     public unLoadAsset(key: string): void {
+        Log.warn(this._sessions);
         let session = this._sessions[key];
         if (session == null) {
             Log.warn("LoaderManager.UnLoad can't find:" + key);

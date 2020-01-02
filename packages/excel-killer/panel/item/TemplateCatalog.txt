@@ -1,15 +1,13 @@
 @Import
 
-import LZString = require("../common/lzstring");
-import { Const } from "./Const";
-import { HD_MODULE } from "../sdk/hd_module/hd_module";
-import BaseProtocol from "../sdk/hd_module/net/protocol/baseprotocol";
+import { Log } from "../framework/Log";
+import LZString = require("../util/lzstring");
 class _Cfg {
     @Property
 
     private keyjs = {@JsPro}
 
-    async initByMergeJson() {
+    /*async initByMergeJson() {
         //cc.log("Cfg.initByMergeJson start:" + new Date().getTime());
         return new Promise((resolve, reject)=>{
             cc.loader.loadRes("config/GameJsonCfg", cc.JsonAsset, function (error: Error, resource: cc.JsonAsset) {
@@ -34,14 +32,14 @@ class _Cfg {
                 //cc.log("Cfg.initByMergeJson finish:" + new Date().getTime());
             }.bind(this));
         });
-    }
+    }*/
 
     async initBySingleJson() {
         //cc.log("Cfg.initBySingleJson start:" + new Date().getTime());
-        return new Promise((resolve, reject)=>{
+        return new Promise((resolve, reject) => {
             cc.loader.loadResDir("config", function (error: Error, resources: cc.JsonAsset[], urls: string[]) {
                 if (error) {
-                    cc.error("Cfg.initBySingleJson error", error);
+                    Log.error("Cfg.initBySingleJson error", error);
                     reject();
                     return;
                 }
@@ -49,23 +47,23 @@ class _Cfg {
                     const element = resources[index];
                     const key = element.name;
                     if (!this.hasOwnProperty("_" + key)) {
-                        cc.warn("Cfg.initBySingleJson null, " + key);
+                        Log.warn("Cfg.initBySingleJson null, " + key);
                         continue;
                     }
-                    //cc.log("Cfg.initBySingleJson " + key);
+                    //cc.Log("Cfg.initBySingleJson " + key);
 
                     let reader = this["_" + key];
                     reader.initByMap(element.json);
                 }
                 resolve();
 
-                //cc.log("Cfg.initBySingleJson finish:" + new Date().getTime());
+                //cc.Log("Cfg.initBySingleJson finish:" + new Date().getTime());
             }.bind(this));
         });
     }
 
     private static cfgLoadNum: number = 0;
-    async initRemoteJson(filename: string, test?: cc.Label, pro?: cc.ProgressBar) {
+    /*async initRemoteJson(filename: string, test?: cc.Label, pro?: cc.ProgressBar) {
         let this1 = this;
         return new Promise((resolve, reject) => {
             let url = Const.JsonRemoteUrl + filename + ".json";
@@ -139,7 +137,7 @@ class _Cfg {
                 });
             }
         })
-    }
+    }*/
     
     async initLocalJson(filename: string, test?: cc.Label, pro?: cc.ProgressBar) {
         let this1 = this;
@@ -168,7 +166,7 @@ class _Cfg {
     async initRemoteConfig(filename: string, test?: cc.Label, pro?: cc.ProgressBar) {
         let this1 = this;
         return new Promise((resolve, reject) => {
-            let url = Const.JsonRemoteUrl + filename + ".config";
+            /*let url = Const.JsonRemoteUrl + filename + ".config";
             BaseProtocol.request(url, null, "GET", 'text').then((obj) => {
                 let jsondata = JSON.parse(LZString.decompressFromBase64(obj));
                 if (!this1.hasOwnProperty("_" + filename)) {
@@ -185,19 +183,8 @@ class _Cfg {
             }).catch(err => {
                 //this1.initLocalConfig(filename, test, pro);
                 resolve();
-            })
+            })*/
         })
-    }
-
-    initLocalConfig(filename: string, test?: cc.Label, pro?: cc.ProgressBar) {
-        let reader = this["_" + filename];
-        let jsondata = this.keyjs[filename];
-        if (reader && jsondata) {
-            reader.initByMap(jsondata);
-        }
-        _Cfg.cfgLoadNum += 1;
-        if (test) test.string = `${_Cfg.cfgLoadNum > 10 ? 10 : _Cfg.cfgLoadNum}%`;
-        if (pro) pro.progress = (_Cfg.cfgLoadNum > 10 ? 10 : _Cfg.cfgLoadNum) / 100;
     }
 
     public HasTag(t : any, tag : number) : boolean {
