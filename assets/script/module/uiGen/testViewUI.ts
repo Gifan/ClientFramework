@@ -10,14 +10,22 @@ export class testViewUI{
         }
     }
     
+    public NewSpriteplash : cc.Sprite;
     public sprite : cc.Sprite;
     public button : cc.Button;
     public Background : cc.Sprite;
     public label : cc.Label;
+    public testnet : cc.Button;
 
     public Init(node : cc.Node) {
         this._node = node;
         
+		let NewSpriteplashXform = node.getChildByName("NewSpriteplash");
+		if ( NewSpriteplashXform != null) {
+			this.NewSpriteplash = NewSpriteplashXform.getComponent(cc.Sprite);				
+		} else {
+			cc.error("NewSpriteplash Can't Find Under node");
+		}
 		let spriteXform = node.getChildByName("sprite");
 		if ( spriteXform != null) {
 			this.sprite = spriteXform.getComponent(cc.Sprite);				
@@ -41,6 +49,12 @@ export class testViewUI{
 			this.label = labelXform.getComponent(cc.Label);				
 		} else {
 			cc.error("label Can't Find Under BackgroundXform");
+		}
+		let testnetXform = node.getChildByName("testnet");
+		if ( testnetXform != null) {
+			this.testnet = testnetXform.getComponent(cc.Button);				
+		} else {
+			cc.error("testnet Can't Find Under node");
 		}
     }
 }

@@ -1,4 +1,6 @@
 import { Log } from "./Log";
+import { HttpClient } from "./network/HttpClient";
+import { NetManager, NetCallFun } from "./network/NetManager";
 
 export namespace MVC {
     export abstract class BaseModel {
@@ -15,8 +17,14 @@ export namespace MVC {
         public abstract setup(model): boolean;
         protected abstract registerAllProtocol(): void;
         protected changeListener(enable: boolean): void { }
-        protected registerProtocol(msgId: number, func: Function, context: any): void {
-
+        protected registerProtocol(cmd: number, func: NetCallFun, channelId: number = 0): void {
+            NetManager.getInstance.setResponseHandler(cmd, func, this, channelId);
+        }
+        protected httpPost(url: string, body: any, rspType: XMLHttpRequestResponseType = 'json'): Promise<any> {
+            return HttpClient.httpPost(url, body, rspType);
+        }
+        protected httpGet(url: string, body: any, rspType: XMLHttpRequestResponseType = 'json'): Promise<any> {
+            return HttpClient.httpGet(url, body, rspType);
         }
     }
 

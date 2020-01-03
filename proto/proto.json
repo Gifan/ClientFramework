@@ -1,0 +1,16 @@
+{
+  "nested": {
+    "testpackage": {
+      "nested": {
+        "Test": {
+          "fields": {
+            "name": {
+              "type": "string",
+              "id": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}
