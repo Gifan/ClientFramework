@@ -3,7 +3,7 @@ import SdkMgr from "./sdk/fw_gjj_SdkMgr";
 import Util from "./util/fw_gjj_Util";
 import BlackBoard from "./util/fw_gjj_BlackBoard";
 
-
+declare var window:any;
 export default class Framework {
     Platform = Platform;
     Util = Util;

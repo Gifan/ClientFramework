@@ -21,7 +21,7 @@ declare module wx {
     export function getSetting(...temp);
     export function createUserInfoButton(...temp);
     export function getShareInfo(...temp);
-
+    export function showModal(obj:object);
     /** 获取系统信息 */
     export function getSystemInfo(...temp): void;
     /** wx.getSystemInfo 的同步版本 */
