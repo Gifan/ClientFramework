@@ -47,7 +47,7 @@ function exportCode(module, useModel, useController, useView) {
   }
 
   if (useView) {
-    let file = TemplateView.replace(/@ModuleName/g, module);
+    let file = TemplateView.replace(/@ModuleName/g, module).replace(/@moduleName/g, module.toLowerCase());
     let filePath = Path.join(folderPath, module + "View.ts");
     if (!Fs.existsSync(filePath)) {
       Fs.writeFileSync(filePath, file);
@@ -65,7 +65,7 @@ function exportCode(module, useModel, useController, useView) {
   }
 }
 
-var createVM = function(elem) {
+var createVM = function (elem) {
   return new Vue({
     el: elem,
     data: {
