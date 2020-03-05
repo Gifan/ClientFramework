@@ -44,7 +44,7 @@ export default class Launcher extends cc.Component {
 
     onTest() {
         let args = new MVC.OpenArgs();
-        args.setId(FuncDefine.Login)
+        args.setId(FuncDefine.Login);
         Notifier.send(NotifyID.Func_Open, args);
     }
 

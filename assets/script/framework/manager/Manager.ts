@@ -1,6 +1,7 @@
 import { LoaderAdapter } from "../loader/LoaderAdapter";
 import { StorageManager } from "./StorageManager";
 import { AudioManager, AudioType } from "./AudioManager";
+import { NetManager } from "../network/NetManager";
 export type GameAudioType = AudioType;
 
 class _Manager {
@@ -26,6 +27,11 @@ class _Manager {
             this._audio = new AudioManager();
         }
         return this._audio;
+    }
+
+    public _net: NetManager;
+    public get net(): NetManager {
+        return NetManager.getInstance;
     }
 }
 export const Manager = new _Manager();

@@ -1,10 +1,10 @@
 import { NetNode, NetConnectOptions } from "./NetNode";
 import { NetData, CallbackObject, NetCallFunc } from "./NetInterface";
+import { HttpClient } from "./HttpClient";
 
 /*
 *   网络节点管理类
 *
-*   2019-10-8 by 宝爷
 */
 export type NetCallFun = NetCallFunc;
 
@@ -75,5 +75,9 @@ export class NetManager {
             return this._channels[channelId].setResponseHandler(cmd, call, target);
         }
         return false;
+    }
+
+    public httpRequest(url: string, body: any, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS', repType: XMLHttpRequestResponseType = 'json'): Promise<any> {
+        return HttpClient.Request(url, body, method, repType);
     }
 }
