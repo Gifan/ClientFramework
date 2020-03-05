@@ -9,14 +9,11 @@ import { FuncDefine } from "../config/FuncCfg";
 import { MVC } from "../framework/MVC";
 import { NotifyID } from "../framework/notify/NotifyID";
 import { Config } from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/config/fw_gjj_Config";
-import * as CtrlerIniter from "./yxj_gjj_StartUp_CtrlerIniter";
-import { GameConst } from "../config/yxj_gjj_const";
+import * as CtrlerIniter from "./StartUpCtrl";
 import Framework from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/fw_gjj_Framework";
 import { Const } from "../config/Const";
 
 declare var window: any;
-
-
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -48,7 +45,6 @@ export default class Launcher extends cc.Component {
     }
 
     public initWonderFrameWork() {
-        window["cst"] = GameConst;
         let config = this.initFrameWorkConfig();
         Framework.Instance.startUp(config);
 
