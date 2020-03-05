@@ -1,4 +1,5 @@
 import IPlatformToolsCtrler from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IPlatformToolsCtrler";
+import { Const } from "../../config/Const";
 let common = require('zqddn_zhb_Common');
 let swan = window["swan"];
 export default class BdPlatformToolsCtrler implements IPlatformToolsCtrler {
@@ -6,7 +7,7 @@ export default class BdPlatformToolsCtrler implements IPlatformToolsCtrler {
         this.onAntiAddiction();
         this.showAddToMyGameGuide();
     }
-    showKefu() { console.log(cst.PanelName.KEFU, this._showKefu); }
+    showKefu() { console.log(Const.PanelName.KEFU, this._showKefu); }
     protected _showKefu() {
         if (typeof swan.openCustomerServiceConversation !== "function")
             return console.log("版本太旧了哦，请升级百度App");
@@ -34,7 +35,7 @@ export default class BdPlatformToolsCtrler implements IPlatformToolsCtrler {
     }
     showAddToMyGameGuide() {
         console.log("[BdPlatformToolsCtrler][showAddToMyGameGuide]进入游戏3分钟后显示添加到我的小程序引导");
-        setTimeout(() => { fw.sdk.showAddToMyGameGuide(cst.GuideType.BAR); }, 180 * 1000)
+        setTimeout(() => { fw.sdk.showAddToMyGameGuide(Const.GuideType.BAR); }, 180 * 1000)
     }
 
 
@@ -91,7 +92,7 @@ export default class BdPlatformToolsCtrler implements IPlatformToolsCtrler {
     addAccelerometerEvent(type: string, cb: fw.cb1<boolean>) {
         this.accelerometerType = type;
         this.acceleCallback = cb;
-        console.log("[BdPlatformToolsCtrler][addAccelerometerEvent]", this.accelerometerType, cst.AcceleType.SIDE_LIE_TOWARD_RIGHT, this.acceleCallback);
+        console.log("[BdPlatformToolsCtrler][addAccelerometerEvent]", this.accelerometerType, Const.AcceleType.SIDE_LIE_TOWARD_RIGHT, this.acceleCallback);
         swan.startAccelerometer({});
         swan.onAccelerometerChange(this._onAccelerometerEvents.bind(this));
     }
@@ -100,42 +101,42 @@ export default class BdPlatformToolsCtrler implements IPlatformToolsCtrler {
         let flag = false;
         switch (this.accelerometerType) {
 
-            case cst.AcceleType.ADOWN:
+            case Const.AcceleType.ADOWN:
                 if (res.x > -0.8 && res.x < 0.8 && res.y > -0.5 && res.y < 0.2 && res.z > 0.5 && res.z < 1.1) { //设备朝下(与水平面夹角0-35度)
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.FRONT:
+            case Const.AcceleType.FRONT:
                 if (res.x > -0.15 && res.x < 0.05 && res.y > -0.15 && res.y < 0.05 && res.z > -1.15 && res.z < 0.05) { //设备正放
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.HANDSTAND:
+            case Const.AcceleType.HANDSTAND:
                 if (res.x > -0.4 && res.x < 0.4 && res.y > 0.1 && res.y < 1 && res.z > -1 && res.z < 0) { //设备倒立
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.SHAKE:
+            case Const.AcceleType.SHAKE:
                 if (Math.abs(res.x) > 1.3 || Math.abs(res.y) > 1.3 || Math.abs(res.z) > 1.3) { //摇晃设备
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.SIDE_LIE_TOWARD_RIGHT:
+            case Const.AcceleType.SIDE_LIE_TOWARD_RIGHT:
                 if (res.x > 0.3 && res.x < 1 && res.y > -0.3 && res.y < 1 && res.z > -1 && res.z < 0) { //设备立起向右横
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.THROW:
+            case Const.AcceleType.THROW:
 
                 if (Math.abs(res.x) < 0.5 && Math.abs(res.y) < 0.5 && Math.abs(res.z) > 1.3) { //设备上抛
                     flag = true;

@@ -264,7 +264,7 @@ var common = {
                 this.subEvent("new_user_day3_video_request_count");
             }
         }
-        fw.cls.sov.videoOrShare(cst.VideoADType.TIPS_KEY, s => s ? (call && call(0), this.sceneMgr.showTipsUI(s)) : call && call(1));
+        fw.cls.sov.videoOrShare(Const.VideoADType.TIPS_KEY, s => s ? (call && call(0), this.sceneMgr.showTipsUI(s)) : call && call(1));
     },
 
     //通用---------------------------

@@ -1,6 +1,5 @@
 import SOVHandler_Base from "./yxj_gjj_SOVHandler";
 import { ShareLaunchQuery } from "../../../sdk/sina/yxj_cz_SinaChannelCtrler";
-import { ProjectConst } from "../../../config/yxj_gjj_projectConst";
 
 export default class SOVHandler_sina extends SOVHandler_Base {
 
@@ -120,7 +119,7 @@ class SinaShareHandler_FakeCB implements SinaShareHandler {
         console.error("新浪分享")
         if (fw.lsd.shareGetKeyCount.value >= 4 && isGroupReturn) {
             window["wb"] && wb.offShow(this._fakeCb_bind);
-            fw.cls.sov.video(cst.VideoADType.TIPS_KEY, s => onCpl(s));
+            fw.cls.sov.video(Const.VideoADType.TIPS_KEY, s => onCpl(s));
             return;
         } else {
             console.log("[SinaShareHandler_FakeCB][share]" + isGroupReturn);

@@ -1,6 +1,6 @@
 import SOVHandler_Base from "./yxj_gjj_SOVHandler";
 import { ShareLaunchQuery } from "../../../sdk/wx/yxj_gjj_WxChannelCtrler";
-import { ProjectConst } from "../../../config/yxj_gjj_projectConst";
+import { Const } from "../../../config/Const";
 
 export default class SOVHandler_Toutiao extends SOVHandler_Base {
 
@@ -10,7 +10,7 @@ export default class SOVHandler_Toutiao extends SOVHandler_Base {
 
     constructor() {
         super();
-        let useAldShare: boolean = this._useAldShare = ProjectConst.AppConst.ALD_SDK_ID !== "";
+        let useAldShare: boolean = this._useAldShare = Const.AppConst.ALD_SDK_ID !== "";
         if (useAldShare) {
             this._shareHandler = new WxShareHandler_ald();
             wx.aldOnShareAppMessage && wx.aldOnShareAppMessage(() => this._getShareInfo_onMenuCb());

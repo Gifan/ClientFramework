@@ -1,7 +1,8 @@
-import { ProjectConst } from "../../config/yxj_gjj_projectConst";
+
 import IADCtrler ,{ BannerADStyle, IBanner, VideoADFailCode } from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IADCtrler";
+import { Const } from "../../config/Const";
 // 穿山甲广告appid
-let ttad_appid = ProjectConst.AppConst.TTAD_APPID;
+let ttad_appid = Const.AppConst.TTAD_APPID;
 export default class AndroidAdCtrler implements IADCtrler {
     onPlayEnd: (notCplReason?: string, failCode?: VideoADFailCode) => void
     onbannerShow: () => void
@@ -36,13 +37,13 @@ export default class AndroidAdCtrler implements IADCtrler {
         };
 
         window["insetVideoSuccess"] = () => {//成功展示插屏广告
-            this.subEvent(cst.AppConst.PROJECT_CODE + "_out_video_count");
+            this.subEvent(Const.AppConst.PROJECT_CODE + "_out_video_count");
         };
 
         window["rewardVideoSuccess"] = () => {//成功展示激励视频
             this.videoPlayTimes++;
             if (this.videoPlayTimes > 3) this.videoPlayTimes = 0;
-            this.subEvent(cst.AppConst.PROJECT_CODE + "_out_rewarde_count");
+            this.subEvent(Const.AppConst.PROJECT_CODE + "_out_rewarde_count");
         };
     }
     setBid(bid: string) {
@@ -73,7 +74,7 @@ export default class AndroidAdCtrler implements IADCtrler {
         console.log("Videopid", pid)
         if (!pid)
             pid = this.idDict["default"];
-        this.subEvent(cst.AppConst.PROJECT_CODE + "_ad_success_rewarde_count");
+        this.subEvent(Const.AppConst.PROJECT_CODE + "_ad_success_rewarde_count");
         window["jsb"] && window["jsb"].reflection && jsb.reflection.callStaticMethod("org/cocos2dx/javascript/AppActivity", "showVideo", "(Ljava/lang/String;)V", pid)
 
     }
@@ -100,7 +101,7 @@ export default class AndroidAdCtrler implements IADCtrler {
         console.log('[AndroidAdCtrler][showInsertAd]', type)
         let pid = this.idDict[type];
         this.onPlayEnd = null;
-        this.subEvent(cst.AppConst.PROJECT_CODE + "_ad_success_video_count");
+        this.subEvent(Const.AppConst.PROJECT_CODE + "_ad_success_video_count");
         window["jsb"] && window["jsb"].reflection && jsb.reflection.callStaticMethod("org/cocos2dx/javascript/AppActivity", "showInsertBanner", "(Ljava/lang/String;)V", pid)
     }
 

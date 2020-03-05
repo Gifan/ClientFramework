@@ -1,6 +1,4 @@
 import IADCtrler, { BannerADStyle, IBanner, VideoADFailCode } from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IADCtrler";
-import { ProjectConst } from "../../config/yxj_gjj_projectConst";
-import { GameConst } from "../../config/yxj_gjj_const";
 import sound_manager from "../../ctrler/yxj/cheese_sound_manager";
 let common = require('zqddn_zhb_Common');
 export default class VivoAdCtrler implements IADCtrler {

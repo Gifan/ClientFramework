@@ -1,9 +1,9 @@
 import IADCtrler, { BannerADStyle, IBanner, VideoADFailCode } from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IADCtrler";
-import { ProjectConst } from "../../config/yxj_gjj_projectConst";
 import sound_manager from "../../ctrler/yxj/cheese_sound_manager";
+import { Const } from "../../config/Const";
 let common = require('zqddn_zhb_Common');
 // 百度广告id
-let appSid = ProjectConst.AppConst.BD_APP_SID;
+let appSid = Const.AppConst.BD_APP_SID;
 let _swan = window["swan"] as SwanAdApi;
 type SwanAdApi = {
     createBannerAd(object: { adUnitId: string, style: wx.BannerAd.create_style, appSid: string }): wx.BannerAd;

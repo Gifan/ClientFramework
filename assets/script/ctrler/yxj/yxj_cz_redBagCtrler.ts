@@ -1,3 +1,5 @@
+import { Const } from "../../config/Const";
+
 var common = require('zqddn_zhb_Common');
 export default class RedBagCtrler {
     get isActive() {
@@ -176,7 +178,7 @@ export default class RedBagCtrler {
     }
 
     directLookVideoToAddTime(cb: fw.cb) {
-        fw.cls.sov.videoOrShare(cst.VideoADType.REDBAG, (s) => {
+        fw.cls.sov.videoOrShare(Const.VideoADType.REDBAG, (s) => {
             if (s) {
                 common.sceneMgr.showTipsUI(s)
             } else {
@@ -199,7 +201,7 @@ export default class RedBagCtrler {
             noText: "取消",
             /** yes选项按键按下时触发的回调, 不传则关闭面板, 处理回调后默认关闭面板, 回调中返回 true 可以保持面板不关闭 */
             yesCB: () => {
-                fw.cls.sov.videoOrShare(cst.VideoADType.REDBAG, (s) => {
+                fw.cls.sov.videoOrShare(Const.VideoADType.REDBAG, (s) => {
                     if (s) {
                         common.sceneMgr.showTipsUI(s)
                     } else {

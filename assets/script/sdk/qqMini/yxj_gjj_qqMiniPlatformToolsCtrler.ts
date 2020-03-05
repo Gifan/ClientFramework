@@ -1,4 +1,5 @@
 import IPlatformToolsCtrler from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IPlatformToolsCtrler";
+import { Const } from "../../config/Const";
 let common = require('zqddn_zhb_Common');
 export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
     currentSystem: string;
@@ -15,7 +16,7 @@ export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
             }
         })
     }
-    showKefu() { /*fw.ui.showPanel(cst.PanelName.KEFU, this._showKefu);*/ }
+    showKefu() { /*fw.ui.showPanel(Const.PanelName.KEFU, this._showKefu);*/ }
     protected _showKefu() {
 
     }
@@ -84,7 +85,7 @@ export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
         let flag = false;
         switch (this.accelerometerType) {
             default: break;
-            case cst.AcceleType.ADOWN:
+            case Const.AcceleType.ADOWN:
                 if (this.currentSystem == "android" && !this.isNewAccelerometer) { //QQ小游戏才需要区分
                     if (res.x > -2 && res.x < 2 && res.y > -2 && res.y < 2 && res.z > -11 && res.z < -7) { //手机朝下(与水平面夹角0-35度)
                         flag = true;
@@ -99,7 +100,7 @@ export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
                     }
                 }
                 break;
-            case cst.AcceleType.FRONT:
+            case Const.AcceleType.FRONT:
                     if(this.currentSystem == "android" && !this.isNewAccelerometer){ //QQ小游戏才需要区分
                         if(res.x > -1 && res.x < 1 && res.y > -2 && res.y < 2 && res.z > 8 && res.z < 11){ //手机正放
                             flag = true;
@@ -114,7 +115,7 @@ export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
                         }
                     }
                 break;
-            case cst.AcceleType.HANDSTAND:
+            case Const.AcceleType.HANDSTAND:
                     if(this.currentSystem == "android" && !this.isNewAccelerometer){ //QQ小游戏才需要区分
                         if(res.x > -1 && res.x < 1 && res.y > -10 && res.y < 2 && res.z > -8 && res.z < 8){ //手机倒立，且顶部指地
                             flag = true;
@@ -129,7 +130,7 @@ export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
                         }
                     }
                 break;
-            case cst.AcceleType.SHAKE:
+            case Const.AcceleType.SHAKE:
                     if(this.currentSystem == "android" && !this.isNewAccelerometer){ //QQ小游戏才需要区分
                         if (Math.abs(res.x) > 6 && Math.abs(res.y) > 6 && Math.abs(res.z) > 6){ //摇晃手机
                             flag = true;
@@ -144,7 +145,7 @@ export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
                         } 
                     }
                 break;
-            case cst.AcceleType.SIDE_LIE_TOWARD_RIGHT:
+            case Const.AcceleType.SIDE_LIE_TOWARD_RIGHT:
                     if(this.currentSystem == "android" && !this.isNewAccelerometer){ //QQ小游戏才需要区分
                         if(res.x > -10 && res.x < -1 && res.y > -5 && res.y < 5 && res.z > 1 && res.z < 10){ //手机立起向右横
                             flag = true;
@@ -159,7 +160,7 @@ export default class qqMiniPlatformToolsCtrler implements IPlatformToolsCtrler {
                         }
                     }
                 break;
-            case cst.AcceleType.THROW:
+            case Const.AcceleType.THROW:
                 if (this.currentSystem == "android" && !this.isNewAccelerometer) { //QQ小游戏才需要区分
                     if (Math.abs(res.y) > 10 || Math.abs(res.z) > 10) { //手机上抛
                         flag = true;

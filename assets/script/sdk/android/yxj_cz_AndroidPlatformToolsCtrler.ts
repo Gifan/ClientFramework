@@ -1,4 +1,5 @@
 import IPlatformToolsCtrler from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IPlatformToolsCtrler";
+import { Const } from "../../config/Const";
 export default class AndroidPlatformToolsCtrler implements IPlatformToolsCtrler {
     showKefu() { }
     showImage(url: string) { }
@@ -23,42 +24,42 @@ export default class AndroidPlatformToolsCtrler implements IPlatformToolsCtrler 
         let flag = false;
         switch (this.accelerometerType) {
             default: break;
-            case cst.AcceleType.ADOWN:
+            case Const.AcceleType.ADOWN:
                 if (res.x > -0.2 && res.x < 0.8 && res.y > -0.2 && res.y < 1 && res.z > -1.2 && res.z < 0.5) { //设备朝下(与水平面夹角0-35度)
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.FRONT:
+            case Const.AcceleType.FRONT:
                 if (res.x > -0.15 && res.x < 0.15 && res.y > -0.15 && res.y < 0.05 && res.z > 0.8 && res.z < 1.2) { //设备正放
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.HANDSTAND:
+            case Const.AcceleType.HANDSTAND:
                 if (res.x > -0.4 && res.x < 0.4 && res.y > 0.1 && res.y < 1 && res.z > 0.1 && res.z < 0.8) { //设备倒立
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.SHAKE:
+            case Const.AcceleType.SHAKE:
                 if (Math.abs(res.x) > 0.6 && Math.abs(res.y) > 0.6 && Math.abs(res.z) > 0.6) { //摇晃设备
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.SIDE_LIE_TOWARD_RIGHT:
+            case Const.AcceleType.SIDE_LIE_TOWARD_RIGHT:
                 if (res.x > 0.5 && res.x < 1.1 && res.y > -0.2 && res.y < 0.2 && res.z > -0.1 && res.z < 1) { //设备立起向右横
                     flag = true;
                 } else {
                     flag = false;
                 }
                 break;
-            case cst.AcceleType.THROW:
+            case Const.AcceleType.THROW:
                     if (Math.abs(res.y) > 0.7 && Math.abs(res.z) > 0.7) { //手机上抛
                         flag = true;
                     } else {

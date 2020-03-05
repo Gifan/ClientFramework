@@ -1,5 +1,5 @@
 import IPlatformToolsCtrler from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IPlatformToolsCtrler";
-import { GameConst } from "../../config/yxj_gjj_const";
+import { Const } from "../../config/Const";
 export default class QQPlayPlatformToolsCtrler implements IPlatformToolsCtrler {
     protected _kefuUrl;
     showKefu() {
@@ -27,7 +27,7 @@ export default class QQPlayPlatformToolsCtrler implements IPlatformToolsCtrler {
     }
     showImage(url: string) { BK.MQQ.Webview.open(url); }
     jumpApp(appId: string, path?: string, extraData?: PathObj, onCpl?: (failReason?: string) => void, envVersion?: "develop" | "trial" | "release") {
-        var extendInfo = JSON.stringify({ "appname": GameConst.AppConst.BMS_APP_NAME }); //额外参数，必须为字符串
+        var extendInfo = JSON.stringify({ "appname": Const.AppConst.BMS_APP_NAME }); //额外参数，必须为字符串
         console.log("要跳转的appId, extraData : ", appId, extendInfo);
         if (BK.QQ.skipGame) {
             BK.QQ.skipGame(appId, extendInfo);

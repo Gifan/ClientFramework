@@ -1,7 +1,7 @@
 import IADCtrler, { BannerADStyle, IBanner, VideoADFailCode } from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IADCtrler";
 import WxAdCtrler from "../wx/yxj_gjj_WxAdCtrler";
-import { GameConst } from "../../config/yxj_gjj_const";
 import sound_manager from "../../ctrler/yxj/cheese_sound_manager";
+import { Const } from "../../config/Const";
 declare var tt:any;
 export default class DouyinAdCtrler implements IADCtrler {
     constructor(protected idDict: { [type: string]: string }) {
@@ -129,7 +129,7 @@ export class DouyinBannerCtrler {
             this._banner.parent = pr.parent;
             this._banner.on(cc.Node.EventType.TOUCH_END, () => {
                 tt.openSchema({
-                    schema: 'sslocal://microapp?app_id=ttacffda4233d51d45&launch_from='+GameConst.AppConst.BMS_APP_NAME
+                    schema: 'sslocal://microapp?app_id=ttacffda4233d51d45&launch_from='+Const.AppConst.BMS_APP_NAME
                 })
             }, this)
             this._banner.active = false;

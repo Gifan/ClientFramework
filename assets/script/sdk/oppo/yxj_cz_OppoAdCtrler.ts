@@ -1,7 +1,5 @@
 import IADCtrler, { BannerADStyle, IBanner, VideoADFailCode } from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IADCtrler";
-import { ProjectConst } from "../../config/yxj_gjj_projectConst";
-import { GameConst } from "../../config/yxj_gjj_const";
-import sound_manager from "../../ctrler/yxj/cheese_sound_manager";
+import { Const } from "../../config/Const";
 let common = require('zqddn_zhb_Common');
 export default class OppoAdCtrler implements IADCtrler {
     _banner: oppoBanner;
@@ -10,7 +8,7 @@ export default class OppoAdCtrler implements IADCtrler {
     onShow: () => void;
     /** Android 广告控制器的初始化流程 */
     constructor(protected idDict: { [type: string]: string }) {
-        let appid = ProjectConst.AppConst.OPPO_APPID;
+        let appid = Const.AppConst.OPPO_APPID;
         console.log("[OppoAdCtrler][constructor]", appid);
         // qg.initAdService({
         //     appId: appid,
@@ -29,9 +27,9 @@ export default class OppoAdCtrler implements IADCtrler {
     setBid(bid: string) {
         if (bid) {
             this.idDict["defaultv"] = bid;
-            this.idDict[GameConst.BannerADType.LV_TIPS] = bid;
-            this.idDict[GameConst.BannerADType.LV_END] = bid;
-            this.idDict[GameConst.BannerADType.AUTO] = bid;
+            this.idDict[Const.BannerADType.LV_TIPS] = bid;
+            this.idDict[Const.BannerADType.LV_END] = bid;
+            this.idDict[Const.BannerADType.AUTO] = bid;
         }
     }
     canShowVideoAD() {

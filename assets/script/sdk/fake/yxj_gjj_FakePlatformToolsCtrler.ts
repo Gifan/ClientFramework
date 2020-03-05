@@ -1,6 +1,6 @@
 import IPlatformToolsCtrler from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IPlatformToolsCtrler";
 export default class FakePlatformToolsCtrler implements IPlatformToolsCtrler {
-    showKefu() { /*fw.ui.showPanel(cst.PanelName.KEFU, () => fw.ui.showNotify("本平台暂无客服功能"));*/ }
+    showKefu() { /*fw.ui.showPanel(Const.PanelName.KEFU, () => fw.ui.showNotify("本平台暂无客服功能"));*/ }
     showImage(url: string) {
         // fw.ui.showNotify({
         //     titleText: "本平台暂时无法展示图片",

@@ -1,5 +1,5 @@
 import IADCtrler, { BannerADStyle, IBanner, VideoADFailCode } from "../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IADCtrler";
-import { GameConst } from "../../config/yxj_gjj_const";
+import { Const } from "../../config/Const";
 let common = require('zqddn_zhb_Common');
 export default class qqMiniAdCtrler implements IADCtrler {
     static bannerNode: cc.Node = null;
@@ -9,7 +9,7 @@ export default class qqMiniAdCtrler implements IADCtrler {
         console.log("[qqMiniAdCtrler][ctor]", idDict);
         this.bannerC = this._createBannerCtrler();
         this.createAppBox();
-        cc.loader.loadRes(GameConst.ResPath.AD_BLOCK, cc.Prefab, (e, res: cc.Prefab) => {
+        cc.loader.loadRes(Const.ResPath.AD_BLOCK, cc.Prefab, (e, res: cc.Prefab) => {
             if (e) return cc.error("load question prefab fail.", e);
             let node = cc.instantiate(res);
             node.on(cc.Node.EventType.TOUCH_END, () => {
@@ -140,7 +140,7 @@ export default class qqMiniAdCtrler implements IADCtrler {
 
     createAppBox(moreGameBtn?: cc.Node) {
         if (!window["qq"].createAppBox) return console.error("createAppBox_Fail")
-        let adUnitId = this.idDict[cst.GameboxADType.NOMAL];
+        let adUnitId = this.idDict[Const.GameboxADType.NOMAL];
         console.log("[qqMiniAdCtrler][createAppBox][开始创建盒子]");
         this.appBox = window["qq"].createAppBox({
             adUnitId: adUnitId,

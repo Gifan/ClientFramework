@@ -1,4 +1,4 @@
-import { GameConst } from "../../../config/yxj_gjj_const";
+import { Const } from "../../../config/Const";
 let common = require('zqddn_zhb_Common');
 /** [视频/分享 类型] 指示下一个进行'视频/分享'操作的状态, 用于查询后显示对应的ui或文案 */
 export enum VOSType {
@@ -61,8 +61,8 @@ export default class SOVHandler_Base {
 
     protected _rq_BMS_SHARE_SHOW(config: BmsShareConfig) {
         if (!fw.bb.sys_openId.value) return;
-        fw.net.httpPost(cst.Url.BMS_SHARE_SHOW, {
-            app_name: GameConst.AppConst.BMS_APP_NAME,
+        fw.net.httpPost(Const.Url.BMS_SHARE_SHOW, {
+            app_name: Const.AppConst.BMS_APP_NAME,
             open_id: fw.bb.sys_openId.value,
             position: config.position,
             share_id: config.id,

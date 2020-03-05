@@ -52,7 +52,7 @@ export default class Launcher extends cc.Component {
         // if (window["qq"]) { fw.lsd = DataIniter.initLocalStorageData(); } 
         // let day = new Date().getDate();
         // let loginday = cc.sys.localStorage.getItem("zqddn_zhb_loginDay");
-        // if (day - loginday > 0) fw.sdk.showSplashAd(cst.SplashADType.NOMAL);
+        // if (day - loginday > 0) fw.sdk.showSplashAd(Const.SplashADType.NOMAL);
 
         //设置浏览器全部不能全屏
         if (cc.sys.isMobile) {
