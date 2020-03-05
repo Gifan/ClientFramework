@@ -60,4 +60,12 @@ export class Notifier {
     public static removeCall(callId: number, callback: Function, context: any): boolean {
         return this._caller.Unregister(callId, callback, context);
     }
+
+    public static changeCall(enable: boolean, callId: number, callback: Function, context: any) {
+        if (enable) {
+            this.addCall(callId, callback, context);
+        } else {
+            this.removeCall(callId, callback, context);
+        }
+    }
 }
