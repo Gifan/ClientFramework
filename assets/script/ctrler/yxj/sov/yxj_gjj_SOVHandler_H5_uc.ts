@@ -1,4 +1,5 @@
 import SOVHandler_Base from "./yxj_gjj_SOVHandler";
+import { Const } from "../../../config/Const";
 
 export default class SOVHandler_H5_UC extends SOVHandler_Base {
 
@@ -17,6 +18,6 @@ export default class SOVHandler_H5_UC extends SOVHandler_Base {
     cbShare(onCpl: (failReason?: string) => void, type?: string, query?: PathObj, arg?: any) {
         let config = this._getRandomConfig();
         console.error('UCcbShare----')
-        fw.cls.sov.video(cst.VideoADType.TIPS_KEY, s => onCpl(s));
+        fw.cls.sov.video(Const.VideoADType.TIPS_KEY, s => onCpl(s));
     }
 }
