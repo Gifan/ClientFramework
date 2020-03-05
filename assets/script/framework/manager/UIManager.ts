@@ -13,9 +13,6 @@ declare interface TypeViewMap {
     [key: string]: MVC.BaseView;
 }
 
-const kWidth = 720;
-const kHeight = 1280;
-
 let _instance: UIManager;
 
 /*
@@ -37,6 +34,7 @@ export class UIManager {
     }
 
     public static Open(type: number, args?: MVC.OpenArgs): void {
+        //cc.error("UIManager.Open:" + type);
         let viewType = UIManager.m_func2viewTypes[type];
         if (viewType == null) {
             Log.error("UIManager.Open unregistered funcId:" + type);
@@ -46,6 +44,7 @@ export class UIManager {
     }
 
     public static Close(type: number): void {
+        //cc.error("UIManager.Close:" + type);
         let viewType = UIManager.m_func2viewTypes[type];
         if (viewType == null) {
             Log.error("UIManager.Close unregistered funcId:" + type);
@@ -55,7 +54,7 @@ export class UIManager {
     }
 
     public static CloseQueues(): void {
-
+        // _instance.closeQueues();
     }
 
 
@@ -79,7 +78,7 @@ export class UIManager {
         this._root.parent = cc.director.getScene();
         this._root.width = cc.winSize.width;
         this._root.height = cc.winSize.height;
-        this._root.position = cc.v2(cc.winSize.width / 2, cc.winSize.height / 2);
+        this._root.position = cc.v2(cc.winSize.width / 2.0, cc.winSize.height / 2.0);
         cc.game.addPersistRootNode(this._root);
 
         this._layerRoots = new Array<UINode>();
