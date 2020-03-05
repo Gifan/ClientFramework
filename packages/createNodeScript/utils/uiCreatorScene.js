@@ -108,7 +108,13 @@ class NodeInfo {
         this.fieldNameLower = this.fieldName.toLowerCase();
         this.fieldPath = this.fieldName;
         this.typeName = GetType(node);
-
+        // if (this.fieldName.indexOf('=') != -1) {
+        //     let names = this.fieldName.split('=');
+        //     this.fieldName = names[0];
+        //     if(names[1] && names[1] == "Array"){
+        //         this.isArray = true;
+        //     }
+        // }
         // let customType = null;
         // if (this.fieldName.indexOf('=') != -1) {
         //     let names = this.fieldName.split('=');

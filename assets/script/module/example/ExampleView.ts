@@ -7,8 +7,9 @@ import { GameUtil } from "../../util/GameUtil";
 import { NetNode } from "../../framework/network/NetNode";
 import { WebSock } from "../../framework/network/WebSock";
 import { DefStringProtocol } from "../../framework/network/NetInterface";
-import { NetManager } from "../../framework/network/NetManager";
 import { testPackage } from "../../proto/proto";
+import { SoundDefine } from "../../config/SoundCfg";
+import { Manager } from "../../framework/manager/Manager";
 
 
 export class ExampleView extends MVC.BaseView {
@@ -18,7 +19,7 @@ export class ExampleView extends MVC.BaseView {
     private _ui: testViewUI;
     protected onLoad(): void {
         this._ui = new testViewUI(this.node);
-        this._ui.button.audioId = 107;
+        this._ui.button.audioId = SoundDefine.BtnAffirm;
         GameUtil.setListener(this._ui.button.node, this.onClick, this);
         GameUtil.setListener(this._ui.testnet.node, this.onTest, this);
     }
@@ -53,14 +54,14 @@ export class ExampleView extends MVC.BaseView {
     public onClick() {
         let Node = new NetNode();
         Node.init(new WebSock(), new DefStringProtocol());
-        NetManager.getInstance.setNetNode(Node);
-        NetManager.getInstance.setResponseHandler(0, this.onrece, this);
-        NetManager.getInstance.connect({ url: 'ws://192.168.40.106:8080' });
+        Manager.net.setNetNode(Node);
+        Manager.net.setResponseHandler(0, this.onrece, this);
+        Manager.net.connect({ url: 'ws://192.168.40.106:8080' });
     }
     public onTest() {
         let msg = testPackage.Test.create({ name: 'haha' });
         let buffer = testPackage.Test.encode(msg).finish();
-        NetManager.getInstance.send(buffer);
+        Manager.net.send(buffer);
     }
 
     public onrece(cmd, msg) {
