@@ -1,4 +1,3 @@
-/// <reference path="../../../../packages/fw-gjj/FrameWork/fw_gjj_framework/fw_gjj_Framework_API.d.ts" />
 declare module fw { // 扩展框架的 api , 增加数据方面的描述
 
     /** 全局本地储存数据 (Local Storage Data) */
@@ -9,10 +8,7 @@ declare module fw { // 扩展框架的 api , 增加数据方面的描述
     /** 声明全局黑板的数据(需要和 data.ts 同步) */
     let bb: _private.data.BlackBoard;
 }
-declare var wb:any;
-declare var qg:any;
-declare var wx:any;
-declare var BK:any;
+
 declare module fw {
     namespace _private {
         namespace data {

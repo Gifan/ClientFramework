@@ -14,7 +14,7 @@ export enum VOSType {
     SHARE_GROUP,
 }
 
-type BmsShareConfig = dto.HTTP.BMS_SHARE_CONFIG.item;
+type BmsShareConfig = any;
 /** share and video */
 export default class SOVHandler_Base {
 
@@ -34,7 +34,7 @@ export default class SOVHandler_Base {
         // fw.bb.bms_shareConfig.on(this.on_bms_shareConfig_vc, this);
         // fw.bb.bms_ipShield.on(this.on_bms_ipShield_vc, this);
     }
-    protected on_bms_launchConfig_vc(nv: dto.HTTP.BMS_LAUNCH_CONFIG.rp) {
+    protected on_bms_launchConfig_vc(nv: any) {
         this.vosType = nv.tips === 1 ? VOSType.VIDEO_AD : VOSType.NONE;
         // console.log("[分享][bms] 是否使用4型分享图:" + this.use4);
     }

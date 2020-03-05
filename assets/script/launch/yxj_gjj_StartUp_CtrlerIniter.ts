@@ -1,7 +1,6 @@
 import { Platform } from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/fw_gjj_Framework";
 import { GameConst } from "../config/yxj_gjj_const";
 import { Config } from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/config/fw_gjj_Config";
-let common = require('zqddn_zhb_Common');
 
 import IShareCtrler from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IShareCtrler";
 import IADCtrler from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/sdk/fw_gjj_IADCtrler";
@@ -79,14 +78,15 @@ import XiaoMiShareCtrler from "../sdk/xiaomi/yxj_cz_XiaoMiShareCtrler";
 import XiaoMiAdCtrler from "../sdk/xiaomi/yxj_cz_XiaoMiAdCtrler";
 import XiaoMiPlatformToolsCtrler from "../sdk/xiaomi/yxj_cz_PlatformToolsCtrle";
 
-import { CEPlatform, CustomPlatform } from "./Launcher";
+import { Const } from "../config/Const";
 import { screenTapCtrler } from "../ctrler/yxj/yxj_cz_screenTapCtrler";
 import { ProjectConst } from "../config/yxj_gjj_projectConst";
 import { SOVCtrler } from "../ctrler/yxj/yxj_gjj_sovCtrler";
 import RedBagCtrler from "../ctrler/yxj/yxj_cz_redBagCtrler";
 
 export function initCtrlers_before_startUp() { }
-
+let CustomPlatform = Const.CustomPlatform;
+let CEPlatform = Const.CEPlatform;
 function _getPlatform(customPf: number): Platform {
     let info = "[StartUp][getPlatform] ";
     console.log("customPf", customPf)

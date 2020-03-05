@@ -37,7 +37,6 @@ export class UIManager {
     }
 
     public static Open(type : number, args? : MVC.OpenArgs ) : void {
-        //cc.error("UIManager.Open:" + type);
         let viewType = UIManager.m_func2viewTypes[type];
         if (viewType == null) {
             Log.error("UIManager.Open unregistered funcId:" + type);
@@ -47,7 +46,6 @@ export class UIManager {
     }
 
     public static Close(type : number) : void {
-        //cc.error("UIManager.Close:" + type);
         let viewType = UIManager.m_func2viewTypes[type];
         if (viewType == null) {
             Log.error("UIManager.Close unregistered funcId:" + type);
@@ -57,7 +55,7 @@ export class UIManager {
     }
 
     public static CloseQueues() : void {
-        // _instance.closeQueues();
+
     }
 
 

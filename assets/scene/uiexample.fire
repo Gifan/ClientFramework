@@ -127,6 +127,9 @@
       "__id__": 2
     },
     "_enabled": true,
+    "testMode": false,
+    "bmsPlatformForDebug": 1,
+    "CustomPlatform": 0,
     "_id": "6eAYuM4hpOAqKQ574NdyII"
   },
   {

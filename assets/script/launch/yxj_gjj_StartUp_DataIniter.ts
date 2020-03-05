@@ -18,6 +18,7 @@ export function initLocalStorageData(): fw._private.data.LocalStorageData {
 
 function clearDailyLSD(lsd: fw._private.data.LocalStorageData) {
     let today = fw.Util.getHumanDate();
+    console.log(lsd.lastPlayDate.value);
     if (lsd.lastPlayDate.value === today) return;
     console.log("清除每日数据");
     lsd.shareCount.reset();
