@@ -13,9 +13,6 @@ declare interface TypeViewMap {
     [key: string]: MVC.BaseView;
 }
 
-const kWidth = 720;
-const kHeight = 1280;
-
 let _instance: UIManager;
 
 /*
@@ -27,8 +24,8 @@ export class UIManager {
         _instance = new UIManager();
         _instance.initRoot();
     }
-    private static m_func2viewTypes : FuncTypeMap = {};
-    public static RegisterViewType(funcId : number, viewType : string) : void {
+    private static m_func2viewTypes: FuncTypeMap = {};
+    public static RegisterViewType(funcId: number, viewType: string): void {
         let existType = UIManager.m_func2viewTypes[funcId];
         if (existType != null) {
             cc.warn("UIManager.RegisterViewType repeated funcId:" + funcId + " " + existType + "->" + viewType);
@@ -36,17 +33,17 @@ export class UIManager {
         UIManager.m_func2viewTypes[funcId] = viewType;
     }
 
-    public static Open(type : number, args? : MVC.OpenArgs ) : void {
+    public static Open(type: number, args?: MVC.OpenArgs): void {
         //cc.error("UIManager.Open:" + type);
         let viewType = UIManager.m_func2viewTypes[type];
         if (viewType == null) {
             Log.error("UIManager.Open unregistered funcId:" + type);
             return;
-        }            
+        }
         _instance.open(viewType, args);
     }
 
-    public static Close(type : number) : void {
+    public static Close(type: number): void {
         //cc.error("UIManager.Close:" + type);
         let viewType = UIManager.m_func2viewTypes[type];
         if (viewType == null) {
@@ -56,7 +53,7 @@ export class UIManager {
         _instance.close(viewType);
     }
 
-    public static CloseQueues() : void {
+    public static CloseQueues(): void {
         // _instance.closeQueues();
     }
 
@@ -68,21 +65,21 @@ export class UIManager {
     private _views: TypeViewMap;
     private _viewQueues: MVC.BaseView[][];
 
-    private constructor(){
+    private constructor() {
         this._views = {};
         this._viewQueues = [];
         for (let i = 0; i < MVC.eUIQueue.None; i++) {
             this._viewQueues[i] = new Array<MVC.BaseView>();
         }
-        MVC.ViewHandler.initUIEvent(this.onOpen.bind(this), this.onClose.bind(this));        
+        MVC.ViewHandler.initUIEvent(this.onOpen.bind(this), this.onClose.bind(this));
     }
 
     private initRoot(): void {
         this._root = new cc.Node("_UIRoot");
         this._root.parent = cc.director.getScene();
-        this._root.width = kWidth;
-        this._root.height = kHeight;
-        this._root.position = cc.v2(kWidth / 2, kHeight / 2);
+        this._root.width = cc.winSize.width;
+        this._root.height = cc.winSize.height;
+        this._root.position = cc.v2(cc.winSize.width / 2.0, cc.winSize.height / 2.0);
         cc.game.addPersistRootNode(this._root);
 
         this._layerRoots = new Array<UINode>();
@@ -95,8 +92,8 @@ export class UIManager {
         let node = new cc.Node(name + "_Root");
         node.group = "UI";
         node.parent = this._root;
-        node.width = kWidth;
-        node.height = kHeight;
+        node.width = cc.winSize.width;
+        node.height = cc.winSize.height;
         node.position = cc.Vec2.ZERO;
         node.angle = 0;
         return node;
