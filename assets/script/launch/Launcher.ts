@@ -10,12 +10,11 @@ import { MVC } from "../framework/MVC";
 import { NotifyID } from "../framework/notify/NotifyID";
 import { Config } from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/config/fw_gjj_Config";
 import * as CtrlerIniter from "./yxj_gjj_StartUp_CtrlerIniter";
-import * as DataIniter from "./yxj_gjj_StartUp_DataIniter";
 import { GameConst } from "../config/yxj_gjj_const";
 import Framework from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/fw_gjj_Framework";
 import { Const } from "../config/Const";
 
-declare var window:any;
+declare var window: any;
 
 
 const { ccclass, property } = cc._decorator;
@@ -48,11 +47,12 @@ export default class Launcher extends cc.Component {
         Notifier.send(NotifyID.Func_Open, args);
     }
 
-    public initWonderFrameWork(){
+    public initWonderFrameWork() {
         window["cst"] = GameConst;
         let config = this.initFrameWorkConfig();
         Framework.Instance.startUp(config);
-        fw.lsd = DataIniter.initLocalStorageData();
+
+        // fw.lsd = DataIniter.initLocalStorageData();
         // if (window["qq"]) { fw.lsd = DataIniter.initLocalStorageData(); } 
         // let day = new Date().getDate();
         // let loginday = cc.sys.localStorage.getItem("zqddn_zhb_loginDay");
@@ -70,7 +70,7 @@ export default class Launcher extends cc.Component {
             TestMode: this.testMode,
             platform: PlatformConfig.platform,
             sdkMgrConfig: PlatformConfig.sdkMgrConfig,
-            bbConfig: { extendPropertys: DataIniter.getGBB_ExtendPropertys(), },
+            bbConfig: { extendPropertys: null, },
         }
     }
 }

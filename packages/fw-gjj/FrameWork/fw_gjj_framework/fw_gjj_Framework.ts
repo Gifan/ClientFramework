@@ -46,7 +46,6 @@ export default class Framework {
         console.log("isZHANGYU", this.isZHANGYU);
         console.log("isVIVO", this.isVIVO);
         console.log("hasShareing", this.hasShareing);
-        console.log("hasShareing", this.hasShareing);
 
         this._set_GBB_extendPropertys(this.bb, config.bbConfig);
     };
