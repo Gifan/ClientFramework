@@ -40,8 +40,8 @@ export default class Launcher extends cc.Component {
 
     onTest() {
         let args = new MVC.OpenArgs();
-        args.setId(FuncDefine.Login);
-        Notifier.send(NotifyID.Func_Open, args);
+        args.setId(FuncDefine.Login).setUiLayer(MVC.eUILayer.Main).setTransition(MVC.eTransition.Default);
+        Notifier.send(NotifyID.Func_Open, "ui/test/TestView", args);
     }
 
     public initWonderFrameWork() {

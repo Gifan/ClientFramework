@@ -29,17 +29,17 @@ export class FuncController extends MVC.MController<FuncModel> {
         Notifier.changeListener(enable, NotifyID.Func_Open, this.open, this);
     }
 
-    private open(args :MVC.OpenArgs){
-        let cfg = Cfg.Func.get(args.id);
-        if (cfg == null) {
-            Log.error("FuncLogic.open error id", args.id);
-            return;
-        }
-        if (cfg.father != null) {
-            args.setTab(args.id);
-            args.setId(cfg.father);
-        }
-        UIManager.Open(args.id, args);
+    private open(viewname:string, args :MVC.OpenArgs){
+        // let cfg = Cfg.Func.get(args.id);
+        // if (cfg == null) {
+        //     Log.error("FuncLogic.open error id", args.id);
+        //     return;
+        // }
+        // if (cfg.father != null) {
+        //     args.setTab(args.id);
+        //     args.setId(cfg.father);
+        // }
+        UIManager.Open(viewname, args);
     }
 }
 

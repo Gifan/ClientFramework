@@ -8,11 +8,11 @@ export class DefaultTransition implements MVC.ITransition {
     }
     show(): void {
         this._view.node.active = true;
-        this._view.onShowFinish();
+        setTimeout(() => this._view.onShowFinish());
     }
     hide(): void {
         this._view.node.active = false;
-        this._view.onHideFinish();
+        setTimeout(() => this._view.onHideFinish());
     }
 
 

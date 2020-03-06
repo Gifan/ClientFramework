@@ -1,9 +1,10 @@
 import { MVC } from "../../framework/MVC";
+import { Log } from "../../framework/Log";
 
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export class @ModuleNameView extends MVC.BaseView {
+export class TestView extends MVC.BaseView {
 
     protected changeListener(enable: boolean): void {
         //Notifier.changeListener(enable, NotifyID.Game_Update, this.onUpdate, this);
@@ -14,6 +15,7 @@ export class @ModuleNameView extends MVC.BaseView {
      */
     protected onOpen(): void {
         super.onOpen();
+        Log.log("test onOpen");
     }
 
     /*
@@ -21,6 +23,7 @@ export class @ModuleNameView extends MVC.BaseView {
      */
     public close(): void {
         super.close();
+        Log.log("test close");
     }
 
     /*
@@ -28,6 +31,7 @@ export class @ModuleNameView extends MVC.BaseView {
      */
     public onClose(): void {
         super.onClose();
+        Log.log("test onClose");
     }
 
     /*
@@ -35,6 +39,7 @@ export class @ModuleNameView extends MVC.BaseView {
      */
     public onShowFinish(): void {
         super.onShowFinish();
+        Log.log("test onShowFinish");
     }
 
 }

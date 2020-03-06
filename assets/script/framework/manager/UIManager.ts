@@ -1,5 +1,6 @@
 import { MVC } from "../MVC";
 import { Log } from "../Log";
+import { Const } from "../../config/Const";
 type UINode = cc.Node
 type Canvas = cc.Canvas
 type Vector2 = cc.Vec2
@@ -10,7 +11,7 @@ declare interface FuncTypeMap {
 }
 
 declare interface TypeViewMap {
-    [key: string]: MVC.BaseView;
+    [key: string]: { args: MVC.OpenArgs, asset: string, node: UINode };
 }
 
 let _instance: UIManager;
@@ -26,31 +27,31 @@ export class UIManager {
     }
     private static m_func2viewTypes: FuncTypeMap = {};
     public static RegisterViewType(funcId: number, viewType: string): void {
-        let existType = UIManager.m_func2viewTypes[funcId];
-        if (existType != null) {
-            cc.warn("UIManager.RegisterViewType repeated funcId:" + funcId + " " + existType + "->" + viewType);
-        }
-        UIManager.m_func2viewTypes[funcId] = viewType;
+        // let existType = UIManager.m_func2viewTypes[funcId];
+        // if (existType != null) {
+        //     cc.warn("UIManager.RegisterViewType repeated funcId:" + funcId + " " + existType + "->" + viewType);
+        // }
+        // UIManager.m_func2viewTypes[funcId] = viewType;
     }
 
-    public static Open(type: number, args?: MVC.OpenArgs): void {
+    public static Open(type: string, args?: MVC.OpenArgs): void {
         //cc.error("UIManager.Open:" + type);
-        let viewType = UIManager.m_func2viewTypes[type];
-        if (viewType == null) {
-            Log.error("UIManager.Open unregistered funcId:" + type);
-            return;
-        }
-        _instance.open(viewType, args);
+        // let viewType = UIManager.m_func2viewTypes[type];
+        // if (viewType == null) {
+        //     Log.error("UIManager.Open unregistered funcId:" + type);
+        //     return;
+        // }
+        _instance.open(type, args);
     }
 
-    public static Close(type: number): void {
+    public static Close(type: string): void {
         //cc.error("UIManager.Close:" + type);
-        let viewType = UIManager.m_func2viewTypes[type];
-        if (viewType == null) {
-            Log.error("UIManager.Close unregistered funcId:" + type);
-            return;
-        }
-        _instance.close(viewType);
+        // let viewType = UIManager.m_func2viewTypes[type];
+        // if (viewType == null) {
+        //     Log.error("UIManager.Close unregistered funcId:" + type);
+        //     return;
+        // }
+        _instance.close(type);
     }
 
     public static CloseQueues(): void {
@@ -98,21 +99,27 @@ export class UIManager {
         return node;
     }
 
-    private open(type: string, args: MVC.OpenArgs): void {
-        let view: MVC.BaseView = this._views[type];
-        if (view == null) {
-            let mod = require(type);
-            let modClass = mod[type];
-            view = new modClass() as MVC.BaseView;
-            view.setParent(this._layerRoots[view.uiLayer]);
-            this._views[type] = view;
+    private open(asset: string, args: MVC.OpenArgs): void {
+        // let view = this._views[type];
+        // if (view == null) {
+        //     let mod = require(type);
+        //     let modClass = mod[type];
+        //     view = new modClass() as MVC.BaseView;
+        //     view.setParent(this._layerRoots[view.uiLayer]);
+        //     this._views[type] = view;
+        // }
+        // if (view.isOpened) {
+        //     Log.error(`UIManager.open:${type} is repeatedly`);
+        //     return;
+        // }
+        // view.setOpenArgs(args);
+        // view.open();
+        let names = asset.split(`/`);
+        if (this._views[asset] == null) { //每次只存在唯一一个同样的视图
+            this._views[asset] = { asset: asset, args: args, node: null };
+            let name = names[names.length - 1];
+            MVC.ViewHandler.loadAssetHandler(name, asset, cc.Prefab, this.onLoadCallback, this, args);
         }
-        if (view.isOpened) {
-            Log.error(`UIManager.open:${type} is repeatedly`);
-            return;
-        }
-        view.setOpenArgs(args);
-        view.open();
     }
 
     private onOpen(view: MVC.BaseView): void {
@@ -128,20 +135,17 @@ export class UIManager {
     }
 
     private close(type: string): void {
-        let view: MVC.BaseView = this._views[type];
-        if (view == null) {
+        let view = this._views[type];
+        if (view == null || view.node == null) {
             Log.error(`UIManager.close:${type} null`);
             return;
         }
-        if (!view.isOpened) {
-            Log.error(`UIManager.close:${type}is repeatedly`);
-            return;
-        }
-        view.close();
+        view.node.getComponent(view.node.name).close();
     }
 
     private onClose(view: MVC.BaseView): void {
         if (view.uiQueue == MVC.eUIQueue.None) {
+            this._views[view.assetPath] = null;
             return;
         }
 
@@ -168,5 +172,36 @@ export class UIManager {
             lastView = viewQueue[viewQueue.length - 1];
             lastView.show();
         }
+    }
+    public getLayerRoots(uiLayer: MVC.eUILayer): cc.Node {
+        return this._layerRoots[uiLayer];
+    }
+
+    private _countcall: number = 0;
+    private onLoadCallback(name: string, asset: object, assetspath: string, args: any) {
+        let prefab: UINode = asset as UINode;
+        if (prefab == null) {
+            console.error(".loadCallback GameObject null:" + name);
+
+            this._views[assetspath] = null;
+            let names = assetspath.split(`/`);
+            this._countcall++;
+            if (this._countcall <= 3)//打开失败连续打开3次
+                MVC.ViewHandler.loadAssetHandler(names[names.length - 1], assetspath, cc.Prefab, this.onLoadCallback, this, args);
+            return;
+        }
+        let data = this._views[assetspath].args;
+        let node: UINode = cc.instantiate<UINode>(prefab);
+        try {
+            let baseView: MVC.BaseView = node.getComponent(name);
+            baseView.init(data.uiLayer, data.uiQueue, data.transition, assetspath);
+            baseView.setNodeInfo(this._layerRoots[data.uiLayer]);
+            this._views[assetspath].node = node;
+            baseView.setOpenArgs(data);
+            baseView.open();
+        } catch (error) {
+            console.error("error=", error);
+        }
+        this._countcall = 1;
     }
 }

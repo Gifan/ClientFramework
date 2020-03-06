@@ -1,6 +1,9 @@
 import { Log } from "./Log";
 import { HttpClient } from "./network/HttpClient";
 import { NetManager, NetCallFun } from "./network/NetManager";
+import { EaseScaleTransition } from "./transition/EaseScaleTransition";
+import { MoveHorTransition } from "./transition/MoveHorTransition";
+import { DefaultTransition } from "./transition/DefaultTransition";
 
 export namespace MVC {
     export abstract class BaseModel {
@@ -74,7 +77,7 @@ export namespace MVC {
         }
     }
 
-    type LoadAssetHandler = (name: string, path: string, type: typeof cc.Asset, callback: (name: string, asset: object, assetPath: string) => void, target: any) => void;
+    type LoadAssetHandler = (name: string, path: string, type: typeof cc.Asset, callback: (name: string, asset: object, assetPath: string, args: any) => void, target: any, args: any) => void;
     type Node = cc.Node;
     type Prefab = cc.Prefab;
 
@@ -142,6 +145,12 @@ export namespace MVC {
         None,
     }
 
+    export enum eTransition {
+        Default,
+        EaseScale,
+        Move,
+    }
+
     export interface ITransition {
         init(view: BaseView): void;
         show(): void;
@@ -152,6 +161,23 @@ export namespace MVC {
      * 打开ui时附带参数
      */
     export class OpenArgs {
+
+
+        public constructor() {
+            this._uiLayer = eUILayer.Main;
+            this._transition = eTransition.Default;
+        }
+
+        private _transition: eTransition;
+        public setTransition(tr: eTransition) {
+            this._transition = tr;
+            return this;
+        }
+
+        public get transition(): eTransition {
+            return this._transition;
+        }
+
         private _id: number;
         public get id(): number {
             return this._id;
@@ -226,18 +252,41 @@ export namespace MVC {
             this._param = param;
             return this;
         }
+        private _uiLayer: eUILayer
+        public setUiLayer(euilayer: eUILayer) {
+            this._uiLayer = euilayer;
+            return this;
+        }
+
+        public get uiLayer(): eUILayer {
+            return this._uiLayer;
+        }
+
+        private _uiQueue: eUIQueue = eUIQueue.None;
+        public get uiQueue() {
+            return this._uiQueue;
+        }
     }
 
-    export abstract class BaseView {
-        public constructor(asset: string | Node, uiLayer: eUILayer, uiQueue: eUIQueue, transition: ITransition) {
+    export class BaseView extends cc.Component {
+        public init(uiLayer: eUILayer, uiQueue: eUIQueue, transition: eTransition, assetspath: string) {
             this._uiLayer = uiLayer;
             this._uiQueue = uiQueue;
-            this._transition = transition;
-
-            if (typeof asset === "string") {
-                let names = asset.split(`/`);
-                this._assetName = names[names.length - 1];
-                this._assetPath = asset;
+            this._uiLayer = uiLayer;
+            this._assetPath = assetspath;
+            switch (transition) {
+                case eTransition.EaseScale:
+                    this._transition = new EaseScaleTransition();
+                    break;
+                case eTransition.Move:
+                    this._transition = new MoveHorTransition();
+                    break;
+                case eTransition.Default:
+                    this._transition = new DefaultTransition();
+                    break;
+                default:
+                    this._transition = new DefaultTransition();
+                    break;
             }
         }
         private _transition: ITransition;
@@ -261,16 +310,6 @@ export namespace MVC {
             return this._uiQueue;
         }
 
-        private _node: Node;
-        public get node(): Node {
-            return this._node;
-        }
-
-        private _parent: Node;
-        public get parent(): Node {
-            return this._parent;
-        }
-
         private _uiMask: Node;
         public get uiMask(): Node {
             return this._uiMask;
@@ -282,76 +321,20 @@ export namespace MVC {
             }
         }
 
-        public setParent(parent: Node): void {
-            this._parent = parent;
-            if (this._node != null) {
-                this._node.parent = parent;
-                this._node.position = cc.Vec2.ZERO;
-                this._node.angle = 0;
-                this._node.scale = 1;
-            }
-        }
-
-        private _loadState: eLoadState = eLoadState.Unload;
-        public get loadState(): eLoadState {
-            return this._loadState;
-        }
-
-        private load(): void {
-            if (ViewHandler.loadAssetHandler == null) {
-                Log.log(`${this._assetName}.load need init loadAssetEvent first`);
-                return;
-            }
-            if (this._loadState != eLoadState.Unload) {
-                Log.error(`${this._assetName}.load multi times`);
-                return;
-            }
-            this._loadState = eLoadState.Loading;
-            ViewHandler.loadAssetHandler(this._assetName, this._assetPath, cc.Prefab, this.onLoadCallBack, this);
-        }
-
-
-        private onLoadCallBack(name: string, asset: Object, assetPath: string): void {
-            let prefab: Prefab = asset as Prefab;
-            if (prefab == null) {
-                Log.error(`${this._assetName}.loadCallback GameObject null:${name}`);
-                return;
-            }
-            if (this._loadState != eLoadState.Loading) {
-                return;
-            }
-            this._loadState = eLoadState.Loaded;
-            let node: Node = cc.instantiate(prefab);
-            this.onSetNode(node);
-        }
-
-        protected abstract onLoad(): void;
-
-        private onSetNode(node: Node): void {
-            this._node = node;
-            this._node.group = "UI";
-            this.setParent(this._parent);
+        public setNodeInfo(parent: Node): void {
+            this.node.group = "UI";
+            this.node.parent = parent;
             this._transition.init(this);
-            this._uiMask = this._node.getChildByName("UIMask");
+            this._uiMask = this.node.getChildByName("UIMask");
             if (!this._uiMask) {
                 let maskNode: Node = new cc.Node();
-                maskNode.width = this._node.width;
-                maskNode.height = this._node.height;
-                maskNode.scale = this._node.scale;
+                maskNode.width = this.node.width;
+                maskNode.height = this.node.height;
+                maskNode.scale = this.node.scale;
                 maskNode.addComponent(cc.BlockInputEvents);
                 this._uiMask = maskNode;
-                this._node.addChild(maskNode, cc.macro.MAX_ZINDEX, "UIMask");
+                this.node.addChild(maskNode, cc.macro.MAX_ZINDEX, "UIMask");
             }
-            this.onLoad();
-
-            if (!this._isOpened) {
-                //中途关闭界面
-                this._transition.hide();
-                this.setUIMaskActive(true);
-                return;
-            }
-
-            this.onOpen();
         }
 
         private _isOpened: boolean = false;
@@ -360,21 +343,13 @@ export namespace MVC {
         }
 
         public open(): void {
-            if (this._isOpened) return;
-            this._isOpened = true;
-            this._isWaitingShow = true;
-            switch (this._loadState) {
-                case eLoadState.Unload:
-                    this.load();
-                    break;
-                case eLoadState.Loading:
-                    break;
-                case eLoadState.Loaded:
-                    this.onOpen();
-                    break;
-                default:
-                    Log.error(`${this._assetName}.Open unsupport loadState:${this._loadState}`);
-                    break;
+            if (!this._isOpened) {
+                this.callClose = false;
+                this.onOpen();
+                this._isOpened = true;
+                this.show();
+            } else {
+                this.setInfo();
             }
         }
 
@@ -384,23 +359,14 @@ export namespace MVC {
             }
             this.changeListener(true);
             ViewHandler.onOpenEvent(this);
-            this.callClose = false;
-            if (this._isWaitingShow) {
-                this._isWaitingShow = false;
-                this.show();
-            }
         }
 
-        private _isWaitingShow: boolean = false;
         private _isShowed: boolean = false;
         public get isShowed(): boolean {
             return this._isShowed;
         }
 
         public show(): void {
-            if (this._loadState < eLoadState.Loaded) {
-                this._isWaitingShow = true;
-            }
             if (this._isShowed) return;
             this._isShowed = true;
             this.setUIMaskActive(true);
@@ -415,18 +381,17 @@ export namespace MVC {
             this.setUIMaskActive(false);
         }
 
+        /**打开界面之后 设置信息 */
+        protected setInfo() {
+
+        }
+
         public hide(): void {
-            if (this._loadState < eLoadState.Loaded) {
-                this._isWaitingShow = false;
-            }
             if (!this._isShowed) return;
             this._isShowed = false;
             this.setUIMaskActive(true);
             this._transition.hide();
-            this.onHide();
         }
-
-        protected onHide(): void { };
 
         public onHideFinish(): void {
             if (this.callClose) this.onClose();
@@ -446,24 +411,8 @@ export namespace MVC {
             }
             this.changeListener(false);
             ViewHandler.onCloseEvent(this);
-            this.unload();
-        }
-
-        public unload(): void {
-            if (this._loadState == eLoadState.Unload) {
-                Log.error(`${this._assetName}.Unload multi times`);
-                return;
-            }
-            if (this._loadState == eLoadState.Loading) {
-                this._loadState = eLoadState.Unload;
-                return;
-            }
-            this._loadState = eLoadState.Unload;
-            this.onUnLoad();
-
-            if (this._node != null) {
-                this._node.destroy();
-                this._node = null;
+            if (this.node != null) {
+                this.node.destroy();
             }
             if (ViewHandler.unloadAssetHandler == null) {
                 Log.error(`${this._assetName}.unload init unloadAssetHandler frist`);
@@ -475,14 +424,12 @@ export namespace MVC {
             }
         }
 
-        protected abstract onUnLoad(): void;
-
         protected _openArgs: OpenArgs;
         public setOpenArgs(openArgs: OpenArgs): void {
             this._openArgs = openArgs;
         }
 
-        protected abstract changeListener(enable: boolean): void;
+        protected changeListener(enable: boolean): void { };
 
         protected onClickFrame(event) {
             event.stopPropagation();
