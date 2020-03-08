@@ -22,6 +22,7 @@ export default class Launcher extends cc.Component {
         new NetLauncher();
         new ModuleLauncher();
         new SdkLauncher();
+        this.onTest();
     }
 
     update(dt) {
@@ -30,8 +31,17 @@ export default class Launcher extends cc.Component {
     }
 
     onTest() {
-        let args = new MVC.OpenArgs();
-        args.setId(FuncDefine.Login)
-        Notifier.send(NotifyID.Func_Open, args);
+        // let args = new MVC.OpenArgs();
+        // args.setId(FuncDefine.Login)
+        // Notifier.send(NotifyID.Func_Open, args);
+        let start = Date.now();
+        let a = 0;
+        for (let i = 0; i < 100000; i++) {
+            if (i % 2 == 0) {
+                a++;
+            }
+        }
+        let end = Date.now();
+        console.log(end - start);
     }
 }

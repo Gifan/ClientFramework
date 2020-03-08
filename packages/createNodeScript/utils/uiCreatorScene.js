@@ -29,25 +29,25 @@ var importBuilder = "";
 var useExtend = true;
 var exportPath = "script/module/";
 
-/// <summary>
-/// 自定义的常用结构体
-/// </summary>
-var s_CustomTypes = {
-    Cell: "Cell",
-    Button: "ButtonCell",
-    Toggle: "ToggleCell",
-    Slider: "SliderCell",
-    Scroll: "ScrollViewCell",
-    Page: "PageViewCell",
-    Bar: "BarCell",
+// /// <summary>
+// /// 自定义的常用结构体
+// /// </summary>
+// var s_CustomTypes = {
+//     Cell: "Cell",
+//     Button: "ButtonCell",
+//     Toggle: "ToggleCell",
+//     Slider: "SliderCell",
+//     Scroll: "ScrollViewCell",
+//     Page: "PageViewCell",
+//     Bar: "BarCell",
 
-    "cc.Button": "ButtonCell",
-    "cc.Toggle": "ToggleCell",
-    "cc.Slider": "SliderCell",
-    "cc.ScrollView": "ScrollViewCell",
-    "cc.PageView": "PageViewCell",
-    "cc.ProgressBar": "BarCell",
-}
+//     "cc.Button": "ButtonCell",
+//     "cc.Toggle": "ToggleCell",
+//     "cc.Slider": "SliderCell",
+//     "cc.ScrollView": "ScrollViewCell",
+//     "cc.PageView": "PageViewCell",
+//     "cc.ProgressBar": "BarCell",
+// }
 
 function GetType(node) {
     let typeName;
