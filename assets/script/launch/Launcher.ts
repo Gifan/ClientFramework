@@ -31,6 +31,7 @@ export default class Launcher extends cc.Component {
         new NetLauncher();
         new ModuleLauncher();
         new SdkLauncher();
+        this.onTest();
     }
 
     update(dt) {
