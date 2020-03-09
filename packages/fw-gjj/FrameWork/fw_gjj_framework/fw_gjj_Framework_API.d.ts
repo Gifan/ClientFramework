@@ -22,9 +22,16 @@ declare module fw {
     var isQQ: boolean;
     var isIOS: boolean;
     var isANDROID: boolean;
-    var isANDROID_NORMAL: boolean;
+    var isANDROID_NORMAL: boolean; 
     var isANDROID_SIX_K_PLAY: boolean;
     var isANDROID_WONDER_BOX: boolean;
+    var isANDROID_YIYU: boolean; 
+    var isANDROID_LING_YOU: boolean;
+    var isANDROID_TAPTAP: boolean;
+    var isANDROID_MTG: boolean;
+    var isANDROID_XM: boolean;
+    var isANDROID_VIVO: boolean;
+    var isANDROID_OPPO: boolean;
     var isTOUTIAO: boolean;
     var isZJTD: boolean;
     var isXIAOMI: boolean;
@@ -244,6 +251,8 @@ declare module fw {
          */
         login(successCB: (data: any) => void, failCB?: (msg: string) => void);
         /** 分享 */
+        shareWX():void;
+        shareQQ():void;
         share(shareInfo: ShareInfo, onCpl?: (rsl: ShareResult) => void): void;
         share(shareInfo: ShareInfo, customArg?: any, onCpl?: (rsl: ShareResult) => void): void;
         /** 视频广告 */
@@ -267,10 +276,16 @@ declare module fw {
         showBannerAd(type: string, style?: BannerADStyle, onShow?: () => void);
         hideBannerAd();
         destoryBannerAd();
-        showMoreGameBtn(moreGameBtn?: cc.Node);
+        showFeedAd(node:cc.Node=null);  //显示信息流广告
+        hideFeedAd();  
+        sendWechatAuthRequest();  //微信登录
+        postLevel(level:string,coin:string);   //上报用户等级金币
+        withdraw(amount:string);    //提现  
+        getUserInfo();    //获取用户信息  
+        isWXAppInstalled():boolean;  //是否安装微信
+        sendRequest(url:string,params:string);
+        checkAppBox(onShow: () => void);
         showGameBox();
-        /**隐藏更多游戏按钮 */
-        hideMoreGameBtn?();
         channelData: SdkMgr.ChannelData;
         jumpApp(appId: string, path?: string, extraData?: PathObj, onCpl?: (failReason: string) => void, arg?: any);
         showImage(url: string);
@@ -503,6 +518,20 @@ declare module fw {
         NV_ANDROID_SIX_K_PLAY,
         /** 原生安卓_自家盒子 */
         NV_ANDROID_WONDER_BOX,
+	    /** 原生安卓_易娱 */
+        NV_ANDROID_YIYU,
+        /** 原生安卓_灵游平台 */
+        NV_ANDROID_LING_YOU, 
+	    /** 原生安卓_TAPTAP平台 */
+        NV_ANDROID_TAPTAP,
+        /** 原生安卓_MTG平台 */
+        NV_ANDROID_MTG,
+        /** 原生安卓_XM平台 */
+        NV_ANDROID_XM,
+        /** 原生安卓_VIVO平台 */
+        NV_ANDROID_VIVO,
+        /** 原生安卓_OPPO平台 */
+        NV_ANDROID_OPPO,
         /** 原生苹果 */
         NV_IPHONE,
         /** h5安卓 */

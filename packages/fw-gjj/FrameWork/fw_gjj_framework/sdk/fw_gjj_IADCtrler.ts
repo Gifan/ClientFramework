@@ -9,10 +9,17 @@ export default interface IADCtrler {
     showBannerAd_withStyle(type: string, style: BannerADStyle, onShow: () => void);
     hideBannerAd();
     destoryBannerAd();
-    showMoreGameBtn?(moreGameBtn?: cc.Node);
+    showFeedAd(node);  //显示信息流广告
+    hideFeedAd(); 
+    checkAppBox?(onShow: () => void);
     showGameBox?();
-    hideMoreGameBtn?();
 
+    sendWechatAuthRequest();  //微信登录
+    postLevel(level:string,coin:string);   //上报用户等级金币
+    withdraw(amount:string);    //提现  
+    getUserInfo();  //获取用户信息
+    isWXAppInstalled():boolean;  //是否安装微信
+    sendRequest(url:string,params:string);
 }
 export type BannerADStyle = {
     /** [广告宽度|默认300] 会对非法值(超过300-375)作出裁剪 */

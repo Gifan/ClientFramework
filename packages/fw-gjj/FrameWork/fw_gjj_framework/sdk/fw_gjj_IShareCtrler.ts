@@ -1,4 +1,6 @@
 export default interface IShareCtrler {
+    shareWX():void;
+    shareQQ():void;
     share(
         shareInfo: ShareInfo,
         onCpl?: (rsl: ShareResult) => void

@@ -23,7 +23,7 @@ export default class Framework {
         this.pf = config.platform;
         this.bb = new BlackBoard<any>(true);
         this.sdk = new SdkMgr(config.sdkMgrConfig);
-        console.log("Platform", this.pf);
+        console.log("Platform", this.pf, this.sdk);
         console.log("isUnkown", this.isUnkown);
         console.log("isWxLike", this.isWxLike);
         console.log("isNative", this.isNative);
@@ -31,9 +31,15 @@ export default class Framework {
         console.log("isQQ", this.isQQ);
         console.log("isIOS", this.isIOS);
         console.log("isANDROID", this.isANDROID);
-        console.log("isANDROID_NORMAL", this.isANDROID_NORMAL);
+        console.log("isANDROID_NORMAL", this.isANDROID_NORMAL); 
         console.log("isANDROID_SIX_K_PLAY", this.isANDROID_SIX_K_PLAY);
         console.log("isANDROID_WONDER_BOX", this.isANDROID_WONDER_BOX);
+        console.log("isANDROID_YIYU", this.isANDROID_YIYU); 
+	    console.log("isANDROID_TAPTAP", this.isANDROID_TAPTAP); 
+        console.log("isANDROID_MTG", this.isANDROID_MTG); 
+        console.log("isANDROID_XM", this.isANDROID_XM); 
+        console.log("isANDROID_OPPO", this.isANDROID_OPPO); 
+        console.log("isANDROID_VIVO", this.isANDROID_VIVO); 
         console.log("isTOUTIAO", this.isTOUTIAO);
         console.log("isZJTD", this.isZJTD);
         console.log("isXIAOMI", this.isXIAOMI);
@@ -70,19 +76,32 @@ export default class Framework {
             || this.pf === Platform.QQ_MINI
             ;
     }
-    get isNative() { return this.isANDROID || this.pf === Platform.NV_IPHONE; }
+    get isNative() { return this.pf === Platform.NV_ANDROID || this.pf === Platform.NV_IPHONE; }
     get isWX() { return this.pf === Platform.WECHAT_GAME; }
     get isBD() { return this.pf === Platform.BAIDU_GAME }
     get isQQ() { return this.pf === Platform.QQ_MINI; }
     get isIOS() { return this.pf === Platform.NV_IPHONE; }
-    get isANDROID() {
-        return this.pf === Platform.NV_ANDROID_NORMAL
-            || this.pf === Platform.NV_ANDROID_SIX_K_PLAY
-            || this.pf === Platform.NV_ANDROID_WONDER_BOX
-    }
-    get isANDROID_NORMAL() { return this.pf === Platform.NV_ANDROID_NORMAL; }
+    get isANDROID_NORMAL() { return this.pf === Platform.NV_ANDROID; }   //Ô­Éú°²×¿
+    get isANDROID() { return this.pf === Platform.NV_ANDROID 
+        || this.pf === Platform.NV_ANDROID_SIX_K_PLAY
+        || this.pf === Platform.NV_ANDROID_WONDER_BOX
+        || this.pf === Platform.NV_ANDROID_YIYU
+        || this.pf === Platform.NV_ANDROID_LING_YOU
+        || this.pf === Platform.NV_ANDROID_MTG
+        || this.pf === Platform.NV_ANDROID_TAPTAP
+        || this.pf === Platform.NV_ANDROID_XM
+        || this.pf === Platform.NV_ANDROID_VIVO
+        || this.pf === Platform.NV_ANDROID_OPPO;
+    } 
     get isANDROID_SIX_K_PLAY() { return this.pf === Platform.NV_ANDROID_SIX_K_PLAY; } 
     get isANDROID_WONDER_BOX() { return this.pf === Platform.NV_ANDROID_WONDER_BOX; } 
+    get isANDROID_YIYU() { return this.pf === Platform.NV_ANDROID_YIYU; } 
+    get isANDROID_LING_YOU() { return this.pf === Platform.NV_ANDROID_LING_YOU; } 
+    get isANDROID_MTG() { return this.pf === Platform.NV_ANDROID_MTG; } 
+    get isANDROID_TAPTAP() { return this.pf === Platform.NV_ANDROID_TAPTAP; } 
+    get isANDROID_XM() { return this.pf === Platform.NV_ANDROID_XM; } 
+    get isANDROID_VIVO() { return this.pf === Platform.NV_ANDROID_VIVO; } 
+    get isANDROID_OPPO() { return this.pf === Platform.NV_ANDROID_OPPO; } 
     get isTOUTIAO() { return this.pf === Platform.TOUTIAO; }
     get isZJTD() { return this.isTOUTIAO }
     get isXIAOMI() { return this.pf === Platform.XIAOMI_GAME; }
@@ -111,9 +130,16 @@ export enum Platform {
     WECHAT_GAME,
     BAIDU_GAME,
     QQ_MINI,
-    NV_ANDROID_NORMAL,
+    NV_ANDROID,
     NV_ANDROID_SIX_K_PLAY,
     NV_ANDROID_WONDER_BOX,
+    NV_ANDROID_YIYU,
+    NV_ANDROID_LING_YOU, 
+    NV_ANDROID_TAPTAP,
+    NV_ANDROID_MTG,
+    NV_ANDROID_XM,
+    NV_ANDROID_VIVO,
+    NV_ANDROID_OPPO,
     NV_IPHONE,
     BS_ANDROID,
     BS_IPHONE,

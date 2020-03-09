@@ -23,6 +23,12 @@ export default class SdkMgr {
     }
 
     shareCtrler: IShareCtrler;
+    shareWX():void{  //分享到Android 微信
+        this.shareCtrler && this.shareCtrler.shareWX && this.shareCtrler.shareWX();
+    }
+    shareQQ():void{   //分享到Android QQ
+        this.shareCtrler && this.shareCtrler.shareQQ && this.shareCtrler.shareQQ(); 
+    }
     share(shareInfo: ShareInfo, onCpl?: (rsl: ShareResult) => void): void;
     share(shareInfo: ShareInfo, customArg?: any, onCpl?: (rsl: ShareResult) => void): void {
         console.log("[SdkMgr][share]", shareInfo);
@@ -110,19 +116,52 @@ export default class SdkMgr {
         this.adCtrler && this.adCtrler.destoryBannerAd && this.adCtrler.destoryBannerAd();
     }
 
-    showMoreGameBtn(moreGameBtn?: cc.Node) {
-        console.log("[SdkMgr][showMoreGameBtn]");
-        this.adCtrler && this.adCtrler.showMoreGameBtn && this.adCtrler.showMoreGameBtn(moreGameBtn);
+    showFeedAd(node:cc.Node=null){
+        console.log("[SdkMgr][showFeedAd]");
+        this.adCtrler && this.adCtrler.showFeedAd && this.adCtrler.showFeedAd(node);
+    }
+
+    hideFeedAd(){
+        console.log("[SdkMgr][hideFeedAd]");
+        this.adCtrler && this.adCtrler.hideFeedAd && this.adCtrler.hideFeedAd();
+    }
+
+    sendWechatAuthRequest(){ //微信登录
+        this.adCtrler && this.adCtrler.sendWechatAuthRequest && this.adCtrler.sendWechatAuthRequest();
+    }
+
+    postLevel(level:string,coin:string){ //上报用户等级金币
+        this.adCtrler && this.adCtrler.postLevel && this.adCtrler.postLevel(level,coin);
+    }
+
+    withdraw(amount:string){ //提现 
+        this.adCtrler && this.adCtrler.withdraw && this.adCtrler.withdraw(amount);
+    }    
+
+    getUserInfo(){  //获取用户信息
+        this.adCtrler && this.adCtrler.getUserInfo && this.adCtrler.getUserInfo();
+    }
+
+    isWXAppInstalled():boolean{   //是否安装微信 
+        if(this.adCtrler && this.adCtrler.isWXAppInstalled){
+            return this.adCtrler.isWXAppInstalled();
+        }
+    }
+
+    sendRequest(url:string,params:string){    
+        if(this.adCtrler && this.adCtrler.sendRequest){
+            return this.adCtrler.sendRequest(url,params);
+        }
+    }
+
+    checkAppBox(onShow: () => void) {
+        console.log("[SdkMgr][checkAppBox]");
+        this.adCtrler && this.adCtrler.checkAppBox && this.adCtrler.checkAppBox(onShow);
     }
 
     showGameBox() {
         console.log("[SdkMgr][showGameBox]");
         this.adCtrler && this.adCtrler.showGameBox && this.adCtrler.showGameBox();
-    }
-
-    hideMoreGameBtn(){
-        console.log("[SdkMgr][hideMoreGameBtn]");
-        this.adCtrler && this.adCtrler.hideMoreGameBtn && this.adCtrler.hideMoreGameBtn();
     }
 
     channelCtrler: IChannelCtrler;
