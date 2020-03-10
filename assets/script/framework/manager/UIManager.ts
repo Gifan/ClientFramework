@@ -58,6 +58,10 @@ export class UIManager {
         // _instance.closeQueues();
     }
 
+    public static layerRoots(uiLayer: MVC.eUILayer = MVC.eUILayer.Panel): cc.Node {
+        return _instance.getLayerRoots(uiLayer);
+    }
+
 
     //----------------- 内部实现 --------------------------
     private _root: UINode;

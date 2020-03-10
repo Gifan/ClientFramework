@@ -32,7 +32,10 @@ export class HttpClient {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
                         if (rspType == 'text') {
-                            resolve(JSON.parse(req.responseText))
+                            resolve(req.responseText)
+                        }
+                        else if (rspType == 'json') {
+                            resolve(JSON.parse(req.responseText));
                         } else {
                             resolve(req.response);
                         }
@@ -70,7 +73,9 @@ export class HttpClient {
                 if (req.readyState == 4) {
                     if (req.status == 200) {
                         if (rspType == 'text') {
-                            resolve(JSON.parse(req.responseText))
+                            resolve(req.responseText)
+                        } else if (rspType == 'json') {
+                            resolve(JSON.parse(req.responseText));
                         } else {
                             resolve(req.response);
                         }
