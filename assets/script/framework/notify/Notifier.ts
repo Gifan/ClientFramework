@@ -68,4 +68,8 @@ export class Notifier {
             this.removeCall(callId, callback, context);
         }
     }
+
+    public static call(callId:number, ...argArray:any[]):any{
+        return this._caller.Call(callId, ...argArray);
+    }
 }
