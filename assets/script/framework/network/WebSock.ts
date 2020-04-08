@@ -25,7 +25,6 @@ export class WebSock implements ISocket {
                 return false;
             }
         }
-
         let url = null;
         if (options.url) {
             url = options.url;
@@ -56,6 +55,6 @@ export class WebSock implements ISocket {
     }
 
     close(code?: number, reason?: string) {
-        this._ws.close();
+        this._ws.close(code, reason);
     }
 }

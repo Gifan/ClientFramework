@@ -3,8 +3,10 @@ import { Notifier } from "../../framework/notify/Notifier";
 import { ListenID } from "../../ListenID";
 import SettingModel from "./SettingModel";
 import { CallID } from "../../CallID";
-import { Manager } from "../../framework/manager/Manager";
+import { Manager } from "../../util/Manager";
 import { StorageID } from "../../StorageID";
+import { Const } from "../../config/Const";
+import { Log } from "../../framework/Log";
 
 /*
  * desc
@@ -31,27 +33,40 @@ export class SettingController extends MVC.MController<SettingModel> {
         Notifier.changeCall(enable, CallID.Setting_IsMuteMusic, this.isMuteMusic, this);
         Notifier.changeCall(enable, CallID.Setting_IsMuteAudio, this.isMuteAudio, this);
         Notifier.changeCall(enable, CallID.Setting_GetRealDesignSize, this.getRealDesign, this);
+        Notifier.changeListener(enable, ListenID.Setting_MuteMusic, this.reqMuteMusic, this);
     }
 
     private onSettingInit() {
         let storagedata = Manager.storage.getString(StorageID.Setting_Data, "");
         if (storagedata && storagedata != "") {
-            SettingModel.getInstance.initSetting(JSON.parse(storagedata));
-            Manager.audio.setMusicEnable(!SettingModel.getInstance.muteAudio);
-            Manager.audio.setEnableAudio(!SettingModel.getInstance.muteAudio);
+            this._model.initSetting(JSON.parse(storagedata));
+            Manager.audio.setMusicEnable(this._model.muteAudio, 1);
+            Manager.audio.setEnableAudio(this._model.muteAudio);
         }
     }
 
     private isMuteMusic(): boolean {
-        return SettingModel.getInstance.muteMusic;
+        return this._model.muteMusic;
     }
 
     private isMuteAudio(): boolean {
-        return SettingModel.getInstance.muteAudio;
+        return this._model.muteAudio;
     }
 
     private getRealDesign(): cc.Size {
-        return SettingModel.getInstance.getRealDesignSize();
+        return this._model.getRealDesignSize();
+    }
+
+    private reqMuteMusic(enable: boolean) {
+        this._model.muteMusic = !!enable;
+        this._model.muteAudio = !!enable;
+        Manager.audio.setMusicEnable(!!enable);
+        Manager.audio.setEnableAudio(!!enable);
+        this.reqSave();
+    }
+
+    public reqSave() {
+        Manager.storage.setString(StorageID.Setting_Data, this._model.serialize());
     }
 }
 

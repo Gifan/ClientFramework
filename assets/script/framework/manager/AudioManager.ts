@@ -1,7 +1,7 @@
 import { Notifier } from "../notify/Notifier";
 import { NotifyID } from "../notify/NotifyID";
 import { Log } from "../Log";
-import { Manager } from "./Manager";
+import { Manager } from "../../util/Manager";
 import { Cfg } from "../../config/Cfg";
 class ClipAsset {
     public id: number;
@@ -21,14 +21,20 @@ export enum AudioType {
     Max = Music,
 }
 
+export enum PlayType {
+    Component = 1,//组件形式播放
+    Scripts = 2,//统一脚本形式播放
+}
+
 export class AudioManager {
+    static musicType: PlayType = PlayType.Scripts;
     public constructor() {
         const scene = cc.director.getScene();
         let node = new cc.Node('_AudioManager');
         cc.game.addPersistRootNode(node);
         node.parent = scene;
         this._root = node;
-
+        AudioManager.musicType = PlayType.Scripts;
         this._musicSource = node.addComponent(cc.AudioSource);
         this._musicSource.loop = true;
 
@@ -41,6 +47,7 @@ export class AudioManager {
 
     private addAudioSource() {
         this._audioSources.push(this._root.addComponent(cc.AudioSource));
+        this._audioIdLists.push(-1);
         this._audioConfigVolumes.push(1);
     }
 
@@ -50,7 +57,7 @@ export class AudioManager {
     private _musicSource: cc.AudioSource;
     //UI音效源
     private _audioSources: cc.AudioSource[] = [];
-
+    private _audioIdLists: number[] = [];
     private _musicClip: ClipAsset;
     //设置界面的音乐大小
     private _musicSettingVolume = 1;
@@ -61,10 +68,12 @@ export class AudioManager {
     private _musicId: number = 0;
     //是否静音
     private _enableMusic: boolean = true;
-    public setMusicEnable(enable: boolean) {
+    public setMusicEnable(enable: boolean, isdoaction: number = 0) {
         this._enableMusic = enable;
+        if (isdoaction) return;
         if (this._enableMusic) {
             if (!this._musicClip) {
+                if (this._musicId == 0) return;
                 this.playMusic(this._musicId, true);
             } else {
                 this.resumeMusic();
@@ -79,16 +88,19 @@ export class AudioManager {
      */
     public setMusicVolume(volume: number) {
         this._musicSettingVolume = volume;
-        if (this._musicSource != null) {
+        if (this._musicSource != null && AudioManager.musicType == PlayType.Component) {
             this._musicSource.volume = this._musicSettingVolume * this._musicConfigVolume * this._musicFadeVolume;
+        } else {
+            cc.audioEngine.setMusicVolume(volume);
         }
+
     }
 
     /**
      * 获取音乐大小
      */
     public musicVolume() {
-        return this._musicSettingVolume;
+        return AudioManager.musicType == PlayType.Component ? this._musicSettingVolume : cc.audioEngine.getMusicVolume();
     }
 
     /**
@@ -97,8 +109,10 @@ export class AudioManager {
      */
     private setMusicConfigVolume(volume: number) {
         this._musicConfigVolume = volume;
-        if (this._musicSource != null) {
+        if (this._musicSource != null && AudioManager.musicType == PlayType.Component) {
             this._musicSource.volume = this._musicSettingVolume * this._musicConfigVolume * this._musicFadeVolume;
+        } else {
+            cc.audioEngine.setMusicVolume(volume);
         }
     }
 
@@ -112,9 +126,6 @@ export class AudioManager {
         this._musicId = id;
         if (this._musicClip != null && this._musicClip.id == id) {
             Log.log("skip the same music:", id);
-            return;
-        }
-        if (this._musicClip != null && id == this._musicClip.id) {
             return;
         }
         if (!this._enableMusic) return;
@@ -142,32 +153,39 @@ export class AudioManager {
                 this.doPlayMusic(this._clips[realid]);
             }, this);
         } else {
-            this._musicClip = clip;
             this.doPlayMusic(clip);
         }
     }
 
     private doPlayMusic(clip: ClipAsset) {
-        if (clip.clip != null) {
-            this._musicSource.clip = clip.clip;
-            this._musicSource.play();
+        this._musicClip = clip;
+        if (AudioManager.musicType == PlayType.Component) {
+            if (clip.clip != null) {
+                this._musicSource.clip = clip.clip;
+                this._musicSource.play();
+            } else {
+                Log.warn("DoPlayMusic clip null")
+            }
         } else {
-            Log.warn("DoPlayMusic clip null")
+            cc.audioEngine.playMusic(clip.clip, true);
         }
     }
 
     public stopMusic() {
-        this._musicSource.stop();
+        AudioManager.musicType == PlayType.Component ? (this._musicSource.stop(), this._musicClip = null, cc.audioEngine.stopMusic()) : cc.audioEngine.stopMusic();
     }
-
+    public setMusicClip(id, clip: cc.AudioClip) {
+        this._clips[id] = new ClipAsset(id);
+        this._clips[id].clip = clip;
+    }
     public pauseMusic() {
         if (!this._enableMusic) {
-            this._musicSource.pause();
+            AudioManager.musicType == PlayType.Component ? this._musicSource.pause() : cc.audioEngine.pauseMusic();
         }
     }
     public resumeMusic() {
         if (this._enableMusic) {
-            this._musicSource.resume();
+            AudioManager.musicType == PlayType.Component ? this._musicSource.resume() : cc.audioEngine.resumeMusic();
         }
     }
 
@@ -179,10 +197,12 @@ export class AudioManager {
 
     public setAudioVolume(volume: number) {
         this._audioSettingVolume = volume;
-        for (let type = 0; type < this._audioSources.length; type++) {
-            const source = this._audioSources[type];
-            source.volume = this._audioSettingVolume * this._audioConfigVolumes[type];
-        }
+        AudioManager.musicType == PlayType.Component ? () => {
+            for (let type = 0; type < this._audioSources.length; type++) {
+                const source = this._audioSources[type];
+                source.volume = this._audioSettingVolume * this._audioConfigVolumes[type];
+            }
+        } : cc.audioEngine.setEffectsVolume(volume);
     }
 
     public setAudioClip(id, clip: cc.AudioClip) {
@@ -225,16 +245,20 @@ export class AudioManager {
     }
 
     private doPlayAudio(clip: ClipAsset, type: AudioType) {
-        if (clip.clip != null) {
-            this._audioSources[type].clip = clip.clip;
-            this._audioSources[type].play();
+        if (AudioManager.musicType == PlayType.Component) {
+            if (clip.clip != null) {
+                this._audioSources[type].clip = clip.clip;
+                this._audioSources[type].play();
+            } else {
+                Log.warn("doPlayAudio clip null");
+            }
         } else {
-            Log.warn("doPlayAudio clip null");
+            this._audioIdLists[type] = cc.audioEngine.playEffect(clip.clip, false);
         }
     }
 
     public stopAudio(type = AudioType.UI) {
-        this._audioSources[type].stop();
+        AudioManager.musicType == PlayType.Component ? this._audioSources[type].stop() : cc.audioEngine.stopEffect(this._audioIdLists[type]);
     }
 
     public setEnableAudio(enable: boolean) {

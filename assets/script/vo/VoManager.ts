@@ -1,12 +1,16 @@
 import { UserVo } from "./UserVo";
 import { SwitchVo } from "./SwitchVo";
-import { Manager } from "../framework/manager/Manager";
+import { Manager } from "../util/Manager";
 import { StorageID } from "../StorageID";
+import { Const } from "../config/Const";
+import { Notifier } from "../framework/notify/Notifier";
+import { ListenID } from "../ListenID";
 
 export class VoManager {
     private static _instance: VoManager = null;
     private _userVo: UserVo;
     private _switchVo: SwitchVo;
+    public isGetData: boolean = false;
     public static get getInstance(): VoManager {
         if (VoManager._instance == null) {
             VoManager._instance = new VoManager();
@@ -31,6 +35,7 @@ export class VoManager {
     }
 
     public saveUserData(): Promise<any> | void {
+        if (!this.isGetData) return;
         let data = this.userVo.serializeAll();
         this.updateLocalUserData(data);
     }
@@ -51,4 +56,15 @@ export class VoManager {
         let a = Manager.storage.getString(StorageID.UserData, "{}");
         return JSON.parse(a);
     }
+
+    public setGold(gold: number, from: number = 0) {
+        this._userVo.gold += gold;
+        Notifier.send(ListenID.Game_UpdateGold, gold, from)
+    }
+
+    public setDiamond(diamond, from: number = 0) {
+        this._userVo.diamond += diamond;
+        Notifier.send(ListenID.Game_UpdateDiamond, diamond, from);
+    }
+
 }

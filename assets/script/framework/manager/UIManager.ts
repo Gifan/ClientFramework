@@ -5,6 +5,9 @@ type UINode = cc.Node
 type Canvas = cc.Canvas
 type Vector2 = cc.Vec2
 
+declare interface ViewCountMap {
+    [key: number]: number;
+}
 
 declare interface FuncTypeMap {
     [key: number]: string;
@@ -25,6 +28,7 @@ export class UIManager {
         _instance = new UIManager();
         _instance.initRoot();
     }
+
     private static m_func2viewTypes: FuncTypeMap = {};
     public static RegisterViewType(funcId: number, viewType: string): void {
         // let existType = UIManager.m_func2viewTypes[funcId];
@@ -60,6 +64,11 @@ export class UIManager {
 
     public static layerRoots(uiLayer: MVC.eUILayer = MVC.eUILayer.Panel): cc.Node {
         return _instance.getLayerRoots(uiLayer);
+    }
+
+    private static viewCountList: ViewCountMap = {};
+    public static getViewCountByLayerIndex(layer: MVC.eUILayer) {
+        return UIManager.viewCountList[layer] || 0;
     }
 
 
@@ -122,11 +131,22 @@ export class UIManager {
         if (this._views[asset] == null) { //每次只存在唯一一个同样的视图
             this._views[asset] = { asset: asset, args: args, node: null };
             let name = names[names.length - 1];
-            MVC.ViewHandler.loadAssetHandler(name, asset, cc.Prefab, this.onLoadCallback, this, args);
+            MVC.ViewHandler.loadAssetHandler(name, asset, cc.Prefab, this.onLoadCallback, this);
+        } else {
+            if (this._views[asset].node) {
+                let view: MVC.BaseView = this._views[asset].node.getComponent(names[names.length - 1]);
+                view.setOpenArgs(args);
+                view.open();
+            }
         }
     }
 
     private onOpen(view: MVC.BaseView): void {
+        let index = view.uiLayer;
+        if (!UIManager.viewCountList[index]) {
+            UIManager.viewCountList[index] = 0;
+        }
+        UIManager.viewCountList[index]++;
         if (view.uiQueue == MVC.eUIQueue.None) {
             return;
         }
@@ -148,6 +168,12 @@ export class UIManager {
     }
 
     private onClose(view: MVC.BaseView): void {
+        let index = view.uiLayer;
+        UIManager.viewCountList[index]--;
+        if (UIManager.viewCountList[index] < 0) {
+            UIManager.viewCountList[index] = 0;
+        }
+
         if (view.uiQueue == MVC.eUIQueue.None) {
             this._views[view.assetPath] = null;
             return;
@@ -182,7 +208,7 @@ export class UIManager {
     }
 
     private _countcall: number = 0;
-    private onLoadCallback(name: string, asset: object, assetspath: string, args: any) {
+    private onLoadCallback(name: string, asset: object, assetspath: string) {
         let prefab: UINode = asset as UINode;
         if (prefab == null) {
             console.error(".loadCallback GameObject null:" + name);
@@ -191,10 +217,11 @@ export class UIManager {
             let names = assetspath.split(`/`);
             this._countcall++;
             if (this._countcall <= 3)//打开失败连续打开3次
-                MVC.ViewHandler.loadAssetHandler(names[names.length - 1], assetspath, cc.Prefab, this.onLoadCallback, this, args);
+                MVC.ViewHandler.loadAssetHandler(names[names.length - 1], assetspath, cc.Prefab, this.onLoadCallback, this);
             return;
         }
         let data = this._views[assetspath].args;
+        if (!data) data = new MVC.OpenArgs();
         let node: UINode = cc.instantiate<UINode>(prefab);
         try {
             let baseView: MVC.BaseView = node.getComponent(name);

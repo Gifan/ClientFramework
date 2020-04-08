@@ -1,4 +1,6 @@
 import { Log } from "../Log";
+import { ListenID } from "../../ListenID";
+import { NotifyID } from "./NotifyID";
 
 interface IListenerMap {
     [key: number]: ListenerManager;
@@ -161,7 +163,7 @@ export class NotifyListener {
             this._managers[notifyid] = manager;
         } else {
             if (manager.IsExistHandler(callback, context)) {
-                Log.error(`[NotifyListener].Register:${notifyid} callback repeat, skip ${context}`);
+                Log.error(`[NotifyListener].Register:${ListenID[notifyid]||NotifyID[notifyid]} callback repeat, skip ${context}`);
                 return;
             }
         }
@@ -188,7 +190,7 @@ export class NotifyListener {
     public Send(notifyid: number, ...argArray: any[]) {
         let manager = this._managers[notifyid];
         if (manager == null) {
-            Log.warn(`[NotifyListener].Send can't find ListenerManager:${notifyid}`);
+            // Log.warn(`[NotifyListener].Send can't find ListenerManager:${notifyid}`);
             return;
         }
         if (!this.CheckAndPushCallStack(notifyid)) {

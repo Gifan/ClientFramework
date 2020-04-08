@@ -4,7 +4,13 @@
 declare module cc {
     export interface Button {
         _onTouchEnded(event: any): void;
-        audioId:number,
+        audioId: number,
     }
 
+    export interface Node {
+        gridIndex: number,
+        _touchListener: { setSwallowTouches: Function },
+    }
+
+    export let nativeAndroid:any;
 }

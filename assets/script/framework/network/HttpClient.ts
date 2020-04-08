@@ -23,7 +23,7 @@ export class HttpClient {
                     if (str != "?") {
                         str += "&";
                     }
-                    str += k + "=" + body[k];
+                    str += `${k}=${body[k]}`;
                 }
                 url = url + str;
             }
@@ -33,8 +33,7 @@ export class HttpClient {
                     if (req.status == 200) {
                         if (rspType == 'text') {
                             resolve(req.responseText)
-                        }
-                        else if (rspType == 'json') {
+                        } else if (rspType == 'json') {
                             resolve(JSON.parse(req.responseText));
                         } else {
                             resolve(req.response);

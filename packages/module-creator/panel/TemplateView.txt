@@ -1,8 +1,9 @@
 import { MVC } from "../../framework/MVC";
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
+@menu("视图组件/@ModuleName/@ModuleNameView")
 export class @ModuleNameView extends MVC.BaseView {
 
     protected changeListener(enable: boolean): void {

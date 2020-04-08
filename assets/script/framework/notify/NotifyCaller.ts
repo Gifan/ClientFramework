@@ -1,4 +1,5 @@
 import { Log } from "../Log";
+import { CallID } from "../../CallID";
 
 interface ICallerMap {
     [key: number]: { "func": Function, "context": any };
@@ -24,7 +25,7 @@ export class NotifyCaller {
     public Unregister(notifyid: number, callback: Function, context: any): boolean {
         const handler = this._calls[notifyid];
         if (handler == null || handler.func !== callback || handler.context != context) {
-            Log.warn(`[NotifyCaller].Unregister can't find: ${notifyid} callback ${handler}`);
+            Log.warn(`[NotifyCaller].Unregister can't find: ${CallID[notifyid]} callback ${handler}`);
             return false;
         }
         delete this._calls[notifyid];
@@ -34,7 +35,7 @@ export class NotifyCaller {
     public Call(notifyid: number, ...argsArray: any[]): any {
         const handler = this._calls[notifyid];
         if (handler == null) {
-            Log.error(`[NotifyCaller].Call can't find: ${notifyid}`);
+            Log.error(`[NotifyCaller].Call can't find: ${CallID[notifyid]}`);
             return undefined;
         }
         return handler.func.call(handler.context, ...argsArray);

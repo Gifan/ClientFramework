@@ -1,17 +1,17 @@
 import { Time } from "../framework/manager/Time";
-import { Manager } from "../framework/manager/Manager";
+import { Manager } from "../util/Manager";
 import { UILauncher } from "./UILauncher";
 import { NetLauncher } from "./NetLauncher";
 import { ModuleLauncher } from "./ModuleLauncher";
 import { SdkLauncher } from "./SdkLauncher";
-import { Notifier } from "../framework/notify/Notifier";
-import { FuncDefine } from "../config/FuncCfg";
-import { MVC } from "../framework/MVC";
-import { NotifyID } from "../framework/notify/NotifyID";
-import { Config } from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/config/fw_gjj_Config";
-import * as CtrlerIniter from "./StartUpCtrl";
-import Framework from "../../../packages/fw-gjj/FrameWork/fw_gjj_framework/fw_gjj_Framework";
 import { Const } from "../config/Const";
+import { Cfg } from "../config/Cfg";
+import { EPlatform } from "../sdk/WonderSdk/config/SdkConfig";
+import { WonderSdk } from "../sdk/WonderSdk/WonderSdk";
+import { Notifier } from "../framework/notify/Notifier";
+import { ListenID } from "../ListenID";
+import { EventDefine } from "../config/EventCfg";
+import { Log } from "../framework/Log";
 
 declare var window: any;
 const { ccclass, property } = cc._decorator;
@@ -20,17 +20,20 @@ const { ccclass, property } = cc._decorator;
 export default class Launcher extends cc.Component {
     @property({ displayName: "测试模式" }) testMode: boolean = false;
     @property({ type: Const.CEPlatform, displayName: "浏览器调试使用的启动参数平台" }) bmsPlatformForDebug = Const.CEPlatform.dev;
-    @property({ type: Const.CustomPlatform, displayName: "自定义平台" }) CustomPlatform = Const.CustomPlatform.dev;
+    @property({ type: Const.CustomPlatform, displayName: "自定义平台" }) CustomPlatform = EPlatform.WEB_DEV;
 
     onLoad() {
         cc.game.addPersistRootNode(this.node);
     }
-    start() {
+    async start() {
         this.initWonderFrameWork();//初始化平台相关配置
         new UILauncher();
         new NetLauncher();
         new ModuleLauncher();
+        // await this.loadConfig();
         new SdkLauncher();
+
+        // this.onTest();
     }
 
     update(dt) {
@@ -39,35 +42,22 @@ export default class Launcher extends cc.Component {
     }
 
     onTest() {
-        let args = new MVC.OpenArgs();
-        args.setId(FuncDefine.Login).setUiLayer(MVC.eUILayer.Main).setTransition(MVC.eTransition.Default);
-        Notifier.send(NotifyID.Func_Open, "ui/test/TestView", args);
+
     }
 
     public initWonderFrameWork() {
-        let config = this.initFrameWorkConfig();
-        Framework.Instance.startUp(config);
-
-        // fw.lsd = DataIniter.initLocalStorageData();
-        // if (window["qq"]) { fw.lsd = DataIniter.initLocalStorageData(); } 
-        // let day = new Date().getDate();
-        // let loginday = cc.sys.localStorage.getItem("zqddn_zhb_loginDay");
-        // if (day - loginday > 0) fw.sdk.showSplashAd(Const.SplashADType.NOMAL);
-
+        WonderSdk.init(this.CustomPlatform, this.testMode);
         //设置浏览器全部不能全屏
-        if (cc.sys.isMobile) {
-            cc.view.enableAutoFullScreen(false);
-        }
+        // if (cc.sys.isMobile) {
+        //     cc.view.enableAutoFullScreen(false);
+        // }
     }
 
-    public initFrameWorkConfig(): Config.FrameWorkConfig {
-        let PlatformConfig = CtrlerIniter.initPlatformConfig(this.bmsPlatformForDebug, this.CustomPlatform);
-        return {
-            TestMode: this.testMode,
-            platform: PlatformConfig.platform,
-            sdkMgrConfig: PlatformConfig.sdkMgrConfig,
-            bbConfig: { extendPropertys: null, },
-        }
+    loadConfig() {
+        let url = `${Const.JsonRemoteUrl}/${wonderSdk.BMS_APP_NAME}${wonderSdk.BMS_VERSION}/${this.testMode ? "debug" : "release"}/config/`;
+        return Promise.all([
+            Cfg.initRemoteConfig(url + "Idiom"),
+        ]);
     }
 }
 

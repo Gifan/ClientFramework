@@ -77,7 +77,7 @@ export namespace MVC {
         }
     }
 
-    type LoadAssetHandler = (name: string, path: string, type: typeof cc.Asset, callback: (name: string, asset: object, assetPath: string, args: any) => void, target: any, args: any) => void;
+    type LoadAssetHandler = (name: string, path: string, type: typeof cc.Asset, callback: (name: string, asset: object, assetPath: string, args: any) => void, target: any) => void;
     type Node = cc.Node;
     type Prefab = cc.Prefab;
 
@@ -244,11 +244,11 @@ export namespace MVC {
             return this;
         }
 
-        private _param: object;
-        public get param(): object {
+        private _param: any;
+        public get param(): any {
             return this._param;
         }
-        public SetParam(param: object): OpenArgs {
+        public setParam(param: any): OpenArgs {
             this._param = param;
             return this;
         }

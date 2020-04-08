@@ -1082,7 +1082,7 @@ Editor.Panel.extend({
                                         }
                                     }
 
-                                    if (this.isExportJson || this.isExportJs) {
+                                    if (this.isExportJson || this.isExportJs || this.isCompressJson) {
                                         //数据保存在json中，TS需要存储
                                         sheetJsData = null;
                                     }
