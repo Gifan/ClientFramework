@@ -73,7 +73,7 @@ class _Cfg {
     }
 
     private static cfgLoadNum: number = 0;
-    /*async initRemoteJson(filename: string, test?: cc.Label, pro?: cc.ProgressBar) {
+    async initRemoteJson(filepath: string, test?: cc.Label, pro?: cc.ProgressBar) {
         let this1 = this;
         let url = filepath + ".json";
         let filenames = filepath.split("/");

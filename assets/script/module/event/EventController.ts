@@ -29,7 +29,7 @@ export class EventController extends MVC.MController<EventModel> {
     }
 
     public onSendEvent(keyId: number, param) {
-        let data = Cfg.Event.get(keyId);
+        let data = null;//cfg.Event.get(keyId);
         if (data) {
             wonderSdk.sendEvent(data.name, param);
             // fw.sdk.sendEvent(data.name, param);

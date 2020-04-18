@@ -4,9 +4,7 @@ import { UserVo } from "../../vo/UserVo";
 import { Log } from "../../framework/Log";
 import { Notifier } from "../../framework/notify/Notifier";
 import { ListenID } from "../../ListenID";
-import GuideModel from "../guide/GuideModel";
 import { AlertManager } from "../alert/AlertManager";
-import ComposeModel from "../compose/ComposeModel";
 import { Const } from "../../config/Const";
 import { CallID } from "../../CallID";
 
@@ -44,10 +42,6 @@ export default class CheatView extends MVC.BaseView {
     }
 
 
-    public onClearTimes() {
-        Manager.vo.userVo.clickBuyTimes = {};
-        Manager.vo.userVo.shopBuyTimesDiamond = {};
-    }
 
     public onCheatClick() {
         this.cheatNode.active = !this.cheatNode.active;
@@ -67,52 +61,5 @@ export default class CheatView extends MVC.BaseView {
         Manager.vo.setGold(100000);
         Manager.vo.setDiamond(100000);
 
-    }
-
-
-    public switchoffset(event: cc.Toggle, data) {
-        // console.log(event);
-        // GameVoManager.getInstance.myUserVo.isOpenOffset = event.isChecked;
-    }
-
-    public onAddDay() {
-        Manager.vo.userVo.day++;
-        Manager.vo.userVo.loginDay++;
-        Manager.vo.userVo.composeBoxCount = 0;
-        Manager.vo.userVo.composeBuyVidoeTimes = 0;
-    }
-
-    public onResetTaskLog() {
-        Manager.vo.userVo.taskAchieveData = [];
-        Manager.vo.userVo.taskDailyData = [];
-        Manager.vo.userVo.taskLogList = {};
-    }
-
-    public setStage() {
-        let id = Number(this.editBox.string);
-        if (typeof id == 'number') {
-            Manager.vo.userVo.topStage = id;
-            AlertManager.showNormalTipsOnce("设置关卡成功!");
-        }
-    }
-
-    public buyDog() {
-        let id = Number(this.editBox.string);
-        if (typeof id == 'number') {
-            Notifier.send(ListenID.Compose_CheatBuy, id);
-        }
-    }
-
-    public resetDrawTimes() {
-        Manager.vo.userVo.lotteryTimes = 0;
-    }
-
-    public addRoleSpeed() {
-        Notifier.send(ListenID.Travel_AddRoleSpeed);
-    }
-
-    public autoCompose() {
-        ComposeModel.getInstance.setAutoComposeTime(100);
-        Notifier.send(ListenID.Compose_CheckAutoCompose);
     }
 }

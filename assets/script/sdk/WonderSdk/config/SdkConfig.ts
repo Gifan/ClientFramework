@@ -1,12 +1,12 @@
 /**
  * 对应平台id
  */
-export const enum EPlatform {
-    WEB_DEV = 1,
-    NA_ANDROID,
-    NA_IOS,
-    WECHAT_GAME,
-}
+export const  EPlatform =cc.Enum({
+    WEB_DEV : 1,
+    NA_ANDROID:2,
+    NA_IOS:3,
+    WECHAT_GAME:4,
+})
 
 /**
  * 对应的平台渠道类名

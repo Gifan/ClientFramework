@@ -8,7 +8,6 @@ export namespace Const {
     export const JsonRemoteUrl: string = `https://static.zuiqiangyingyu.net/wb_webview/${GameName}`
 
     export const CEPlatform = cc.Enum({ dev: 0, wx: 1, bd: 2, qq: 3, ios: 4, android: 5, H5_4399: 6 });
-    export const CustomPlatform = cc.Enum({ dev: 0, H5_4399: 1, H5_QTT: 2, H5_MOLI: 3, H5_UC: 4, SINA: 5, H5_ZHANG_YU: 6, NV_ANDROID_SIX_K_PLAY: 7, NV_ANDROID_WONDER_BOX: 8 });
 
     export class AppConst {
         static WX_APPID = "wx6290d6ec04fe4508";
@@ -181,6 +180,11 @@ export namespace Const {
     export const enum BannerCode {
         ShowSuccess = 0,
         ShowError = 1,
+    }
+
+    export const enum CurrencyType{
+        Gold = 0,
+        Diamond,
     }
 
 }

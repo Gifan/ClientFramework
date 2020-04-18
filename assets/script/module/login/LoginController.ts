@@ -36,7 +36,6 @@ export class LoginController extends MVC.MController<LoginModel> {
         cc.director.loadScene(Const.GAME_SCENENAME, () => {
             
         });
-        Notifier.send(ListenID.Compose_StartOutPut);
     }
 }
 

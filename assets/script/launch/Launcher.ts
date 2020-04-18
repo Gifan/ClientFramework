@@ -20,7 +20,7 @@ const { ccclass, property } = cc._decorator;
 export default class Launcher extends cc.Component {
     @property({ displayName: "测试模式" }) testMode: boolean = false;
     @property({ type: Const.CEPlatform, displayName: "浏览器调试使用的启动参数平台" }) bmsPlatformForDebug = Const.CEPlatform.dev;
-    @property({ type: Const.CustomPlatform, displayName: "自定义平台" }) CustomPlatform = EPlatform.WEB_DEV;
+    @property({ type: EPlatform, displayName: "自定义平台" }) CustomPlatform = EPlatform.WEB_DEV;
 
     onLoad() {
         cc.game.addPersistRootNode(this.node);

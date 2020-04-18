@@ -1,4 +1,6 @@
 export class UserVo {
+    public day:number = 0;
+    public isAcceptPrivacy:boolean = false;
     public updatetUserVo(res: Object): void {
         Object.getOwnPropertyNames(this).forEach(function (key) {
             if (res.hasOwnProperty(key)) {

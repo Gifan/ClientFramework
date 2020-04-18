@@ -8,7 +8,7 @@ import { Watcher } from "../framework/Watcher";
 import { Cfg } from "../config/Cfg";
 import { AlertManager } from "../module/alert/AlertManager";
 import { Log } from "../framework/Log";
-import { EventDefine } from "../config/EventCfg";
+// import { EventDefine } from "../config/EventCfg";
 
 export class SdkLauncher {
     public constructor() {
@@ -142,11 +142,6 @@ export class SdkLauncher {
         let userData = Manager.vo.userVo;
         if (curday != userData.day) {//第二天
             Manager.vo.userVo.day = curday;
-            Manager.vo.userVo.loginDay++;
-            Manager.vo.userVo.composeBoxCount = 0;
-            Manager.vo.userVo.composeBuyVidoeTimes = 0;
-            Manager.vo.userVo.lotteryTimes = 0;
-            Manager.vo.userVo.composeFreeCountDelta = Const.Compose_BuyFreeUpdateFirstCount;
             Notifier.send(ListenID.Game_SecondDay);
         }
     }

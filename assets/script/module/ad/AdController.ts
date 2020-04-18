@@ -3,7 +3,7 @@ import { Notifier } from "../../framework/notify/Notifier";
 import { ListenID } from "../../ListenID";
 import AdModel from "./AdModel";
 import { Const } from "../../config/Const";
-import { EventDefine } from "../../config/EventCfg";
+// import { EventDefine } from "../../config/EventCfg";
 import { AlertManager } from "../alert/AlertManager";
 import { Log } from "../../framework/Log";
 
@@ -52,13 +52,12 @@ export class AdController extends MVC.MController<AdModel> {
         wonderSdk.hideBanner();
     }
     public showVideo(call: Function = null) {
-        Notifier.send(ListenID.Event_SendEvent, EventDefine.ad_success_rewarde_count, 1);
+        // Notifier.send(ListenID.Event_SendEvent, EventDefine.ad_success_rewarde_count, 1);
         wonderSdk.showVideoAD(0, (code: wonderSdk.VideoAdCode, msg: string) => {
             if (code == wonderSdk.VideoAdCode.COMPLETE) {
-                Notifier.send(ListenID.Task_UpdateTaskProgress, Const.TaskSubType.LookVideo, 1);
                 call && call(1);
             } else if (code == wonderSdk.VideoAdCode.SHOW_SUCCESS) {
-                Notifier.send(ListenID.Event_SendEvent, EventDefine.out_rewarde_count, 1);
+                // Notifier.send(ListenID.Event_SendEvent, EventDefine.out_rewarde_count, 1);
             }
             else {
                 if (msg && msg != "") {
