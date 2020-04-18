@@ -13,7 +13,7 @@ export class SwitchVo {
     public winbox: string = "no";
     public winbtnjump: string = "no";
     public level_5: number = 10;
-    public isEnableIp: number = 0;//0²»¿ª·Å  1¿ª·Å
+    public isEnableIp: number = 0;//0ä¸å¼€æ”¾  1å¼€æ”¾
 
     public updateSwitchVo(res: Object): void {
         Object.getOwnPropertyNames(this).forEach(function (key) {
@@ -24,8 +24,8 @@ export class SwitchVo {
     }
 
     /**
-     * ÉóºËÆÚ¼ä false all ¿ª·Å
-     * @param type Ãû×Ö
+     * å®¡æ ¸æœŸé—´ false all å¼€æ”¾
+     * @param type åå­—
      */
     getConditionByTag(type): boolean {
         if (this.isAuditing) {

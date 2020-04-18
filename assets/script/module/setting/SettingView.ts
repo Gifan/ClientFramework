@@ -3,35 +3,35 @@ import { MVC } from "../../framework/MVC";
 const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
-@menu("ÊÓÍ¼×é¼ş/Setting/SettingView")
+@menu("è§†å›¾ç»„ä»¶/Setting/SettingView")
 export class SettingView extends MVC.BaseView {
     protected changeListener(enable: boolean): void {
         //Notifier.changeListener(enable, NotifyID.Game_Update, this.onUpdate, this);
     }
 
     /*
-     * ´ò¿ª½çÃæ»Øµ÷
+     * æ‰“å¼€ç•Œé¢å›è°ƒ
      */
     protected onOpen(): void {
         super.onOpen();
     }
 
     /*
-     * Ö÷¶¯¹Ø±Õ½çÃæ
+     * ä¸»åŠ¨å…³é—­ç•Œé¢
      */
     public close(): void {
         super.close();
     }
 
     /*
-     * ¹Ø±Õ½çÃæºó
+     * å…³é—­ç•Œé¢å
      */
     public onClose(): void {
         super.onClose();
     }
 
     /*
-     * ÍêÈ«ÏÔÊ¾½çÃæºó
+     * å®Œå…¨æ˜¾ç¤ºç•Œé¢å
      */
     public onShowFinish(): void {
         super.onShowFinish();

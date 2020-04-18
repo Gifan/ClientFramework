@@ -1,7 +1,7 @@
 import { Manager } from "../util/Manager";
 import { Const } from "../config/Const";
 
-// cc.Button.prototype._onTouchEnded = function (event) {//播放音效会有问题
+// cc.Button.prototype._onTouchEnded = function (event) {//鎾斁闊虫晥浼氭湁闂
 //     if (!this.interactable || !this.enabledInHierarchy) return;
 
 //     if (this._pressed) {

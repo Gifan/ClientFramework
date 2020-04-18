@@ -164,7 +164,7 @@ export class GuideView extends MVC.BaseView {
     public isClickAreas(viewpos: cc.Vec2) {
         let offsetwidth = 0;
         let offsetheight = 0;
-        if (this.guideInfo.id == GuideDefine.BuyCompose || this.guideInfo.id == GuideDefine.BuyComposeAgain) {//触碰区域变小
+        if (this.guideInfo.id == GuideDefine.BuyCompose || this.guideInfo.id == GuideDefine.BuyComposeAgain||this.guideInfo.id == GuideDefine.RoleUpgradeUp) {//触碰区域变小
             offsetwidth = -50;
             offsetheight = -60;
         }

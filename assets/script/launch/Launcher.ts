@@ -30,6 +30,7 @@ export default class Launcher extends cc.Component {
         new UILauncher();
         new NetLauncher();
         new ModuleLauncher();
+        Notifier.send(ListenID.Event_SendEvent, EventDefine.inload, 1);
         // await this.loadConfig();
         new SdkLauncher();
 

@@ -36,6 +36,7 @@ export default class NativeAndroid extends BaseSdk {
         }
         //隐私政策成功回调
         callAndroid["onPrivacyAccept"] = () => {
+            this.sendEvent("confirm_privacy", "1");
             this._privacyCallback && this._privacyCallback(true);
         }
         callAndroid["onPrivacyReject"] = () => {

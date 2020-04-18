@@ -13,7 +13,7 @@ window.isNullOrEmpty = function (str) {
 };
 
 window.GameDeepCopy = function (target) {
-    let copyed_objs = [];//此数组解决了循环引用和相同引用的问题，它存放已经递归到的目标对象 
+    let copyed_objs = [];//姝ゆ暟缁勮В鍐充簡寰幆寮曠敤鍜岀浉鍚屽紩鐢ㄧ殑闂锛屽畠瀛樻斁宸茬粡閫掑綊鍒扮殑鐩爣瀵硅薄 
     function _deepCopy(target) {
         if ((typeof target !== 'object') || !target) { return target; }
         for (let i = 0; i < copyed_objs.length; i++) {
@@ -23,7 +23,7 @@ window.GameDeepCopy = function (target) {
         }
         let obj = {};
         if (Array.isArray(target)) {
-            obj = [];//处理target是数组的情况 
+            obj = [];//澶勭悊target鏄暟缁勭殑鎯呭喌 
         }
         copyed_objs.push({ target: target, copyTarget: obj })
         Object.keys(target).forEach(key => {

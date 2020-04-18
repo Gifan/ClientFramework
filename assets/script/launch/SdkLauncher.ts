@@ -13,7 +13,7 @@ import { EventDefine } from "../config/EventCfg";
 export class SdkLauncher {
     public constructor() {
         wonderSdk.setAlertAdpater(AlertManager);
-        wonderSdk.setAudioAdapter(Manager.audio);//ÊÊÅäsdk
+        wonderSdk.setAudioAdapter(Manager.audio);//é€‚é…sdk
         this.login();
     }
 
@@ -66,7 +66,7 @@ export class SdkLauncher {
             }
         });
     }
-    /**¼ÓÔØÓÃ»§Êı¾İ */
+    /**åŠ è½½ç”¨æˆ·æ•°æ® */
     async loadUserData() {
         return new Promise((resolve, reject) => {
             let data = Manager.storage.getObject(StorageID.UserData, null);
@@ -79,7 +79,7 @@ export class SdkLauncher {
     }
 
     /**
-     * Ô¤¼ÓÔØ³¡¾°
+     * é¢„åŠ è½½åœºæ™¯
      */
     async loadScene() {
         return new Promise((resolve, reject) => {
@@ -90,7 +90,7 @@ export class SdkLauncher {
         })
     }
 
-    /**¼ÓÔØÓÎÏ·¿ª¹Ø¿ØÖÆ */
+    /**åŠ è½½æ¸¸æˆå¼€å…³æ§åˆ¶ */
     async loadGameSwitchConfig() {
         return new Promise((resolve, reject) => {
             wonderSdk.requestSwitchConfig().then(data => {
@@ -128,16 +128,11 @@ export class SdkLauncher {
     public showPrivacy() {
         wonderSdk.showPrivacy((boo) => {
             Manager.vo.userVo.isAcceptPrivacy = !!boo;
-            if(boo){
-                Notifier.send(ListenID.Event_SendEvent, EventDefine.confirm_privacy, 1);
-            }else{
-                Notifier.send(ListenID.Event_SendEvent, EventDefine.cancel_privacy, 1);
-            }
         })
-        // if (!fw.sdk.showPrivacy()) {//²»²»µ¯³öÒşË½µ¯´°
+        // if (!fw.sdk.showPrivacy()) {//ä¸ä¸å¼¹å‡ºéšç§å¼¹çª—
 
         // } else {
-        //     //¸ù¾İ¸÷¸öÆ½Ì¨Êµ¼ÊÕ¹Ê¾ 
+        //     //æ ¹æ®å„ä¸ªå¹³å°å®é™…å±•ç¤º 
         // }
     }
 
@@ -145,7 +140,7 @@ export class SdkLauncher {
         let date = new Date(Time.serverTimeMs);
         let curday = date.getDate();
         let userData = Manager.vo.userVo;
-        if (curday != userData.day) {//µÚ¶şÌì
+        if (curday != userData.day) {//ç¬¬äºŒå¤©
             Manager.vo.userVo.day = curday;
             Manager.vo.userVo.loginDay++;
             Manager.vo.userVo.composeBoxCount = 0;
