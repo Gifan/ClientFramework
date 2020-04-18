@@ -1,5 +1,5 @@
-import { Manager } from "../util/Manager";
-import { Const } from "../config/Const";
+// import { Manager } from "../util/Manager";
+// import { Const } from "../config/Const";
 
 // cc.Button.prototype._onTouchEnded = function (event) {//播放音效会有问题
 //     if (!this.interactable || !this.enabledInHierarchy) return;

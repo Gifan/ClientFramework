@@ -5,12 +5,12 @@ import { NetLauncher } from "./NetLauncher";
 import { ModuleLauncher } from "./ModuleLauncher";
 import { SdkLauncher } from "./SdkLauncher";
 import { Const } from "../config/Const";
-import { Cfg } from "../config/Cfg";
+// import { Cfg } from "../config/Cfg";
 import { EPlatform } from "../sdk/WonderSdk/config/SdkConfig";
 import { WonderSdk } from "../sdk/WonderSdk/WonderSdk";
 import { Notifier } from "../framework/notify/Notifier";
 import { ListenID } from "../ListenID";
-import { EventDefine } from "../config/EventCfg";
+// import { EventDefine } from "../config/EventCfg";
 import { Log } from "../framework/Log";
 
 declare var window: any;
@@ -30,7 +30,7 @@ export default class Launcher extends cc.Component {
         new UILauncher();
         new NetLauncher();
         new ModuleLauncher();
-        Notifier.send(ListenID.Event_SendEvent, EventDefine.inload, 1);
+        // Notifier.send(ListenID.Event_SendEvent, EventDefine.inload, 1);
         // await this.loadConfig();
         new SdkLauncher();
 
@@ -43,7 +43,6 @@ export default class Launcher extends cc.Component {
     }
 
     onTest() {
-
     }
 
     public initWonderFrameWork() {
@@ -56,9 +55,9 @@ export default class Launcher extends cc.Component {
 
     loadConfig() {
         let url = `${Const.JsonRemoteUrl}/${wonderSdk.BMS_APP_NAME}${wonderSdk.BMS_VERSION}/${this.testMode ? "debug" : "release"}/config/`;
-        return Promise.all([
-            Cfg.initRemoteConfig(url + "Idiom"),
-        ]);
+        // return Promise.all([
+        //     Cfg.initRemoteConfig(url + "Idiom"),
+        // ]);
     }
 }
 
