@@ -1,20 +1,22 @@
-import { EPlatform, SdkClass, AppIdList, BannerIdList, InsterIdList, SplashIdList, FeedAdIdList, BMSInfoList, VideoIdList, FullVideoIdList} from "./config/SdkConfig";
-import { BaseSdk, VideoAdCode } from "./platform/BaseSdk";
+import { EPlatform, SdkClass, AppIdList, BannerIdList, InsterIdList, SplashIdList, FeedAdIdList, BMSInfoList, VideoIdList, FullVideoIdList, BoxIdList } from "./config/SdkConfig";
+import { BaseSdk, VideoAdCode, ShareType } from "./platform/BaseSdk";
 import { SdkAudioAdapter, AudioInterface } from "./adapter/AudioAdapter";
 import { SdkSelectAlertAdapter, SelectAlertInterface } from "./adapter/SelectAlertAdapter";
 import { BaseNet, BaseUrl, Url } from "./net/BaseNet";
+import { BaiDuSdk } from "./platform/baidu/BaiDuSdk";
 declare let require: (str: string) => any;
 declare let window: any;
 export class WonderSdk {
     public static isInit: boolean = false;
     private static _instance: WonderSdk;
-    private static _version: string = "1.0.0";
+    private static _version: string = "1.1.0";
     private _sdk!: BaseSdk;
     private _platformId: EPlatform;
     private _isShiledIp: number = 0;
     private _bannerTime: number = 0;//banner刷新时间
-    public VideoAdCode:VideoAdCode = <any>VideoAdCode;
-    public isTest:boolean = false;
+    public VideoAdCode: VideoAdCode = <any>VideoAdCode;
+    public ShareType: ShareType = <any>ShareType;
+    public isTest: boolean = false;
     /**
      * @description 初始化sdk接口，所以接口调用前必须调用init方法
      * @author 吴建奋
@@ -65,6 +67,34 @@ export class WonderSdk {
      */
     public get isNative(): boolean {
         return this._platformId == EPlatform.NA_ANDROID || this._platformId == EPlatform.NA_IOS;
+    }
+
+    /**
+     * 判断是否是字节跳动平台
+     */
+    public get isByteDance(): boolean {
+        return this._platformId == EPlatform.BYTE_DANCE;
+    }
+
+    /**
+     * 是否是qq小游戏平台
+     */
+    public get isQQ(): boolean {
+        return this._platformId == EPlatform.QQ;
+    }
+
+    /**
+     * 是否是百度小游戏平台
+     */
+    public get isBaiDuGame(): boolean {
+        return this._platformId == EPlatform.BAIDU;
+    }
+
+    /**
+     * 是否是微信小游戏平台
+     */
+    public get isWeChat(): boolean {
+        return this._platformId == EPlatform.WECHAT_GAME;
     }
 
     /**
@@ -143,7 +173,7 @@ export class WonderSdk {
         let nowTime = (new Date()).getTime();
         // console.log("[SdkMgr][showBannerAd]", (nowTime - this._bannerTime) / 1000, nowTime, this._bannerTime);
         if (this._bannerTime) {
-            if (nowTime - this._bannerTime > 50 * 1000) {
+            if (nowTime - this._bannerTime > 30 * 1000) {
                 this.destroyBanner();
                 this._bannerTime = nowTime;
                 console.log('banner刷新')
@@ -196,7 +226,7 @@ export class WonderSdk {
     public showVideoAD(adId: number, onPlayEnd?: (code: VideoAdCode, msg?: string) => void) {
         let adIdlist: any = VideoIdList[this._platformId];
         if (!adIdlist) {
-            onPlayEnd && onPlayEnd(VideoAdCode.NOT_SUPPORT, "没有对应广告id");
+            onPlayEnd && onPlayEnd(VideoAdCode.NOT_SUPPORT, "视频拉取失败，请稍后重试");
             return;
         }
         let id = adIdlist[adId] || adIdlist[0];
@@ -212,7 +242,7 @@ export class WonderSdk {
      * @returns
      * @memberof WonderSdk
      */
-    public showFullVideoAD(adId:number, onPlayEnd?:(code: VideoAdCode, msg?: string) => void){
+    public showFullVideoAD(adId: number, onPlayEnd?: (code: VideoAdCode, msg?: string) => void) {
         let adIdlist: any = FullVideoIdList[this._platformId];
         if (!adIdlist) {
             onPlayEnd && onPlayEnd(VideoAdCode.NOT_SUPPORT, "没有对应广告id");
@@ -292,7 +322,7 @@ export class WonderSdk {
      * @param {() => void} success 成功回调
      * @memberof WonderSdk
      */
-    public showPrivacy(success: (boo:any) => void) {
+    public showPrivacy(success: (boo: any) => void) {
         this._sdk.showPrivacy(success);
     }
 
@@ -305,8 +335,8 @@ export class WonderSdk {
      * @param {() => void} [fail] 失败回调
      * @memberof WonderSdk
      */
-    public share(param: any, success?: () => void, fail?: () => void) {
-        this._sdk.share(param, success, fail);
+    public share(type: ShareType, param: any, success?: () => void, fail?: () => void) {
+        this._sdk.share(type, param, success, fail);
     }
 
     /**
@@ -315,7 +345,7 @@ export class WonderSdk {
      * @memberof WonderSdk
      */
     public get BMS_APP_NAME() {
-        return BMSInfoList[this._platformId].BMS_APP_NAME;
+        return BMSInfoList[this._platformId] && BMSInfoList[this._platformId].BMS_APP_NAME;
     }
     /**
      * @description 获取BMS版本
@@ -323,7 +353,7 @@ export class WonderSdk {
      * @memberof WonderSdk
      */
     public get BMS_VERSION() {
-        return BMSInfoList[this._platformId].BMS_VERSION;
+        return BMSInfoList[this._platformId] && BMSInfoList[this._platformId].BMS_VERSION;
     }
     /**
      * @description 请求是否为屏蔽IP地址
@@ -352,5 +382,78 @@ export class WonderSdk {
      */
     public requestSwitchConfig(): Promise<any> {
         return BaseNet.Request(BaseUrl.ServerDomain + Url.BMS_LAUNCH_CONFIG, { app_name: this.BMS_APP_NAME, version: this.BMS_VERSION }, "GET");
+    }
+    /**
+     * @description 请求分享列表配置
+     * @author 吴建奋
+     * @date 2020-04-28
+     * @returns {Promise<any>}
+     * @memberof WonderSdk
+     */
+    public requestShareConfig(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            BaseNet.Request(BaseUrl.ServerDomain + Url.BMS_SHARE_CONFIG, { app_name: this.BMS_APP_NAME, version: this.BMS_VERSION }, "GET")
+                .then(data => {
+                    this._sdk.setShareList(data.data.list);
+                    resolve();
+                }).catch(err => {
+                    reject(err);
+                })
+        });
+    }
+    /**
+     * @description 获取服务器时间
+     * @author 吴建奋
+     * @date 2020-04-30
+     * @returns {Promise<any>}
+     * @memberof WonderSdk
+     */
+    public requestServerTime(): Promise<any> {
+        return BaseNet.Request(BaseUrl.ServerDomain + Url.BMS_SERVER_TIME, {}, "GET");
+    }
+
+    /**
+     * 震动
+     * @param type 震动类型0短震动1长震动
+     */
+    public vibrate(type: number = 0) {
+        this._sdk.vibrate(type);
+    }
+
+
+    /**
+     * 创建盒子
+     * @param node 挂在节点
+     */
+    public createAppBox(node?: any): boolean {
+        if (BoxIdList[this._platformId]) {
+            this._sdk.createAppBox(BoxIdList[this._platformId], node);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * 展示更多游戏
+     */
+    public showAppBox(): boolean {
+        if (BoxIdList[this._platformId]) {
+            this._sdk.showAppBox(BoxIdList[this._platformId]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 展示百度关注引导
+     */
+    public showFavoriteGuide(): boolean {
+        if (this.isBaiDuGame) {
+            let sdk = <BaiDuSdk>this._sdk;
+            sdk.showFavoriteGuide();
+            return true;
+        }
+        return false;
     }
 }

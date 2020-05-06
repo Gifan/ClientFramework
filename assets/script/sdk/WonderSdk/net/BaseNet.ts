@@ -14,7 +14,9 @@ export const enum Url {
     BMS_SIGN_IN_BD = "/common/baidu/sign_in",
     /** [BMS] qq小游戏(辅助获取openid) */
     BMS_SIGN_IN_QQ = "/common/qqminiapp/sign_in",
-
+    /** BMS 获取服务器时间 */
+    BMS_SERVER_TIME = "/common/common/time",
+    
     /** [BMS统计] 主动分享 */
     BMS_SHARE_SHOW = "/statistics/share/show",
     /** [BMS统计] 从分享卡进入游戏 */
@@ -104,7 +106,7 @@ export class BaseNet {
     public static httpPost(url: string, body: any, rspType: XMLHttpRequestResponseType = 'json'): Promise<any> {
         return new Promise((resolve, reject) => {
             let req = new XMLHttpRequest();
-            req.open('GET', url, true);
+            req.open('POST', url, true);
             req.onreadystatechange = () => {
                 if (req.readyState == 4) {
                     if (req.status == 200) {

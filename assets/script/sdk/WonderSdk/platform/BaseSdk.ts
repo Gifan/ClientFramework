@@ -105,11 +105,13 @@ export abstract class BaseSdk {
         });
     };
 
+    protected _shareList: Array<Array<ShareListType>> = [];
+    public setShareList(list: Array<ShareListType>) { }
     /**
      * 分享
      * @param param 参数
      */
-    public abstract share(param: any, success?: () => void, fail?: (errmsg: string) => void): void;
+    public abstract share(type: ShareType, param: any, success?: () => void, fail?: (errmsg: string) => void): void;
 
     private _appId: string = "";
     /**
@@ -144,6 +146,30 @@ export abstract class BaseSdk {
         this._openId = openid;
         return this;
     }
+
+    /**
+     * 震动
+     * @param type 
+     */
+    public vibrate(type: number = 0) {
+
+    }
+
+    /**
+     * 创建盒子更多游戏
+     * @param adId id
+     * @param node 挂在节点
+     */
+    public createAppBox(adId: string, node?: any) {
+
+    }
+    /**
+     * 展示更多游戏
+     * @param adId id
+     */
+    public showAppBox(adId: string) {
+
+    }
 }
 
 export enum VideoAdCode {
@@ -161,4 +187,34 @@ export enum VideoAdCode {
     AD_ERROR,
     //广告拉起成功
     SHOW_SUCCESS,
+}
+
+export enum ShareType {
+    //发起挑战
+    SHARE_CHALLENGE = 1,
+    //群分享续命
+    SHARE_GROUP = 2,
+    //普通分享
+    SHARE_NORMAL = 3,
+    //分享获得奖励
+    SHARE_REWARD = 4,
+    //胜利炫耀
+    SHARE_VICTORY = 5,
+    //分享成绩
+    SHARE_SORCE = 6,
+    //群排行榜
+    SHARE_RANK = 7,
+    //求助
+    SHARE_HELP = 8,
+    //其它
+    SHARE_OTHER = 9,
+}
+
+export interface ShareListType {
+    id: number,
+    position: ShareType,
+    title: string,
+    weight: number,
+    image: string,
+    flag: string,
 }

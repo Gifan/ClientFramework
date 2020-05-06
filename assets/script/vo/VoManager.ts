@@ -6,6 +6,12 @@ import { Const } from "../config/Const";
 import { Notifier } from "../framework/notify/Notifier";
 import { ListenID } from "../ListenID";
 
+let generateRoleTag = (function genTag() {
+    var tag = 1;
+    function a() { tag += 1; return tag; };
+    return a;
+})();
+
 export class VoManager {
     private static _instance: VoManager = null;
     private _userVo: UserVo;
@@ -57,6 +63,10 @@ export class VoManager {
         return JSON.parse(a);
     }
 
+    public getGold(): number {
+        return this._userVo.gold;
+    }
+
     public setGold(gold: number, from: number = 0) {
         this._userVo.gold += gold;
         Notifier.send(ListenID.Game_UpdateGold, gold, from)
@@ -67,4 +77,7 @@ export class VoManager {
         Notifier.send(ListenID.Game_UpdateDiamond, diamond, from);
     }
 
+    public getNewId(): number {
+        return generateRoleTag();
+    }
 }

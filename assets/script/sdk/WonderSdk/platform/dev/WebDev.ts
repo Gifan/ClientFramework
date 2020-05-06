@@ -1,9 +1,9 @@
-import { BaseSdk, VideoAdCode } from "../BaseSdk";
+import { BaseSdk, VideoAdCode, ShareType } from "../BaseSdk";
 import { SdkSelectAlertAdapter } from "../../adapter/SelectAlertAdapter";
 
 export default class WebDev extends BaseSdk {
 
-    public share(param: any, success?: () => void, fail?: (errmsg: any) => void) {
+    public share(type:ShareType, param: any, success?: () => void, fail?: (errmsg: any) => void) {
         let data = {
             title: "提示",
             desc: "模拟分享",

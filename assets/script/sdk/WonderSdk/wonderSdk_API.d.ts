@@ -31,8 +31,37 @@ declare module wonderSdk {
         SHOW_SUCCESS,
     }
 
+    enum ShareType {
+        //发起挑战
+        SHARE_CHALLENGE = 1,
+        //群分享续命
+        SHARE_GROUP = 2,
+        //普通分享
+        SHARE_NORMAL = 3,
+        //分享获得奖励
+        SHARE_REWARD = 4,
+        //胜利炫耀
+        SHARE_VICTORY = 5,
+        //分享成绩
+        SHARE_SORCE = 6,
+        //群排行榜
+        SHARE_RANK = 7,
+        //求助
+        SHARE_HELP = 8,
+        //其它
+        SHARE_OTHER = 9,
+    }
+
     //是否是原生平台
     let isNative: boolean;
+    //是否是字节跳动平台
+    let isByteDance: boolean;
+    //是否是qq平台
+    let isQQ: boolean;
+    //是否是百度小游戏平台
+    let isBaiDuGame: boolean;
+    //是否是微信小游戏平台
+    let isWeChat: boolean;
     //是否为测试模式
     let isTest: boolean;
     /**
@@ -184,11 +213,12 @@ declare module wonderSdk {
      * @author 吴建奋
      * @date 2020-04-05
      * @param {*} param
+     * @param {ShareType} type 分享类型
      * @param {() => void} [success] 成功回调
      * @param {() => void} [fail] 失败回调
      * @memberof WonderSdk
      */
-    function share(param: any, success?: () => void, fail?: () => void): void;
+    function share(type: ShareType, param: any, success?: () => void, fail?: (errmsg) => void): void;
     /**
      * @description 获取BMS对应唯一标识
      * @readonly
@@ -217,4 +247,45 @@ declare module wonderSdk {
      * @memberof WonderSdk
      */
     function requestSwitchConfig(): Promise<any>;
+    /**
+     * @description 请求分享列表配置
+     * @author 吴建奋
+     * @date 2020-04-28
+     * @returns {Promise<any>}
+     * @memberof WonderSdk
+     */
+    function requestShareConfig(): Promise<any>;
+    /**
+     * @description 获取服务器时间
+     * @author 吴建奋
+     * @date 2020-04-30
+     * @returns {Promise<any>}
+     * @memberof WonderSdk
+     */
+    function requestServerTime(): Promise<any>;
+    /**
+     * @description 震动
+     * @author 吴建奋
+     * @date 2020-04-24
+     * @param type 震动类型 0短震动1长震动
+     * @returns {void}
+     * @memberof WonderSdk
+     */
+    function vibrate(type: number = 0): void;
+
+    /**
+     * 创建更多游戏盒子
+     * @param node 挂在的节点
+     */
+    function createAppBox(node?: any): boolean;
+
+    /**
+     * 展示更多游戏盒子
+     */
+    function showAppBox(): boolean;
+
+    /**
+     * 展示百度关注引导
+     */
+    function showFavoriteGuide(): boolean;
 }

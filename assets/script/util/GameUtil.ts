@@ -1,11 +1,5 @@
 import { Log } from "../framework/Log";
 import { Manager } from "./Manager";
-import { Const } from "../config/Const";
-import { AlertManager } from "../module/alert/AlertManager";
-import { Notifier } from "../framework/notify/Notifier";
-import { ListenID } from "../ListenID";
-import { CallID } from "../CallID";
-import { EventDefine } from "../config/EventCfg";
 
 export class GameUtil {
 
@@ -68,102 +62,6 @@ export class GameUtil {
      */
     public static random(min: number, max: number): number {
         return min + Math.floor(Math.random() * (max - min));
-    }
-
-    /**
-     * 1: {content: [{word: "高高兴兴", first_letter: "G", pinyin: "gāogāoxìngxìng",…},…], style: [5, 7],…}
-        content: [{word: "高高兴兴", first_letter: "G", pinyin: "gāogāoxìngxìng",…},…]
-        0: {word: "高高兴兴", first_letter: "G", pinyin: "gāogāoxìngxìng",…}
-        1: {word: "漂漂亮亮", first_letter: "P", pinyin: "piàopiàoliangliang", explain: "指外形美观，鲜明。"}
-        2: {word: "兴致勃勃", first_letter: "X", pinyin: "xìngzhìbóbó", explain: "兴致：兴趣；勃勃：旺盛的样子。形容兴头很足。"}
-        hor_rate: 1
-        size: [89, 93]
-        style: [5, 7]
-
-        一定有一个竖，横，后面的随机 竖横，方向
-        mapArray[][]
-        随机 上，下方向进入
-        如果 是横
-        寻找可以放置的x点list=[x1,x2,...xn]满足 (maxArray[x], maxArray[x+3])+1<=right, 从list随机出x，根据正方向，上下方向push进去
-        如果 是竖
-        同理 寻找点x list=[x1,x2,xn] 满足 maxArray[x]+4 <= right 从list随机出x，再随机y   插入成语
-
-        特殊情况从底部插入竖列，分隔，由于分隔列上不能存在其他成语字，所以简单点从底部插入分割不会有问题
-        不在第一层插入，需要考虑插入层下一层是否有底
-     */
-    public static getStageMapByCfg(stagecfg: any): Array<Array<string>> {
-        let style = stagecfg.style;
-        let answerNum = stagecfg.content.length;
-        let answerData = stagecfg.content;
-        let answerInfo = [];
-        let groupMap: Array<Array<string>> = new Array<Array<string>>();
-        for (let i = 0, maxx = style[0]; i < maxx; i++) {
-            groupMap[i] = new Array<string>();
-        }
-        for (let i = 0; i < answerNum; i++) {//计算出
-            let temprandom = GameUtil.random(0, 100);
-            let horRoVec = temprandom % 10 >= 5 ? 0 : 1;//水平或者垂直
-            let direct = temprandom / 10 >= 5 ? 0 : 1;//正或者逆向
-            let mode = temprandom >= 50 ? 0 : 1;//上插入，下插入
-            if (i <= 1) { horRoVec = i }//固定前2个是一个水平一个垂直
-            answerInfo.push({ direct, mode, horRoVec, word: answerData[i].word });
-        }
-        for (let i = 0; i < answerNum; i++) {
-            let data = answerInfo[i];
-            if (data.horRoVec == 0) {//横向
-                let rightPoint = [];//适合的x点
-                let end = groupMap.length - 3;
-                for (let j = 0; j < end; j++) {
-                    if (groupMap[j].length + 1 <= style[1] &&
-                        groupMap[j + 1].length + 1 <= style[1] &&
-                        groupMap[j + 2].length + 1 <= style[1] &&
-                        groupMap[j + 3].length + 1 <= style[1]) {
-                        rightPoint.push(j);
-                    }
-                }
-
-                if (rightPoint.length > 0) {//存在的情况
-                    let index = GameUtil.random(0, rightPoint.length);
-                    let pointx = rightPoint[index];
-                    let wordlist: Array<string> = Array.prototype.slice.call(data.word);
-                    if (data.direct == 1) wordlist = wordlist.reverse();
-                    if (data.mode == 0) {//直接上插入(push)
-                        for (let k = 0; k < 4; k++) {
-                            groupMap[pointx + k].push(wordlist[k])
-                        }
-                    } else {
-                        for (let k = 0; k < 4; k++) {
-                            groupMap[pointx + k].unshift(wordlist[k]);
-                        }
-                    }
-                } else {//不存在的情况()
-                    Log.error("getStageMapByCfg error->>no point in hor");
-                }
-            } else {//竖向
-                let rightPoint = [];//适合的x点
-                let end = groupMap.length;
-                for (let j = 0; j < end; j++) {
-                    if (groupMap[j].length + 4 <= style[1]) {
-                        rightPoint.push(j);
-                    }
-                }
-                if (rightPoint.length > 0) {//存在的情况
-                    let index = GameUtil.random(0, rightPoint.length);
-                    let pointx = rightPoint[index];
-                    let pointy = GameUtil.random(0, style[1]);
-                    let wordlist: Array<string> = Array.prototype.slice.call(data.word);
-                    if (data.direct == 1) wordlist = wordlist.reverse();
-                    if (pointy > groupMap[pointx].length - 1) {//直接push
-                        groupMap[pointx].push(...wordlist);//不能直接用contact,[].contact无效
-                    } else {
-                        groupMap[pointx].splice(pointy, 0, ...wordlist);
-                    }
-                } else {
-                    Log.error("getStageMapByCfg error->>no point in vec");
-                }
-            }
-        }
-        return groupMap;
     }
 
     /**

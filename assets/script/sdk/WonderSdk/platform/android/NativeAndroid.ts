@@ -1,4 +1,4 @@
-import { BaseSdk, VideoAdCode } from "../BaseSdk";
+import { BaseSdk, VideoAdCode, ShareType } from "../BaseSdk";
 declare let cc: any;
 cc.nativeAndroid = cc.nativeAndroid || {};
 let callAndroid = cc.nativeAndroid;
@@ -36,7 +36,7 @@ export default class NativeAndroid extends BaseSdk {
         }
         //隐私政策成功回调
         callAndroid["onPrivacyAccept"] = () => {
-            this.sendEvent("confirm_privacy", "1");
+            this.sendEvent("confirm_privacy", "none");
             this._privacyCallback && this._privacyCallback(true);
         }
         callAndroid["onPrivacyReject"] = () => {
@@ -45,6 +45,7 @@ export default class NativeAndroid extends BaseSdk {
     }
     public login(success?: (data: any) => void, fail?: (errmsg: any) => void): Promise<any> {
         return new Promise((resolve, reject) => {
+            success && success(null);
             resolve();
         });
     }
@@ -73,9 +74,12 @@ export default class NativeAndroid extends BaseSdk {
     }
 
     public sendEvent(key: string, param: any): void {
-        jsbCall(this.defaultClass, "sendMsg", "(Ljava/lang/String;)V", key);
+        jsbCall(this.defaultClass, "sendMsg", "(Ljava/lang/String;Ljava/lang/String;)V", key, param);
     }
-    public share(param: any, success?: () => void, fail?: (errmsg: any) => void) {
+    public vibrate(type: number = 0) {
+        jsbCall(this.defaultClass, "vibrate", "(I)V", type == 0 ? 100 : 500);
+    }
+    public share(type: ShareType, param: any, success?: () => void, fail?: (errmsg: any) => void) {
 
     }
 

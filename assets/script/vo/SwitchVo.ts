@@ -3,11 +3,7 @@ export class SwitchVo {
     public fullScreenAd: number = 0;
     public iosShowMoney: string = "no";
     public isAuditing: number = 0;
-    public redbag: string = "no";
     public share: string = "ip";
-    public showNotEnoughGoldBtn: string = "no";
-    public spaceWinFullScreenAd: number = 5;
-    public startWinFullScreenAd: number = 9;
     public videoicon: string = "all";
     public idiomVideoicon: string = "all";
     public winbox: string = "no";
@@ -57,5 +53,8 @@ export class SwitchVo {
     }
     public get isShowIdiomVideoIcon(): boolean {
         return this.getConditionByTag("idiomVideoicon");
+    }
+    public get isShare(): boolean {
+        return this.getConditionByTag("share");
     }
 }

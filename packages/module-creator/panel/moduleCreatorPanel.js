@@ -97,6 +97,6 @@ Editor.Panel.extend({
 
   ready() {
     this.vm = createVM(this.$warp);
-    this.vm.refresh();
+    // this.vm.refresh();
   }
 });
