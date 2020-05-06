@@ -38,7 +38,6 @@ export default class SelectAlert extends MVC.BaseView {
 
     public close() {
         super.close();
-        Manager.audio.playAudio(SoundDefine.clickstage);
     }
 
     public onConfirm() {

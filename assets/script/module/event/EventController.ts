@@ -31,10 +31,10 @@ export class EventController extends MVC.MController<EventModel> {
     public onSendEvent(keyId: number, param) {
         let data = null;//cfg.Event.get(keyId);
         if (data) {
+            if (!param) param = "none";
             wonderSdk.sendEvent(data.name, param);
-            // fw.sdk.sendEvent(data.name, param);
         } else {
-            Log.warn("can't find event id" + keyId);
+            Log.warn("can't find event id" + keyId,param);
         }
     }
 }

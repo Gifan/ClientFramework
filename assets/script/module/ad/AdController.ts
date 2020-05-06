@@ -32,23 +32,16 @@ export class AdController extends MVC.MController<AdModel> {
         Notifier.changeListener(enable, ListenID.Ad_HideBanner, this.hideBanner, this);
         Notifier.changeListener(enable, ListenID.Ad_ShowVideo, this.showVideo, this);
         Notifier.changeListener(enable, ListenID.Ad_ShowFullVideo, this.showFullVideo, this);
+        Notifier.changeListener(enable, ListenID.Ad_ShowInsertAd, this.showInsertAd, this);
     }
 
     private _showBannerNum: number = 0;
     public showBanner(type: Const.BannerADType = Const.BannerADType.LV_END) {//sdk自行控制
-        // this._showBannerNum++;
         wonderSdk.showBanner(<number>type, () => {
-            // if (this._showBannerNum <= 0) {
-            // fw.sdk.hideBannerAd();
-            // }
+
         });
     }
     public hideBanner() {
-        // this._showBannerNum--; sdk自己控制对应处理逻辑
-        // if (this._showBannerNum <= 0) {
-        // this._showBannerNum = 0;
-        // fw.sdk.hideBannerAd();
-        // }
         wonderSdk.hideBanner();
     }
     public showVideo(call: Function = null) {
@@ -57,7 +50,7 @@ export class AdController extends MVC.MController<AdModel> {
             if (code == wonderSdk.VideoAdCode.COMPLETE) {
                 call && call(1);
             } else if (code == wonderSdk.VideoAdCode.SHOW_SUCCESS) {
-                // Notifier.send(ListenID.Event_SendEvent, EventDefine.out_rewarde_count, 1);
+                    Notifier.send(ListenID.Event_SendEvent, EventDefine.video_C);
             }
             else {
                 if (msg && msg != "") {
@@ -75,6 +68,10 @@ export class AdController extends MVC.MController<AdModel> {
                 Log.log("showFull success");
             }
         });
+    }
+
+    public showInsertAd() {
+        wonderSdk.showInsertAd();
     }
 }
 

@@ -1,12 +1,9 @@
 import { MVC } from "../../framework/MVC";
 import { Manager } from "../../util/Manager";
 import { UserVo } from "../../vo/UserVo";
-import { Log } from "../../framework/Log";
 import { Notifier } from "../../framework/notify/Notifier";
-import { ListenID } from "../../ListenID";
-import { AlertManager } from "../alert/AlertManager";
-import { Const } from "../../config/Const";
 import { CallID } from "../../CallID";
+import { ListenID } from "../../ListenID";
 
 
 const { ccclass, property } = cc._decorator;
@@ -46,9 +43,6 @@ export default class CheatView extends MVC.BaseView {
     public onCheatClick() {
         this.cheatNode.active = !this.cheatNode.active;
         this.desc.string = this.cheatNode.active ? "关闭" : "秘籍";
-        // let pos = Notifier.call(CallID.Common_GetMainViewCurrencyPosition, Const.CurrencyType.Diamond);
-        // Notifier.send(ListenID.Common_GiftReward, 1300, pos, 1, 1);
-        // Notifier.send(ListenID.Travel_CloseUnLockRole);
     }
 
     public resetUserVo() {

@@ -179,12 +179,14 @@ export class AudioManager {
         this._clips[id].clip = clip;
     }
     public pauseMusic() {
-        if (!this._enableMusic) {
+        // if (!this._enableMusic) {
+        //     console.log("pauseMusic");
             AudioManager.musicType == PlayType.Component ? this._musicSource.pause() : cc.audioEngine.pauseMusic();
-        }
+        // }
     }
     public resumeMusic() {
         if (this._enableMusic) {
+            console.log("resumeMusic");
             AudioManager.musicType == PlayType.Component ? this._musicSource.resume() : cc.audioEngine.resumeMusic();
         }
     }

@@ -41,7 +41,7 @@ if (window["cc"]) {
             getSpriteFunc(remindResName).then((spFrame) => {
                 sp.spriteFrame = spFrame;
             }).catch(() => {
-                console.log("***** RemindController: 红点没有找到红点资源 *****", remindResName);
+                // console.log("***** RemindController: 红点没有找到红点资源 *****", remindResName);
             });
         }
         return sp;
@@ -178,7 +178,7 @@ export default class RemindController {
         let checkFunc = data.checkFunc;
         let type = data.type;
         if (!node || !checkFunc) {
-            console.log("***** RemindController: 缺少node或checkFunc *****");
+            // console.log("***** RemindController: 缺少node或checkFunc *****");
             return;
         }
         // console.log("***** 创建提示点 *****", name, node, checkFunc);
@@ -217,7 +217,7 @@ export default class RemindController {
                 getSpriteFunc(remindResName).then((spFrame) => {
                     img.spriteFrame = spFrame;
                 }).catch(() => {
-                    console.log("***** RemindController: 红点没有找到红点资源 *****", remindResName);
+                    // console.log("***** RemindController: 红点没有找到红点资源 *****", remindResName);
                 });
                 lbl.node.active = false;
             }
@@ -272,7 +272,7 @@ export default class RemindController {
                 getSpriteFunc(spname).then((spFrame) => {
                     remind.spriteFrame = spFrame;
                 }).catch(() => {
-                    console.log("***** RemindController: 红点没有找到红点资源 *****", spname);
+                    // console.log("***** RemindController: 红点没有找到红点资源 *****", spname);
                 });
                 this._remindList[name].spName = spname;
             }

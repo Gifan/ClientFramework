@@ -1,5 +1,4 @@
 import { ISocket, NetData } from "./NetInterface";
-import { Log } from "../Log";
 
 /*
 *   WebSocket封装
@@ -7,7 +6,6 @@ import { Log } from "../Log";
 *   2. 网络异常回调
 *   3. 数据发送与接收
 *   
-*   2018-5-14 by 宝爷
 */
 
 export class WebSock implements ISocket {

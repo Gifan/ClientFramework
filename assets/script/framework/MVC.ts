@@ -357,7 +357,9 @@ export namespace MVC {
             for (var i = 0; i < this.BlockEvents.length; i++) {
                 this.node.on(this.BlockEvents[i], this.onClickFrame, this);
             }
+            this.setLanguage();
             this.changeListener(true);
+
             ViewHandler.onOpenEvent(this);
         }
 
@@ -433,6 +435,12 @@ export namespace MVC {
 
         protected onClickFrame(event) {
             event.stopPropagation();
+        }
+        /**
+         * 切换语言
+         */
+        protected setLanguage(){
+
         }
     }
 }
