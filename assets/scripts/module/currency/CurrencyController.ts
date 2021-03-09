@@ -23,8 +23,6 @@ export class CurrencyController extends MVC.MController<CurrencyModel> {
     }
 
     protected changeListener(enable: boolean): void {
-        //    Notifier.changeListener(enable, ListenID.Scene_AskSwitch, this.onAskSwitch, this);
-        //    Notifier.changeCall(enable, CallID.Scene_IsEnter, this.isEnter, this);
         Notifier.changeListener(enable, ListenID.Currency_OpenBuyView, this.onOpenBuyView, this);
         Notifier.changeListener(enable, ListenID.Currency_SetCurrencyVisible, this.onOpenCurrencyView, this);
     }

@@ -1,15 +1,3 @@
-export interface SkinVoItem {
-    //当前状态  0未解锁 1已解锁未装备 2已解锁已装备
-    curState: number,
-    //当前获得进度
-    curProgress: number,
-    //总进度
-    allProgress: number,
-}
-export interface SkinVoMap {
-    //皮肤id
-    [id: number]: SkinVoItem,
-}
 export class UserVo {
     public day: number = 0;
     public loginDay: number = 0;//登录天数
