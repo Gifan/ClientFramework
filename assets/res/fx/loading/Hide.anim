@@ -1,0 +1,104 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "Hide",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.5,
+  "sample": 50,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "paths": {
+      "leftaction": {
+        "props": {
+          "opacity": [
+            {
+              "frame": 0.12,
+              "value": 255
+            },
+            {
+              "frame": 0.48,
+              "value": 255
+            },
+            {
+              "frame": 0.5,
+              "value": 0
+            }
+          ],
+          "position": [
+            {
+              "frame": 0,
+              "value": [
+                0,
+                48,
+                0
+              ],
+              "curve": "linear"
+            },
+            {
+              "frame": 0.5,
+              "value": [
+                0,
+                -1000,
+                0
+              ]
+            }
+          ]
+        }
+      },
+      "rightaction": {
+        "props": {
+          "position": [
+            {
+              "frame": 0,
+              "value": [
+                0,
+                -48,
+                0
+              ],
+              "curve": "linear"
+            },
+            {
+              "frame": 0.5,
+              "value": [
+                0,
+                1000,
+                0
+              ]
+            }
+          ],
+          "opacity": [
+            {
+              "frame": 0,
+              "value": 255
+            },
+            {
+              "frame": 0.12,
+              "value": 255
+            },
+            {
+              "frame": 0.48,
+              "value": 255
+            },
+            {
+              "frame": 0.5,
+              "value": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "events": [
+    {
+      "frame": 0.12,
+      "func": "onActionReady",
+      "params": []
+    },
+    {
+      "frame": 0.5,
+      "func": "onHideFinish",
+      "params": []
+    }
+  ]
+}

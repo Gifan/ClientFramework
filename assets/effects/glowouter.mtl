@@ -1,0 +1,29 @@
+{
+  "__type__": "cc.Material",
+  "_name": "glowouter",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "cd7df573-790a-4ea9-a7b5-ba6fe5cbd759"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "props": {
+        "glowColor": {
+          "__type__": "cc.Color",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "a": 50
+        },
+        "glowThreshold": 0.9,
+        "glowColorSize": 0.008
+      },
+      "defines": {
+        "USE_TEXTURE": true,
+        "SHOW_OUTTER_GLOW": true
+      }
+    }
+  }
+}

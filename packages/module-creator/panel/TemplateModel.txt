@@ -4,7 +4,7 @@ export default class @ModuleNameModel extends MVC.BaseModel {
 
     private static _instance: @ModuleNameModel = null;
 
-    public constructor() {
+    private constructor() {
         super();
         if (@ModuleNameModel._instance == null) {
             @ModuleNameModel._instance = this;

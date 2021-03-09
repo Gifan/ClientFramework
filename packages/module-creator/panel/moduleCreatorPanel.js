@@ -33,7 +33,7 @@ function mkdirs(dirpath) {
 }
 
 function exportCode(module, useModel, useController, useView) {
-  let folderPath = Path.join(Editor.Project.path, "assets/script/module/" + module.toLowerCase());
+  let folderPath = Path.join(Editor.Project.path, "assets/scripts/module/" + module.toLowerCase());
   Editor.log("exportCode", module, folderPath);
   mkdirs(folderPath);
 
@@ -47,7 +47,7 @@ function exportCode(module, useModel, useController, useView) {
   }
 
   if (useView) {
-    let file = TemplateView.replace(/@ModuleName/g, module);
+    let file = TemplateView.replace(/@ModuleName/g, module).replace(/@moduleName/g, module.toLowerCase());
     let filePath = Path.join(folderPath, module + "View.ts");
     if (!Fs.existsSync(filePath)) {
       Fs.writeFileSync(filePath, file);
@@ -65,7 +65,7 @@ function exportCode(module, useModel, useController, useView) {
   }
 }
 
-var createVM = function(elem) {
+var createVM = function (elem) {
   return new Vue({
     el: elem,
     data: {
@@ -97,6 +97,6 @@ Editor.Panel.extend({
 
   ready() {
     this.vm = createVM(this.$warp);
-    this.vm.refresh();
+    // this.vm.refresh();
   }
 });

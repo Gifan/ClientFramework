@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.Material",
+  "_name": "sliver",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "b5447b63-7b8f-4ad2-b5ff-bcbe8d4faa3d"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true
+      },
+      "props": {
+        "flashColor": {
+          "__type__": "cc.Color",
+          "r": 255,
+          "g": 255,
+          "b": 255,
+          "a": 255
+        },
+        "sliverWidth": 0.1,
+        "sliverOpacity": 0.8
+      }
+    }
+  }
+}

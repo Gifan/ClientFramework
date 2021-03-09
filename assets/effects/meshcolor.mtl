@@ -1,0 +1,32 @@
+{
+  "__type__": "cc.Material",
+  "_name": "meshcolor",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "6d91e591-4ce0-465c-809f-610ec95019c6"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_DIFFUSE_TEXTURE": false,
+        "USE_ALPHA_TEST": false,
+        "OUTPUT_TO_GAMMA": true,
+        "INPUT_IS_GAMMA": true
+      },
+      "props": {
+        "diffuseColor": {
+          "__type__": "cc.Color",
+          "r": 195,
+          "g": 89,
+          "b": 89,
+          "a": 255
+        },
+        "diffuseTexture": {
+          "__uuid__": "0275e94c-56a7-410f-bd1a-fc7483f7d14a"
+        }
+      }
+    }
+  }
+}

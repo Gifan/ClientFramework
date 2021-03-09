@@ -1,0 +1,28 @@
+{
+  "__type__": "cc.Material",
+  "_name": "hsv",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "ee453eeb-3c86-42e1-bccc-92d85122e884"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "props": {
+        "hsv": {
+          "__type__": "cc.Vec4",
+          "x": 0,
+          "y": 1,
+          "z": 0,
+          "w": 0
+        }
+      },
+      "defines": {
+        "USE_TEXTURE": true,
+        "USE_HSV": true,
+        "USE_TINT": false
+      }
+    }
+  }
+}

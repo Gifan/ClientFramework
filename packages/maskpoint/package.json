@@ -1,0 +1,9 @@
+{
+  "name": "maskpoint",
+  "version": "0.0.1",
+  "description": "自定义mask遮罩坐标",
+  "author": "wjf",
+  "gizmos": {
+    "MeshPolygonMask": "packages://maskpoint/main.js"
+  }
+}

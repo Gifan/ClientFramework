@@ -1,0 +1,169 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+
+        # 描边颜色
+        outlineColor: { 
+          value: [1.0, 0.0, 0.0, 1.0], 
+          editor: {
+            type: color,
+            tooltip: "描边颜色",
+          }
+        }
+
+        # 描边宽度
+        outlineWidth: { 
+          value: 0.002,
+          editor: {
+            tooltip: "描边宽度",
+            range: [0.0, 1.0]
+          }
+        }
+
+        screenRatio: { value: 1.77}
+        
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+
+  #if SHOW_OUT_LINE
+
+  uniform Outline {
+    // 描边颜色 
+    vec4 outlineColor;
+    // 描边偏移大小
+    float outlineWidth;
+    // 特别地，必须是 vec4 先于 float 声明
+    float screenRatio;
+  };
+
+  //采样周围圆形的点偏移后得到一个类似放大的效果
+  float getIsStrokeWithAngel(float cosangel, float sinangel)
+  {
+    float a = texture2D(texture, vec2(v_uv0.x + outlineWidth * cosangel*screenRatio, v_uv0.y + outlineWidth * sinangel)).a; // 这句比较难懂，outlineSize * cos(rad)可以理解为在x轴上投影，除以textureSize.x是因为texture2D接收的是一个0~1的纹理坐标，而不是像素坐标
+    return a;
+  }
+
+  #endif
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+    o *= texture(texture, v_uv0);
+      #if CC_USE_ALPHA_ATLAS_TEXTURE
+      o.a *= texture2D(texture, v_uv0 + vec2(0, 0.5)).r;
+      #endif
+    #endif
+
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    gl_FragColor = o;
+
+    #if SHOW_OUT_LINE
+      // 无描边宽度即结束
+      if (outlineWidth == 0.0) {
+        return;
+      }
+
+      // 先画背景色
+      float strokeCount = 0.;
+      strokeCount += getIsStrokeWithAngel( 1.0, 0.0);
+      // strokeCount += getIsStrokeWithAngel( 0.9659258262, 0.2588190451);//15
+      strokeCount += getIsStrokeWithAngel( 0.8660254037, 0.5);//30
+      // strokeCount += getIsStrokeWithAngel( 0.7071067811, 0.7071067811);//45
+      strokeCount += getIsStrokeWithAngel( 0.5, 0.8660254037);//60
+      // strokeCount += getIsStrokeWithAngel( 0.2588190451, 0.9659258262);//75
+      strokeCount += getIsStrokeWithAngel( 0.0, 1.0);//90
+      // strokeCount += getIsStrokeWithAngel(-0.2588190451, 0.9659258262);//105
+      strokeCount += getIsStrokeWithAngel(-0.5, 0.8660254037);//120
+      // strokeCount += getIsStrokeWithAngel(-0.7071067811, 0.7071067811);//135
+      strokeCount += getIsStrokeWithAngel(-0.8660254037, 0.5);//150
+      // strokeCount += getIsStrokeWithAngel(-0.9659258262, 0.2588190451);//165
+      strokeCount += getIsStrokeWithAngel(-1.0, 0.0);//180
+      // strokeCount += getIsStrokeWithAngel(-0.9659258262, -0.2588190451);//195
+      strokeCount += getIsStrokeWithAngel(-0.8660254037, -0.5);//210
+      // strokeCount += getIsStrokeWithAngel(-0.7071067811, -0.7071067811);//225
+      strokeCount += getIsStrokeWithAngel(-0.5, -0.8660254037);//240
+      // strokeCount += getIsStrokeWithAngel(-0.2588190451, -0.9659258262);//255
+      strokeCount += getIsStrokeWithAngel(0.0, -1.0);//270
+      // strokeCount += getIsStrokeWithAngel(0.2588190451, -0.9659258262);//285
+      strokeCount += getIsStrokeWithAngel(0.5, -0.8660254037);//300
+      // strokeCount += getIsStrokeWithAngel(0.7071067811, -0.7071067811);//315
+      strokeCount += getIsStrokeWithAngel(0.8660254037, -0.5);//330
+      // strokeCount += getIsStrokeWithAngel(0.9659258262, -0.2588190451);//345
+      strokeCount = clamp(strokeCount, 0.0, 1.);
+      vec4 color_dest = outlineColor * strokeCount;
+      // 然后在背景色上方画图案颜色
+      vec4 color_src = o;
+
+      // 按照这个顺序，源颜色就是图案颜色，目标颜色就是背景色
+      // 所以命名就是 color_src, color_dest
+
+      // color_src: GL_SRC_ALPHA
+      // color_dest: GL_ONE_MINUS_SRC_ALPHA
+      // 即最终颜色如下：
+      // color_src * GL_SRC_ALPHA + color_dest * GL_ONE_MINUS_SRC_ALPHA
+      gl_FragColor = color_src * color_src.a + color_dest* (1.0 - color_src.a);
+    #endif
+  }
+}%

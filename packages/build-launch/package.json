@@ -1,0 +1,23 @@
+{
+    "name": "build-launch",
+    "version": "0.0.1",
+    "description": "构建额外配置插件",
+    "author": "wjf",
+    "mail":"wjf@qq.com",
+    "main": "main.js",
+    "main-menu": {
+      "i18n:MAIN_MENU.package.title/build-launch": {
+        "accelerator": "CmdOrCtrl+b",
+        "message": "build-launch:open"
+      }
+    },
+    "panel": {
+      "main": "panel/index.js",
+      "type": "dockable",
+      "title": "构建额外设置",
+      "width": 400,
+      "height": 200,
+      "min-height": 100,
+      "min-width": 100
+    }
+  }

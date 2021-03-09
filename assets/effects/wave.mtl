@@ -1,0 +1,23 @@
+{
+  "__type__": "cc.Material",
+  "_name": "wave",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "65d1d6ba-6f50-46dc-8801-6adc9f1f5c7e"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "props": {
+        "angularVelocity": 9,
+        "frequency": 3,
+        "offset": 0,
+        "amplitude": 0.02
+      },
+      "defines": {
+        "USE_TEXTURE": true
+      }
+    }
+  }
+}

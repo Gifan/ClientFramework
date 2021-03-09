@@ -4,7 +4,7 @@
 declare module cc {
     export interface Button {
         _onTouchEnded(event: any): void;
-        audioId:number,
+        audioId: number,
     }
 
 }

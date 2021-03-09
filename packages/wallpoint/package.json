@@ -1,0 +1,9 @@
+{
+  "name": "wallpoint",
+  "version": "0.0.1",
+  "description": "自定义多边形",
+  "author": "wjf",
+  "gizmos": {
+    "MeshPolygonSprite": "packages://wallpoint/main.js"
+  }
+}

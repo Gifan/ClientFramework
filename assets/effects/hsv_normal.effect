@@ -1,0 +1,121 @@
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        hsv: { value: [0.0, 0.0, 0.0, 0.0], editor: {tooltip: "HSV色值"}}
+}%
+
+CCProgram vs %{
+
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  #if USE_TINT
+    in vec4 a_color0;
+  #endif
+
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+
+out vec4 v_light;
+#if USE_TINT
+  out vec4 v_dark;
+#endif
+
+void main () {
+  mat4 mvp;
+  
+  #if CC_USE_MODEL
+    mvp = cc_matViewProj * cc_matWorld;
+  #else
+    mvp = cc_matViewProj;
+  #endif
+
+  v_uv0 = a_uv0;
+
+  v_light = a_color;
+  #if USE_TINT
+    v_dark = a_color0;
+  #endif
+
+  gl_Position = mvp * vec4(a_position, 1);
+}
+}%
+
+
+CCProgram fs %{
+
+  precision highp float;
+  
+  uniform sampler2D texture;
+  in vec2 v_uv0;
+
+  in vec4 v_light;
+  #if USE_TINT
+    in vec4 v_dark;
+  #endif
+
+  #include <texture>
+
+  #if USE_HSV
+    uniform HsvBlock{
+      vec4 hsv;
+    };
+    
+    vec3 rgb2hsv(vec3 c){
+      vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+      vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+      vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+      float d = q.x - min(q.w, q.y);
+      float e = 1.0e-10;
+      return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+    }
+    vec3 hsv2rgb(vec3 c){
+      vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+      vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+      return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+    }
+
+  #endif
+
+  void main () {
+    vec4 texColor = vec4(1.0);
+    CCTexture(texture, v_uv0, texColor);
+    vec4 finalColor;
+
+    #if USE_TINT
+      finalColor.a = v_light.a * texColor.a;
+      finalColor.rgb = ((texColor.a - 1.0) * v_dark.a + 1.0 - texColor.rgb) * v_dark.rgb + texColor.rgb * v_light.rgb;
+    #else
+      finalColor = texColor * v_light;
+    #endif
+    // o *= v_color;
+    #if USE_HSV
+        vec3 fragRGB = finalColor.rgb;
+          vec3 fragHSV = rgb2hsv(fragRGB).xyz;
+          float r = step(60.9/360.0, fragHSV.x)-step(179.9/360.0, fragHSV.x);
+          fragHSV.x += r*(hsv.x / 360.0);
+          fragHSV.yz += r*hsv.yz;
+          fragHSV.x = mod(fragHSV.x, 1.0);
+          fragHSV.yz = clamp(fragHSV.yz, 0.0, 1.0);
+          fragRGB = hsv2rgb(fragHSV);
+          finalColor.xyz = fragRGB.xyz;
+    #endif
+
+    gl_FragColor = finalColor;
+  }
+}%

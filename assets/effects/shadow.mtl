@@ -1,0 +1,27 @@
+{
+  "__type__": "cc.Material",
+  "_name": "shadow",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "2edd2f7a-56cf-4f9c-8147-2e142bb2e380"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true,
+        "USE_CUSTOMCOLOR": false
+      },
+      "props": {
+        "u_arc_color": {
+          "__type__": "cc.Color",
+          "r": 129,
+          "g": 219,
+          "b": 234,
+          "a": 255
+        }
+      }
+    }
+  }
+}

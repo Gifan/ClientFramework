@@ -1,0 +1,102 @@
+// Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.  
+
+CCEffect %{
+  techniques:
+  - passes:
+    - vert: vs
+      frag: fs
+      blendState:
+        targets:
+        - blend: true
+      rasterizerState:
+        cullMode: none
+      properties:
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+        u_arc_color: {
+          value: [1.0, 1.0, 1.0, 1.0],
+          editor: {
+            type: color,
+            tooltip: "圆弧线颜色"
+          }
+        }
+}%
+
+
+CCProgram vs %{
+  precision highp float;
+
+  #include <cc-global>
+  #include <cc-local>
+
+  in vec3 a_position;
+  in vec4 a_color;
+  out vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 a_uv0;
+  out vec2 v_uv0;
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+
+  in vec4 v_color;
+
+  #if USE_TEXTURE
+  in vec2 v_uv0;
+  uniform sampler2D texture;
+  #endif
+  #if USE_CUSTOMCOLOR
+  uniform style{
+    // 圆弧线颜色
+    vec4 u_arc_color;
+  };
+  #endif
+
+  
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      // o *= texture(texture, v_uv0);
+      vec2 offsetuv = v_uv0+vec2(0.000, 0.005);
+      vec4 normalcolor = texture(texture, offsetuv);
+      if(normalcolor.a >= 0.01){//根据投影位置设置阴影
+        o = vec4(0.0, 0.0, 0.0, normalcolor.a);
+        #if USE_CUSTOMCOLOR
+          o.xyz = u_arc_color.xyz;
+        #endif
+      }else{
+        discard;
+      }
+    #endif
+    o *= v_color;
+
+    ALPHA_TEST(o);
+
+    gl_FragColor = o;
+  }
+}%

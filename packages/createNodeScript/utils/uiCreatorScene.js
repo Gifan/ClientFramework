@@ -108,7 +108,13 @@ class NodeInfo {
         this.fieldNameLower = this.fieldName.toLowerCase();
         this.fieldPath = this.fieldName;
         this.typeName = GetType(node);
-
+        // if (this.fieldName.indexOf('=') != -1) {
+        //     let names = this.fieldName.split('=');
+        //     this.fieldName = names[0];
+        //     if(names[1] && names[1] == "Array"){
+        //         this.isArray = true;
+        //     }
+        // }
         // let customType = null;
         // if (this.fieldName.indexOf('=') != -1) {
         //     let names = this.fieldName.split('=');
@@ -394,7 +400,7 @@ message['create'] = function (event, paths) {
 
     let text = modulepath.replace("db://assets/resources/", "").replace(".prefab", "")
     Editor.log('预制体路径', text);
-    cc.loader.loadRes(text, function (err, prefab) {
+    cc.resources.load(text, function (err, prefab) {
         var node = cc.instantiate(prefab);
         Generate(node);
         event.reply(null, 'create successful');

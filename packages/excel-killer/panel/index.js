@@ -117,7 +117,8 @@ Editor.Panel.extend({
                             this._addLog("配置目录不存在:" + clientDir);
                             return;
                         }
-                        let pattern = path.join(clientDir, '**/*.json');
+                        let str = this.isCompressJson ? '**/*.config' : '**/*.json';
+                        let pattern = path.join(clientDir, str);
                         let files = Globby.sync(pattern);
                         //Editor.log("files", files, importPath)
                         this._addLog("一共导入文件数量: " + files.length);
@@ -496,7 +497,7 @@ Editor.Panel.extend({
                     let saveFileFullPath1 = path.join(this.jsSavePath, dirClientName);
                     // let files = fs.readdirSync(saveFileFullPath1);
                     // Editor.log("files", files)
-                    let saveFileFullPath2 = path.join(Editor.Project.path, "assets/script/config");
+                    let saveFileFullPath2 = path.join(Editor.Project.path, "assets/scripts/config");
                     if (fs.existsSync(saveFileFullPath2)) {
                         // 检索所有的ts配置
                         let pattern = path.join(saveFileFullPath1, '*.ts');
@@ -1082,7 +1083,7 @@ Editor.Panel.extend({
                                         }
                                     }
 
-                                    if (this.isExportJson || this.isExportJs) {
+                                    if (this.isExportJson || this.isExportJs || this.isCompressJson) {
                                         //数据保存在json中，TS需要存储
                                         sheetJsData = null;
                                     }
@@ -1144,6 +1145,7 @@ Editor.Panel.extend({
                 // 保存为json配置
                 _onSaveJsonCfgFile(data, saveFileFullPath) {
                     let str = JSON.stringify(data);
+                    str = str.replace(/\\\\/g, "\\");
                     if (this.isFormatJson) {
                         str = jsonBeautifully(str);
                     }
@@ -1153,7 +1155,9 @@ Editor.Panel.extend({
                 // 保存为js配置
                 _onSaveJavaScriptCfgFile(saveFileFullPath, jsSaveData) {
                     // TODO 保证key的顺序一致性
-                    let saveStr = "module.exports = " + JSON.stringify(jsSaveData) + ";";
+                    let cfgjs = JSON.stringify(jsSaveData);
+                    cfgjs = cfgjs.replace(/\\\\/g, "\\");
+                    let saveStr = "module.exports = " + cfgjs + ";";
                     if (this.isFormatJsCode) {// 保存为格式化代码
                         let ast = uglifyJs.parse(saveStr);
                         let ret = uglifyJs.minify(ast, {
@@ -1183,7 +1187,7 @@ Editor.Panel.extend({
                         const element = importData[key];
                         importStr += element;
                     }
-                    //Editor.log("className:", JSON.stringify(importData));
+                    // Editor.log("className:", JSON.stringify(importData));
 
                     let saveStr = TemplateReader.replace(/@TypeName/g, className)
                         .replace(/@ClassDefine/g, classData).replace(/@Import/g, importStr);
@@ -1197,7 +1201,8 @@ Editor.Panel.extend({
 
                     if (cfgData != null) {
                         let cfgStr = JSON.stringify(cfgData, null, 4);
-                        cfgStr = TemplateConstructor.replace(/@Data/g, cfgStr);
+                        cfgStr = cfgStr.replace(/\\\\/g, "\\");
+                        cfgStr = TemplateConstructor.replace(/@Data/g, cfgStr, cfgData);
                         saveStr = saveStr.replace(/@Constructor/g, cfgStr);
                     } else {
                         saveStr = saveStr.replace(/@Constructor/g, "");
