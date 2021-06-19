@@ -3,7 +3,6 @@ export class UserVo {
     public loginDay: number = 0;//登录天数
     public gold: number = 0;
 
-    public isAcceptPrivacy: boolean = false;
 
 
     //体力模块
@@ -13,6 +12,7 @@ export class UserVo {
 
     //临时变量
     public isNewUser: boolean = true;//第一天登录算新用户
+    public isAcceptPrivacy: boolean = false;
     public updatetUserVo(res: Object): void {
         Object.getOwnPropertyNames(this).forEach(function (key) {
             if (res.hasOwnProperty(key)) {

@@ -147,6 +147,11 @@ export abstract class BaseSdk {
         return this;
     }
 
+    protected bmsVo:any = null;
+    public setBmsVo(res:Object){
+        this.bmsVo = res;
+    }
+
     /**
      * 震动
      * @param type 
@@ -174,7 +179,7 @@ export abstract class BaseSdk {
     /**
      * 预加载激励视频
      */
-    public preLoadRewardVideo(){
+    public preLoadRewardVideo() {
 
     }
 
@@ -182,9 +187,41 @@ export abstract class BaseSdk {
      * 商店评分
      * @param path 跳转路径
      */
-    public goRate(path?:string):void{
+    public goRate(path?: string): void {
 
     }
+
+    /**
+     * 登录完成
+     */
+    public setLoginFinish(): void {
+
+    }
+
+    public toPay(): void {
+
+    }
+
+    public toRestorePay(): void {
+
+    }
+
+    public getNativeAdInfo() {
+        return null;
+    }
+
+    /**
+     * 显示原生插屏
+     */
+     public showNativeFullVideoAD(id: string) {
+
+    }
+
+    public nativeAdRefresh(){
+        
+    }
+
+    public toShareFaceBook(call?:Function){}
 }
 
 export enum VideoAdCode {

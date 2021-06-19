@@ -96,17 +96,22 @@ export default class GridView extends cc.Component {
         let offset: cc.Vec2 = null;
         switch (this.grid_view_type) {
             case GRID_TYPE.GRID_HORIZONTAL:
-                offset = cc.v2(pos.x - itemSize.x * 0.5, 0);
+                offset = cc.v2(pos.x / this.layout_obj.key_count + itemSize.x * 0.5, 0);
+                if (offset.x <= itemSize.x) { offset.x = 0 };
+                this.scrollview.scrollToPercentHorizontal(offset.x / this.scrollview.getMaxScrollOffset().x, 0.15);
                 break;
             case GRID_TYPE.GRID_VERTICAL:
-                offset = cc.v2(0, -pos.y + itemSize.y * 0.5);
+                offset = cc.v2(0, -pos.y - itemSize.y * 0.5);
+                // console.log(offset.y, this.scrollview.getMaxScrollOffset().y);
+                // this.scrollview.scrollToPercentVertical(offset.y / this.scrollview.getMaxScrollOffset().y, 0.2);
+                this.scrollview.scrollToOffset(offset, 0.1);
                 break;
             default:
                 offset = cc.v2(0, 0);
+                this.scrollview.scrollToOffset(offset);
                 break;
         }
-
-        this.scrollview.scrollToOffset(offset);
+        // this.scrollview.scrollToOffset(offset);
         this.doFresh();
     }
 
@@ -221,7 +226,7 @@ export default class GridView extends cc.Component {
                 this.layout_obj.vertical_layout_type = this.vertical_layout;
 
                 this.viewport_length = this.node.width;
-                this.key_count = 1;
+                // this.key_count = 1;
                 break;
 
             case GRID_TYPE.GRID_VERTICAL:
@@ -353,7 +358,7 @@ export default class GridView extends cc.Component {
 
     private calculatePos(obj: cc.Node, i: number) {
         let pos: cc.Vec2 = this.layout_obj.getPosByIndex(i);
-        obj.position = cc.v3(pos.x,pos.y,0);
+        obj.position = cc.v3(pos.x, pos.y, 0);
     }
 
     private getCurVisibleIndex(): MathSection {
@@ -398,7 +403,7 @@ export default class GridView extends cc.Component {
         return ht;
     }
 
-    private onScrolling() {
+    private onScrolling(param) {
         this.refresh();
     }
 

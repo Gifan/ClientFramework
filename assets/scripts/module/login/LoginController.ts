@@ -33,6 +33,7 @@ export class LoginController extends MVC.MController<LoginModel> {
     }
 
     private onLoginFinish(): void {
+        wonderSdk.setLoginFinish();
         cc.director.loadScene(Const.GAME_SCENENAME, () => {
 
         });

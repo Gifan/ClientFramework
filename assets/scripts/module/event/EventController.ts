@@ -30,7 +30,6 @@ export class EventController extends MVC.MController<EventModel> {
         if (keyId == null) return;
         let data = Cfg.Event.get(keyId);
         if (data) {
-            if (param && param.stage && param.stage > 50) return;
             // cc.log(data.name, param);
             if (!param) param = "none";
             wonderSdk.sendEvent(data.name, param);

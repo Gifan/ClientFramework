@@ -1,7 +1,7 @@
 import { EPlatform, SdkClass, AppIdList, BannerIdList, InsterIdList, SplashIdList, FeedAdIdList, BMSInfoList, VideoIdList, FullVideoIdList, BoxIdList } from "./config/SdkConfig";
 import { BaseSdk, VideoAdCode, ShareType } from "./platform/BaseSdk";
 import { SdkAudioAdapter, AudioInterface } from "./adapter/AudioAdapter";
-import { SdkSelectAlertAdapter, SelectAlertInterface } from "./adapter/SelectAlertAdapter";
+import { SdkAlertAdapter, AlertInterface } from "./adapter/SelectAlertAdapter";
 import { BaseNet, BaseUrl, Url } from "./net/BaseNet";
 // import { BaiDuSdk } from "./platform/baidu/BaiDuSdk";
 declare let require: (str: string) => any;
@@ -71,7 +71,8 @@ export class WonderSdk {
      * 判断是否是原生平台
      */
     public get isNative(): boolean {
-        return this._platformId == EPlatform.NA_ANDROID || this._platformId == EPlatform.NA_IOS || this._platformId == EPlatform.OPPO_ANDROID || this._platformId == EPlatform.VIVO_ANDROID || this._platformId == EPlatform.XIAOMI_ANDROID || this._platformId == EPlatform.GOOGLE_ANDROID;
+        return this._platformId == EPlatform.NA_ANDROID || this._platformId == EPlatform.NA_IOS || this._platformId == EPlatform.OPPO_ANDROID || this._platformId == EPlatform.VIVO_ANDROID || this._platformId == EPlatform.XIAOMI_ANDROID || this._platformId == EPlatform.GOOGLE_ANDROID
+            || this._platformId == EPlatform.SSJJ_ANDROID || this._platformId == EPlatform.TAPTAP_ANDROID || this._platformId == EPlatform.MMY_ANDROID || this._platformId == EPlatform.HYKB_ANDROID || this._platformId == EPlatform.AMZ_ANDROID;
     }
 
     /**
@@ -81,6 +82,13 @@ export class WonderSdk {
         return this._platformId == EPlatform.BYTE_DANCE;
     }
 
+    public get isWebDev(): boolean {
+        return this._platformId == EPlatform.WEB_DEV;
+    }
+
+    public get isKwai(): boolean {
+        return this._platformId == EPlatform.KWAI_MICRO;
+    }
     /**
      * 是否是qq小游戏平台
      */
@@ -153,6 +161,10 @@ export class WonderSdk {
         return this._platformId == EPlatform.GOOGLE_ANDROID;
     }
 
+    public get isAmzAndroid(): boolean {
+        return this._platformId == EPlatform.AMZ_ANDROID;
+    }
+
     public get isMeiZuMicro(): boolean {
         return this._platformId == EPlatform.MEIZU_MICRO;
     }
@@ -185,8 +197,8 @@ export class WonderSdk {
      * @param {SelectAlertInterface} alertInterface
      * @memberof WonderSdk
      */
-    public setAlertAdpater(alertInterface: SelectAlertInterface) {
-        SdkSelectAlertAdapter.setAdapter(alertInterface);
+    public setAlertAdpater(alertInterface: AlertInterface) {
+        SdkAlertAdapter.setAdapter(alertInterface);
     }
 
     /**
@@ -238,11 +250,13 @@ export class WonderSdk {
             console.error("can't find this platform banner");
             return;
         }
-
+        if (this.isTest) {
+            return;
+        }
         let nowTime = (new Date()).getTime();
         // console.log("[SdkMgr][showBannerAd]", (nowTime - this._bannerTime) / 1000, nowTime, this._bannerTime);
         if (this._bannerTime) {
-            if (nowTime - this._bannerTime > 30 * 1000) {
+            if (nowTime - this._bannerTime > 15 * 1000) {
                 this.destroyBanner();
                 this._bannerTime = nowTime;
             }
@@ -253,7 +267,7 @@ export class WonderSdk {
         if (!args && onShow) {
             this._sdk.showBanner(adid, onShow);
         } else if (typeof args === "function") {
-            this._sdk.showBanner(adid, onShow);
+            this._sdk.showBanner(adid, args);
         }
         else if (args && typeof args.x === "number") {
             this._sdk.showBannerWithNode(adid, args, onShow);
@@ -465,7 +479,15 @@ export class WonderSdk {
      * @memberof WonderSdk
      */
     public requestSwitchConfig(): Promise<any> {
-        return BaseNet.Request(BaseUrl.ServerDomain + Url.BMS_LAUNCH_CONFIG, { app_name: this.BMS_APP_NAME, version: this.BMS_VERSION }, "GET");
+        return new Promise((resolve, reject) => {
+            BaseNet.Request(BaseUrl.ServerDomain + Url.BMS_LAUNCH_CONFIG, { app_name: this.BMS_APP_NAME, version: this.BMS_VERSION }, "GET").then(res => {
+                this._sdk.setBmsVo(res.data);
+                resolve(res);
+            }).catch(err => {
+                reject(err);
+            });
+        });
+
     }
     /**
      * @description 请求分享列表配置
@@ -479,12 +501,13 @@ export class WonderSdk {
             BaseNet.Request(BaseUrl.ServerDomain + Url.BMS_SHARE_CONFIG, { app_name: this.BMS_APP_NAME, version: this.BMS_VERSION }, "GET")
                 .then(data => {
                     this._sdk.setShareList(data.data.list);
-                    resolve(null);
+                    resolve(data.data);
                 }).catch(err => {
                     reject(err);
                 })
         });
     }
+
     /**
      * @description 获取服务器时间
      * @author 吴建奋
@@ -547,5 +570,40 @@ export class WonderSdk {
      */
     public goRate(path?: string): void {
         this._sdk.goRate(path);
+    }
+
+    /**
+     * 登录成功
+     */
+    public setLoginFinish(): void {
+        this._sdk.setLoginFinish();
+    }
+
+    /**
+     * 支付相关
+     */
+    public toPay(): void {
+        this._sdk.toPay();
+    }
+    public toRestorePay(): void {
+        this._sdk.toRestorePay();
+    }
+
+    public getNativeAdInfo() {
+        return this._sdk.getNativeAdInfo();
+    }
+
+    public reportAdShowByType(type: number, id: string) {
+        console.log("原生 reportAdShowBYType", type, id);
+        //@ts-ignore
+        this._sdk.reportAdShow(type, id);
+    }
+
+    public nativeAdRefresh() {
+        this._sdk.nativeAdRefresh();
+    }
+
+    public toShareFaceBook(call?: Function) {
+        this._sdk.toShareFaceBook(call);
     }
 }

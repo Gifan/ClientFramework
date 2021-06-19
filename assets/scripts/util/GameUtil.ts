@@ -226,64 +226,33 @@ export class GameUtil {
         handler.component = funTargetName;
         return handler;
     }
-    public static getBonesOffset(bone: any) {
-        if (CC_JSB) {
-            return bone.getOffset();
+    /**
+     * @desc 从给定整数范围内生成n个不重复的随机数 n不能超过给定范围
+     * @param {Number} min 
+     * @param {Number} max 
+     */
+    public static getRandomSDiff(min, max, n) {
+        if (max - min + 1 <= n) {
+            let list = [];
+            for (let i = min; i <= max; i++) {
+                list.push(i)
+            }
+            return list;
         }
-        return bone.offset
-    }
-    public static getBonesOrigin(bone: any) {
-        if (CC_JSB) {
-            return bone.getOrigin();
+        let originalArray = new Array();
+        let len = max - min + 1;
+        for (let i = 0; i < len; i++) {
+            originalArray[i] = min + i;
         }
-        return bone.origin;
-    }
-    public static getAnimationPose(bone: any) {
-        if (CC_JSB) {
-            return bone.getAnimationPose();
+        let randomArray = new Array();
+        for (let i = 0; i < n; i++) {
+            let t = this.random(0, len - 1 - i)
+            randomArray[i] = originalArray[t];
+            var temp = originalArray[len - 1 - i];
+            originalArray[len - 1 - i] = originalArray[t];
+            originalArray[t] = temp;
         }
-        return bone.animationPose;
-    }
-    public static setOffsetMode(bone: any, num: number) {
-        if (CC_JSB) {
-            bone.setOffsetMode(num);
-        } else {
-            bone.offsetMode = num;
-        }
-    }
-    public static getOffsetMode(bone: any): number {
-        if (CC_JSB) {
-            return bone.getOffsetMode();
-        }
-        return bone.offsetMode;
-    }
-
-    public static getGlobalTransformMatrix(bone: any) {
-        if (CC_JSB) {
-            return bone.getGlobalTransformMatrix();
-        }
-        return bone.globalTransformMatrix;
-    }
-
-    public static setHasConstrain(bone: any, boo: boolean) {
-        // if(CC_JSB){
-        //     bone.setHasConstrain(boo);
-        // }else{
-        bone._hasConstraint = boo;
-        // }
-    }
-    public static getHasConstrain(bone: any) {
-        // if(CC_JSB){
-        //     return bone.getHasConstrain();
-        // }
-        return bone._hasConstraint;
-    }
-
-    public static getBoneData(bone: any) {
-        if (CC_JSB) {
-            return bone.getBoneData();
-        }
-        return bone.boneData;
+        return randomArray;
     }
 
     /**
@@ -310,5 +279,68 @@ export class GameUtil {
             size.height = height1;
         }
         return size;
+    }
+
+    /**
+     * 版本号比较
+     */
+    public static compareVersion(v1, v2) {
+        v1 = v1.split('.')
+        v2 = v2.split('.')
+        const len = Math.max(v1.length, v2.length)
+
+        while (v1.length < len) {
+            v1.push('0')
+        }
+        while (v2.length < len) {
+            v2.push('0')
+        }
+
+        for (let i = 0; i < len; i++) {
+            const num1 = parseInt(v1[i])
+            const num2 = parseInt(v2[i])
+
+            if (num1 > num2) {
+                return 1
+            } else if (num1 < num2) {
+                return -1
+            }
+        }
+
+        return 0
+    }
+
+    public static cocosToWx(node: cc.Node | cc.Vec2) {
+        let worldPos: cc.Vec2 = cc.Vec2.ZERO;
+        if (node instanceof cc.Node) {
+            let pos = node.parent.convertToWorldSpaceAR(node.position);
+            worldPos.x = pos.x; worldPos.y = pos.y;
+        } else {
+            worldPos.x = node.x; worldPos.y = node.y;
+        }
+        let designsize = GameUtil.getRealDesignSize();
+        worldPos.y = designsize.height - worldPos.y;//翻转
+        console.log("designSize = ", worldPos.x, worldPos.y);
+        //@ts-ignore
+        let info = wx.getSystemInfoSync();
+        let canvaswidth = info.screenWidth;
+        let canvasheight = info.screenHeight;
+        let newpos = cc.v2(canvaswidth / designsize.width * worldPos.x, canvasheight / designsize.height * worldPos.y);
+        console.log("new pos = ", newpos.x, newpos.y);
+        return newpos;
+    }
+
+    public static getRealDesignSize() {
+        let srcScaleForShowAll = Math.min(
+            cc.view.getCanvasSize().width / Const.designWidth,
+            cc.view.getCanvasSize().height / Const.designHeight
+        );
+        let realWidth1 = Const.designWidth * srcScaleForShowAll;
+        let realHeight1 = Const.designHeight * srcScaleForShowAll;
+        let widthratio = cc.view.getCanvasSize().width / realWidth1;
+        let heightratio = cc.view.getCanvasSize().height / realHeight1;
+        let width = Const.designWidth * widthratio;
+        let height = Const.designHeight * heightratio;
+        return { height: height, width: width, radioHeight: heightratio, radioWidth: widthratio };
     }
 }

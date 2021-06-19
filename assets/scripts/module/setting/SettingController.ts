@@ -27,6 +27,8 @@ export class SettingController extends MVC.MController<SettingModel> {
     }
 
     protected changeListener(enable: boolean): void {
+        //    Notifier.changeListener(enable, ListenID.Scene_AskSwitch, this.onAskSwitch, this);
+        //    Notifier.changeCall(enable, CallID.Scene_IsEnter, this.isEnter, this);
         Notifier.changeCall(enable, CallID.Setting_IsMuteMusic, this.isMuteMusic, this);
         Notifier.changeCall(enable, CallID.Setting_IsMuteAudio, this.isMuteAudio, this);
         Notifier.changeCall(enable, CallID.Setting_IsMuteShake, this.isMuteShake, this);

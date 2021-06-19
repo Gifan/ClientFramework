@@ -133,7 +133,7 @@
       "__id__": 2
     },
     "_enabled": true,
-    "testMode": true,
+    "testMode": false,
     "CustomPlatform": 1,
     "progress": {
       "__id__": 4
@@ -619,7 +619,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160.37,
+      "width": 60.7,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -671,8 +671,8 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "载入中...%d%",
-    "_N$string": "载入中...%d%",
+    "_string": "%d%",
+    "_N$string": "%d%",
     "_fontSize": 26,
     "_lineHeight": 40,
     "_enableWrapText": true,

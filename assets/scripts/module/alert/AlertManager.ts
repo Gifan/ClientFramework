@@ -4,31 +4,25 @@ import { Const } from "../../config/Const";
 import CurrencyTips from "./CurrencyTips";
 import { Manager } from "../../manager/Manager";
 import { UIManager } from "../../manager/UIManager";
-import OutputTips from "./OutputTips";
 
 export enum AlertType {
     COMMON = 0, //普通
     SELECT = 1,   //帮助提示框
 }
 
-export enum HitType {
-    BOOM = 0,//爆炸
-    ROLL_OVER,//碾压
-    BOUNCE_OFF,//弹开
-    HEAD_SHOT,//爆头
-}
-
+let _alertInstance: AlertManager;
 export class AlertManager {
     private static _canShow: boolean = true;
-    public static showNormalTips(text: string, uilayer: MVC.eUILayer = MVC.eUILayer.Tips, time: number = 1, ydis: number = 70): void {
+    public static showNormalTips(text: string, uilayer: MVC.eUILayer = MVC.eUILayer.Tips, time: number = 1, pos: cc.Vec3 = cc.Vec3.ZERO, ydis: number = 70): void {
         // if(this._canShow){
         let self = this;
         Manager.loader.loadPrefab("ui/common/alert/tip").then((node) => {
             self._canShow = false;
             node.getComponent(NormalTips).setText(text);
             node.group = "UI";
+            node.position = pos;
             node.setParent(UIManager.layerRoots(uilayer));
-            cc.tween(node).by(time, { position: cc.v3(0, ydis, 0) }).to(1, { opacity: 0 }).call(() => {
+            cc.tween(node).by(time, { position: cc.v3(0, ydis, 0) }).to(1, { opacity: 1 }).call(() => {
                 node.stopAllActions();
                 node.destroy();
                 self._canShow = true;
@@ -79,21 +73,19 @@ export class AlertManager {
         AlertManager.showAlert(AlertType.SELECT, args);
     }
 
-    public static OutputtipPool: cc.NodePool = new cc.NodePool(OutputTips);
-    public static showOutPutTips(type: HitType, parent: cc.Node = null, pos: cc.Vec3 = cc.Vec3.ZERO, index: number = 0): void {
+    public static OutputtipPool: cc.NodePool = new cc.NodePool();
+    public static showOutPutTips(text: string, parent: cc.Node = null, pos: cc.Vec3 = cc.Vec3.ZERO, index: number = 0): void {
         let node1 = this.OutputtipPool.get();
         let call = (node: cc.Node) => {
+            // node.getChildByName("tipsText").getComponent(cc.Label).string = `${text}`;
             node.active = true;
-
-            node.getComponent(OutputTips).showTips(type, AlertManager.OutputtipPool);
-            if (!parent || !cc.isValid(parent)) {
-                let parenttips = UIManager.layerRoots(MVC.eUILayer.Tips);
-                node.setParent(parenttips);
-                node.position = parenttips.convertToNodeSpaceAR(pos);
-            } else {
-                node.position = pos;
-                node.parent = parent;
-            }
+            node.opacity = 255;
+            node.scale = 0.1;
+            if (!cc.isValid(parent)) return;
+            node.parent = parent;
+            cc.tween(node).set({ position: cc.v3(pos.x, pos.y + 5) }).to(0.8, { scale: 0.7, position: cc.v3(pos.x, pos.y + 105) }).delay(0.4).to(0.7, { opacity: 0, position: cc.v3(pos.x, pos.y + 125) }).call(() => {
+                this.OutputtipPool.put(node);
+            }).start();
         }
         if (!node1) {
             Manager.loader.loadPrefab("ui/common/alert/OutPutTips").then((node2) => {
@@ -133,7 +125,7 @@ export class AlertManager {
                 .parallel(movetween,
                     cc.tween().to(0.4, { opacity: 255 }))
                 .delay(0.5)
-                .by(time, { position: cc.v3(0, ydis), opacity: -255 })
+                .by(time, { position: cc.v3(0, ydis), opacity: -254 })
                 .call(() => {
                     this.tipPool.put(node);
                     AlertManager.canShow = true;

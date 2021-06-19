@@ -24,7 +24,7 @@ export default class NativeAndroid extends BaseSdk {
         };
         callAndroid["videoError"] = (msg: string) => {
             console.error("[WxAdCtrler][showVideoAD] error");
-            this.onPlayEnd && this.onPlayEnd(VideoAdCode.AD_ERROR, "内容正在加载中，请稍后再试！");
+            this.onPlayEnd && this.onPlayEnd(VideoAdCode.AD_ERROR, "内容正在加载中，请稍后再试");
         };
         callAndroid["rewardVideoSuccess"] = () => {//成功展示激励视频
             // this.sendEvent("out_rewarde_count", null);
@@ -48,6 +48,18 @@ export default class NativeAndroid extends BaseSdk {
         callAndroid["onPrivacyReject"] = () => {
             this._privacyCallback && this._privacyCallback(false);
         }
+        callAndroid["shareResult"] = (code) => {
+            if (code == 0) {//分享成功
+                this._shareCall && this._shareCall(0);
+            } else {
+                //分享失败
+                this._shareCall && this._shareCall(1);
+            }
+        }
+        window["purchaseCallback"] = (e: string) => {
+            this.payCallback(e);
+        }
+        jsbCall(this.defaultClass, "checkPurchasesInApp", "()V");
     }
     public login(success?: (data: any) => void, fail?: (errmsg: any) => void): Promise<any> {
         return new Promise((resolve, reject) => {
@@ -84,23 +96,9 @@ export default class NativeAndroid extends BaseSdk {
         let subkey = "";
         if (param == null || param == "" || param == "none") {
         } else {
-            // let list: string = param;
-            // let keys = list.split("-");
-            // realkey += keys[0];
-            if (typeof param == "object") {
-                if (param.stage) {
-                    if (param.stage > 50) return;
-                    let suffix = "";
-                    if (param.stage < 10) suffix = "00";
-                    else suffix = "0";
-                    realkey += suffix + param.stage;
-                }
-
-                if (param.finishTime) {
-                    jsbCall(this.defaultClass, "sendEventWithValue", "(Ljava/lang/String;I)V", realkey, param.finishTime);
-                    return;
-                }
-            }
+            let list: string = param;
+            let keys = list.split("-");
+            realkey += keys[0];
         }
         jsbCall(this.defaultClass, "sendMsg", "(Ljava/lang/String;)V", realkey);
     }
@@ -116,7 +114,7 @@ export default class NativeAndroid extends BaseSdk {
     }
 
     public showSplashAd(adId: string) {
-        // jsbCall(this.defaultClass, "showSplashAd", "(Ljava/lang/String;)V", adId);
+        jsbCall(this.defaultClass, "showSplashAd", "(Ljava/lang/String;)V", adId);
     };
 
     private _privacyCallback!: (boo: any) => void;
@@ -131,11 +129,30 @@ export default class NativeAndroid extends BaseSdk {
 
 
     public goRate(path?: string): void {
-        let gopath = path ? path : "";
-        jsbCall(this.defaultClass, "rate", "(Ljava/lang/String;)V", gopath);
+        // let gopath = path ? path : "";
+        jsbCall(this.defaultClass, "onCommentBtn", "()V");
     }
 
     public showDebugAdView(): void {
         jsbCall(this.defaultClass, "debugAdView", "(Ljava/lang/String;)V", "test");
+    }
+
+    public toPay() {
+        jsbCall(this.defaultClass, "buyRemoveADs", "(Ljava/lang/String;)V", "");
+    }
+
+    public payCallback(e: string) {
+        console.log("yjr支付回调返回", e);
+        if (e == "payFail") {
+            cc.game.emit('buy-removeAdFail');
+        } else if (e == "paySuccessful") {
+            cc.game.emit('buy-removeAdSuc');
+        }
+    }
+
+    private _shareCall: Function = null;
+    public toShareFaceBook(call?: Function) {
+        this._shareCall = call;
+        jsbCall(this.defaultClass, "toShareFaceBook", "()V");
     }
 }

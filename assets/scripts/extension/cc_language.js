@@ -8,9 +8,12 @@
             var oldValue = this._string;
             var newvalue = value;
             if (cc.sys.language != cc.sys.LANGUAGE_CHINESE) {
+                if (cc.sys.language != cc.sys.LANGUAGE_ENGLISH) {
+                    this.font = null;
+                }
                 var data = window[langRes];
                 if (data && data[value]) {
-                    let newlan = data[value][cc.sys.language];
+                    let newlan = data[value][cc.sys.language] || data[value][cc.sys.LANGUAGE_ENGLISH];
                     if (newlan) { newvalue = newlan };
                 }
             }
@@ -35,13 +38,16 @@
             this.cacheMode = CacheMode.NONE;
         }
         this.string = this.string;
+        if (cc.sys.language == cc.sys.LANGUAGE_JAPANESE) {
+            this.fontSize = this.fontSize-3;
+        }
     };
     cc.js.formatStr = function (value, ...any) {
         var msg = arguments[0];
         if (cc.sys.language != cc.sys.LANGUAGE_CHINESE) {
             var data = window[langRes];
             if (data && data[value]) {
-                let newlan = data[value][cc.sys.language];
+                let newlan = data[value][cc.sys.language] || data[value][cc.sys.LANGUAGE_ENGLISH];
                 if (newlan) { msg = newlan };
             }
         }
@@ -65,7 +71,7 @@
                     if (cc.sys.language != cc.sys.LANGUAGE_CHINESE && typeof newvalue === 'string') {
                         var data = window[langRes];
                         if (data && data[newvalue]) {
-                            let newlan = data[newvalue][cc.sys.language];
+                            let newlan = data[newvalue][cc.sys.language] || data[value][cc.sys.LANGUAGE_ENGLISH];
                             if (newlan) { newvalue = newlan };
                         }
                     }

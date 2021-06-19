@@ -86,4 +86,9 @@ export default class CheatView extends MVC.BaseView {
     public onClickAdDebug() {
         Notifier.send(ListenID.Ad_ShowAdDebuggView);
     }
+
+    public addADay(){
+        Manager.vo.userVo.loginDay++;
+        Manager.vo.saveUserData();
+    }
 }

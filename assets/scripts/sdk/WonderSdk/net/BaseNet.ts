@@ -16,7 +16,10 @@ export const enum Url {
     BMS_SIGN_IN_QQ = "/common/qqminiapp/sign_in",
     /** BMS 获取服务器时间 */
     BMS_SERVER_TIME = "/common/common/time",
-
+    //分享卡片
+    BMS_CARD_SHARE = "/common/share/hit",
+    //获取分享卡片信息
+    BMS_CARD_SHARE_INFO = '/common/share/info',
     /** [BMS统计] 主动分享 */
     BMS_SHARE_SHOW = "/statistics/share/show",
     /** [BMS统计] 从分享卡进入游戏 */
@@ -105,6 +108,21 @@ export class BaseNet {
         });
 
     }
+    static _EncodeFormData(data) {
+        var pairs = [];
+        var regexp = /%20/g;
+
+        for (var name in data) {
+            var value = data[name];
+            var pair =
+                encodeURIComponent(name).replace(regexp, "+")
+                + "=" +
+                encodeURIComponent(value).replace(regexp, "+");
+            pairs.push(pair);
+        }
+        return pairs.join("&");
+    }
+
 
     public static httpPost(url: string, body: any, rspType: XMLHttpRequestResponseType = 'json'): Promise<any> {
         return new Promise((resolve, reject) => {
@@ -125,20 +143,27 @@ export class BaseNet {
                     }
                 }
             }
-            switch (rspType) {
-                case 'json':
-                    req.setRequestHeader('content-type', 'application/json')
-                    break;
-                case 'text':
-                    req.setRequestHeader('content-type', 'text/plain')
-                    break
-            }
+            req.setRequestHeader('content-type', "application/x-www-form-urlencoded");
+            if (cc.sys.isNative)
+                req.setRequestHeader("Accept-Encoding", "gzip,deflate");
+            // switch (rspType) {
+            //     case 'json':
+            //         req.setRequestHeader('content-type', 'application/json')
+            //         break;
+            //     case 'text':
+            //         req.setRequestHeader('content-type', 'text/plain')
+            //     case 'urlenco':
+            //         req.setRequestHeader('content-type', "application/x-www-form-urlencoded")
+            //         break;
+            // }
             // set reponse type ，如果是二进制，则最好是arraybuffer或者blob
             if (rspType == 'blob' || rspType == 'arraybuffer' || rspType == 'text') {
                 req.responseType = rspType
             }
+            let p;
+            if (body) p = BaseNet._EncodeFormData(body);
             req.timeout = 5000;
-            req.send(body ? JSON.stringify(body) : '');
+            req.send(p);
         });
     }
 }

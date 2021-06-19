@@ -28,7 +28,7 @@ export class PhysicsController extends MVC.MController<PhysicsModel> {
         Notifier.changeListener(enable, ListenID.Physics_SetEnable, this.setEnable, this);
     }
 
-    private setEnable(bool:boolean){
+    private setEnable(bool: boolean) {
         cc.director.getPhysicsManager().enabled = bool;
     }
 
@@ -37,7 +37,7 @@ export class PhysicsController extends MVC.MController<PhysicsModel> {
         if (manager) {
             manager.enabled = true;
             // manager.debugDrawFlags = cc.PhysicsManager.DrawBits.e_shapeBit|cc.PhysicsManager.DrawBits.e_jointBit;
-            manager.gravity = cc.v2(0, -555);
+            manager.gravity = cc.v2(0, -90);
             // 开启物理步长的设置
             // manager.enabledAccumulator = true;
             // 物理步长，默认 FIXED_TIME_STEP 是 1/60

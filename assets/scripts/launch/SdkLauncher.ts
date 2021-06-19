@@ -12,10 +12,10 @@ export class SdkLauncher {
     public constructor(launchDesc?: cc.Label, progress?: cc.ProgressBar) {
         this.launchDesc = launchDesc;
         this.progress = progress;
-        this._progressNum = 10;
         //@ts-ignore
         wonderSdk.setAlertAdpater(AlertManager);
         wonderSdk.setAudioAdapter(Manager.audio);//适配sdk
+        this._progressNum = 10;
         this.login();
     }
 
@@ -37,13 +37,16 @@ export class SdkLauncher {
         }
     }
 
-    async loadAllData(): Promise<void> {
+    async loadAllData() {
+        if (wonderSdk.isWeChat)
+            await this.sdkLogin();
         await this.loadUserData();
         await Promise.all([this.loadTime(), this.loadScene(), this.loadGameSwitchConfig(), this.loadShieldIp(), this.loadView(),/*this.loadMusic()*/]);
         this.initData();
         if (this.progress) {
             this.addProgress(1);
         }
+        wonderSdk.preLoadRewardVideo();
         this.isLoadData = true;
     }
 
@@ -56,7 +59,7 @@ export class SdkLauncher {
         let curlen = 0;
         let alllen = preloadlist.length;
         return new Promise((resolve, reject) => {
-            if (wonderSdk.isNative) {
+            if (wonderSdk.isNative || preloadlist.length <= 0) {
                 this.addProgress(0.2);
                 resolve();
             } else {
@@ -67,7 +70,7 @@ export class SdkLauncher {
                     }, () => {
                         curlen++;
                         if (curlen >= alllen)
-                            resolve();
+                            resolve(null);
                     });
                 }
             }
@@ -84,12 +87,12 @@ export class SdkLauncher {
                     Time.setServerTime(time);
                 }
                 this.addProgress(0.1);
-                resolve();
+                resolve(null);
             }).catch(err => {
                 let time = Date.now();
                 Time.setServerTime(time);
-                resolve();
                 this.addProgress(0.1);
+                resolve(null);
             })
         })
     }
@@ -108,7 +111,10 @@ export class SdkLauncher {
                         let audioclip = <cc.AudioClip>resouce;
                         Manager.audio.setMusicClip(id, audioclip);
                     }
-                    if (curnum >= num) resolve();
+                    if (curnum >= num) {
+                        this.addProgress(0.05);
+                        resolve(null);
+                    }
                 });
             }
         });
@@ -121,9 +127,13 @@ export class SdkLauncher {
                 Manager.vo.userVo.updatetUserVo(data);
             }
             Manager.vo.isGetData = true;
-            resolve();
             this.addProgress(0.2);
+            resolve(null);
         });
+    }
+
+    async sdkLogin(): Promise<void> {
+        return wonderSdk.login();
     }
 
     /**
@@ -134,7 +144,7 @@ export class SdkLauncher {
             cc.director.preloadScene(Const.GAME_SCENENAME, (curcomplete, totalcount) => {
                 this.addProgress(0.15 * (1 / totalcount));
             }, () => {
-                resolve();
+                resolve(null);
             });
         })
     }
@@ -144,11 +154,11 @@ export class SdkLauncher {
         return new Promise((resolve, reject) => {
             wonderSdk.requestSwitchConfig().then(data => {
                 Manager.vo.updateSwitchVo(data.data);
-                resolve();
                 this.addProgress(0.1);
+                resolve(null);
             }).catch(err => {
-                resolve();
                 this.addProgress(0.1);
+                resolve(null);
             });
         })
     }
@@ -158,11 +168,31 @@ export class SdkLauncher {
             wonderSdk.requestShiledIp().then(data => {
                 Manager.vo.switchVo.isEnableIp = data ? 1 : 0;
                 this.addProgress(0.1);
-                resolve();
+                resolve(null);
             }).catch(err => {
-                resolve();
                 this.addProgress(0.1);
+                resolve(null);
             })
+        })
+    }
+
+    /**
+     * 加载分享信息
+     */
+    async loadShareConfig() {
+        return new Promise((resolve, reject) => {
+            if (wonderSdk.isWeChat) {
+                wonderSdk.requestShareConfig().then(data => {
+                    console.log(data);
+                    this.addProgress(0.05);
+                    resolve(null);
+                }).catch(err => {
+                    this.addProgress(0.05);
+                    resolve(null);
+                });
+            } else {
+                resolve(null);
+            }
         })
     }
 
@@ -199,6 +229,7 @@ export class SdkLauncher {
 
     public addProgress(progress: number) {
         if (!this.progress) return;
+        cc.error("progress", progress);
         this.progressNum = this.progressNum + progress * 100;
         this.progress.progress = this.progressNum / 100;
         this.launchDesc.string = cc.js.formatStr("载入中...%d%", Math.round(this.progressNum));

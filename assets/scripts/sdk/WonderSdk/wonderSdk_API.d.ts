@@ -56,6 +56,8 @@ declare module wonderSdk {
     let isNative: boolean;
     //是否是字节跳动平台
     let isByteDance: boolean;
+    let isWebDev: boolean;
+    let isKwai: boolean;
     //是否是qq平台
     let isQQ: boolean;
     //是否是百度小游戏平台
@@ -72,13 +74,14 @@ declare module wonderSdk {
     let isOppoMiniGame: boolean;
     //是否是oppo安卓
     let isOppoAndroid: boolean;
-    let isGoogleAndroid:boolean;
+    let isGoogleAndroid: boolean;
+    let isAmzAndroid:boolean;
     let isVivoMiniGame: boolean;
     let isVivoAndroid: boolean;
     let isXiaoMiAndroid: boolean;
     let isMeiZuMicro: boolean;
     let isUcMicro: boolean;
-    let isShieldPlatform:boolean;
+    let isShieldPlatform: boolean;
     //是否为测试模式
     let isTest: boolean;
     /**
@@ -314,5 +317,32 @@ declare module wonderSdk {
     /**
      * 商店评分
      */
-    function goRate(path?:string):void;
+    function goRate(path?: string): void;
+
+    /**
+     * 游戏登录完成回调
+     */
+    function setLoginFinish(): void;
+
+    function toPay(): void;
+
+    function toRestorePay(): void;
+    interface NativeAdItem {
+        adId: string,//广告标识
+        title: string,//广告标题
+        desc: string,//广告描述
+        icon: string,//推广应用icon图标
+        imgUrlList: string[],//广告图片
+        logoUrl: string,//广告标签图片
+        clickBtnTxt: string,//点击按钮文本描述
+        creativeType: number,//广告类型 0：混合
+        interactionType: number,//广告交互类型  1网址类 2应用下载类 8快应用生态应用
+    }
+    function getNativeAdInfo(): NativeAdItem;
+
+    function reportAdShowByType(type: number, id: string): void;
+
+    function nativeAdRefresh():void;
+
+    function toShareFaceBook(call?:Function):void;
 }
